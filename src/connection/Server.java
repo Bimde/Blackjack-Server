@@ -10,6 +10,7 @@ import gameplay.Dealer;
 public class Server {
 
 	private ArrayList<Client> clients;
+	private int playersReady;
 	private ServerSocket socket;
 	private Dealer dealer;
 	public static final String START_MESSAGE = "START";
@@ -19,6 +20,7 @@ public class Server {
 	public Server() {
 		this.clients = new ArrayList<Client>();
 		ServerSocket socket = null;
+		this.playersReady = 0;
 
 		try {
 			socket = new ServerSocket(5000);
@@ -49,6 +51,10 @@ public class Server {
 				}
 			}
 		}
+	}
+
+	protected synchronized void ready() {
+		this.playersReady++;
 	}
 
 	private void startGame() {

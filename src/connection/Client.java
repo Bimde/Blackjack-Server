@@ -44,12 +44,13 @@ public class Client implements Runnable {
 		}
 
 		while (this.socket.isConnected()) {
-			
+
 		}
 	}
 
 	public void broadcast(String message) {
 		this.out.println(message);
+		this.out.flush();
 	}
 
 	protected Socket getSocket() {
