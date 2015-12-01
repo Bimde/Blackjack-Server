@@ -1,4 +1,4 @@
-# Blackjack-Server
+# Blackjack Server
 
 This server program acts as both a dealer and the server for hosting up to a maximum of 6 people.
 
