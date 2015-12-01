@@ -13,12 +13,13 @@ public class Client implements Runnable {
 	private BufferedReader in;
 	private PrintWriter out;
 	private String name;
-	private int playerNo;
+	private int playerNo, coins;
 
 	public Client(Socket client, Server server, int playerNo) {
 		this.server = server;
 		this.socket = client;
 		this.playerNo = playerNo;
+		this.coins = Server.START_COINS;
 	}
 
 	@Override
@@ -41,6 +42,14 @@ public class Client implements Runnable {
 			System.out.println("Error getting client's name");
 			e.printStackTrace();
 		}
+	}
+
+	public void broadcast(String message) {
+		this.out.println(message);
+	}
+
+	protected Socket getSocket() {
+		return this.socket;
 	}
 
 	public String getName() {

@@ -9,6 +9,8 @@ public class Server {
 
 	ArrayList<Client> clients;
 	ServerSocket socket;
+	public static final String START_MESSAGE = "START";
+	public static final int START_COINS = 1000;
 
 	public Server() {
 		this.clients = new ArrayList<Client>();
@@ -32,6 +34,28 @@ public class Server {
 				e.printStackTrace();
 			}
 			System.err.println("Client " + this.clients.size() + " connected.");
+		}
+	}
+
+	protected synchronized void newPlayer(int playerNo, String name) {
+		synchronized (this.clients) {
+			for (int i = 0; i < clients.size(); i++) {
+				if (i + 1 != playerNo) {
+					this.clients.get(i).broadcast(playerNo + " " + name);
+				}
+			}
+		}
+	}
+
+	private void startGame() {
+		this.broadcast(START_MESSAGE);
+	}
+
+	private void broadcast(String message) {
+		synchronized (this.clients) {
+			for (int i = 0; i < clients.size(); i++) {
+				this.clients.get(i).broadcast(message);
+			}
 		}
 	}
 
