@@ -42,6 +42,10 @@ public class Client implements Runnable {
 			System.out.println("Error getting client's name");
 			e.printStackTrace();
 		}
+
+		while (this.socket.isConnected()) {
+			
+		}
 	}
 
 	public void broadcast(String message) {

@@ -5,10 +5,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import gameplay.Dealer;
+
 public class Server {
 
-	ArrayList<Client> clients;
-	ServerSocket socket;
+	private ArrayList<Client> clients;
+	private ServerSocket socket;
+	private Dealer dealer;
 	public static final String START_MESSAGE = "START";
 	public static final int START_COINS = 1000;
 	public static final int MIN_BET = 1;
@@ -50,9 +53,10 @@ public class Server {
 
 	private void startGame() {
 		this.broadcast(START_MESSAGE);
+		this.dealer = new Dealer(this, this.clients);
 	}
 
-	public void broadcast(String message) {
+	public synchronized void broadcast(String message) {
 		synchronized (this.clients) {
 			for (int i = 0; i < clients.size(); i++) {
 				this.clients.get(i).broadcast(message);
