@@ -1,0 +1,32 @@
+package gameplay;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class Deck extends ArrayList<Card> {
+
+	private int numOfDecks;
+
+	public Deck(int numOfDecks) {
+		super();
+		this.numOfDecks = numOfDecks;
+		this.reloadDeck();
+	}
+
+	public void reloadDeck() {
+		this.clear();
+		for (int i = 0; i < this.numOfDecks; i++) {
+			for (int suit = 0; suit < Dealer.SUITS.length; suit++) {
+				for (int rank = 0; rank < Dealer.RANKS.length; rank++) {
+					this.add(new Card(Dealer.SUITS[suit], Dealer.RANKS[rank]));
+				}
+			}
+		}
+		this.shuffle();
+	}
+
+	public void shuffle() {
+		Collections.shuffle(this);
+	}
+
+}
