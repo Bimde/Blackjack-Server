@@ -51,7 +51,28 @@ public class Dealer {
 		// Deal to the dealer first
 		if(dealerHand <= 17)
 		{
-			dealerHand += deck.getCard().getRank();
+			char rank = deck.getCard().getRank();
+			
+			if(rank == 'J' || rank == 'T' || rank == 'K' || rank == 'Q')
+			{
+				dealerHand += 10;
+			}
+			else if(rank == 'A')
+			{
+				if(dealerHand + 11 > 17)
+				{
+					dealerHand ++;
+				}
+				else
+				{
+					dealerHand += 11;
+				}
+			}
+			else
+			{
+				dealerHand += (int) rank;
+			}
+			
 		}
 		
 		// Deal to each player
