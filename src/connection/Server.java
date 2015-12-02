@@ -61,6 +61,7 @@ public class Server {
 		if (playersReady == this.clients.size()) {
 			// Do a 15 second timer
 
+			gameStarted = true;
 			startGame();
 		}
 	}
@@ -80,6 +81,10 @@ public class Server {
 
 	public synchronized boolean isFull() {
 		return (this.clients.size() == 6);
+	}
+	
+	public boolean gameStarted() {
+		return this.gameStarted;
 	}
 
 	public static void main(String[] args) {

@@ -51,7 +51,7 @@ public class Client implements Runnable {
 		try {
 			while (gameMode == -1) {
 				if (in.readLine().equals("PLAY")) {
-					if (false) { // Check if the game has already started
+					if (server.gameStarted()) {
 						gameMode = 1;
 						out.println("% LATE");
 						out.flush();
