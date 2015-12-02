@@ -41,6 +41,7 @@ public class Client implements Runnable {
 		}
 		try {
 			this.name = in.readLine();
+			System.out.println(this.name);
 		} catch (IOException e) {
 			System.out.println("Error getting client's name");
 			e.printStackTrace();
@@ -56,6 +57,7 @@ public class Client implements Runnable {
 						out.println("% LATE");
 						out.flush();
 					} else if (server.isFull()) {
+						System.out.println("Attempted to play");
 						out.println("% FULL");
 						out.flush();
 					} else {
@@ -69,24 +71,20 @@ public class Client implements Runnable {
 					out.println("% ACCEPTED");
 					out.flush();
 				}
-				
-				// Wait 1 second before accepting more input from the user
-				Thread.sleep(1000);
 			}
 		} catch (IOException e) {
 			System.out.println("Error getting the client's game mode");
 			e.printStackTrace();
 			gameMode = 0;
-		} catch (InterruptedException e) {
-			System.out.println("Error sleeping");
-			e.printStackTrace();
 		}
+
 		try {
 			if (in.readLine().equals("READY")) {
 				server.ready(this.playerNo);
 			}
 		} catch (IOException e) {
-			System.out.println("Error getting the \"ready\" status of the player");
+			System.out
+					.println("Error getting the \"ready\" status of the player");
 			e.printStackTrace();
 		}
 	}

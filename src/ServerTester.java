@@ -6,8 +6,8 @@ import java.util.Scanner;
 import utilities.Validator;
 
 public class ServerTester {
-	private Socket socket;
-	private BufferedReader in;
+	private static Socket socket;
+	private static BufferedReader in;
 	private static PrintWriter out;
 
 	public static void main(String[] args) {
@@ -40,10 +40,10 @@ public class ServerTester {
 
 		try {
 			// Socket socket = new Socket(ipAddress, port);
-			Socket socket = new Socket("127.0.0.1", 5000);
-			BufferedReader in = new BufferedReader(new InputStreamReader(
+			socket = new Socket("127.0.0.1", 5000);
+			in = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
-			PrintWriter out = new PrintWriter(socket.getOutputStream());
+			out = new PrintWriter(socket.getOutputStream());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -52,12 +52,16 @@ public class ServerTester {
 
 		while (true) {
 			try {
-				String message = keyboard.nextLine();
-				out.println(message);
+				out.println(keyboard.nextLine());
 				out.flush();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			// try {
+			// System.out.println(in.readLine());
+			// } catch (Exception e) {
+			// e.printStackTrace();
+			// }
 		}
 	}
 }
