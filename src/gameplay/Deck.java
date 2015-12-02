@@ -29,11 +29,14 @@ public class Deck extends ArrayList<Card> {
 		Collections.shuffle(this);
 	}
 	
-	public Card getCard()
+	public String getCard()
 	{
 		Card card = this.get(0);
+		String suit = card.getSuit();
+		String rank = card.getRank();
+		String send = suit + " " + rank;
 		this.remove(0);
-		return card;
+		return send;
 	}
 
 }
