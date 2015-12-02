@@ -17,7 +17,6 @@ public class Server {
 	private Dealer dealer;
 	public static final String START_MESSAGE = "START";
 	public static final int START_COINS = 1000;
-	public static final int MIN_BET = 1;
 
 	public Server(int port) {
 		this.clients = new ArrayList<Client>();
@@ -38,8 +37,7 @@ public class Server {
 				new Thread(temp).start();
 				this.clients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client "
-						+ this.clients.size());
+				System.err.println("Error connecting to client " + this.clients.size());
 				e.printStackTrace();
 			}
 			System.err.println("Client " + this.clients.size() + " connected.");

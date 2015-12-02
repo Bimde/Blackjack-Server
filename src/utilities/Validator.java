@@ -1,8 +1,10 @@
 package utilities;
 
 public class Validator {
+
+	public static final int MIN_BET = 1;
+
 	// Name checker here or let the user handle it
-	
 	/**
 	 * Check if a string is a valid port number.
 	 *
@@ -29,5 +31,22 @@ public class Validator {
 
 		// If the string passed all of the tests, it is valid
 		return true;
+	}
+
+	/**
+	 * 
+	 * @param bet
+	 *            The string containing the bet from the client
+	 * @param maxBet
+	 *            The maximum bet value (usually the player's current balance)
+	 * @return The player's bet in integer form or -1 if not valid
+	 */
+	public static int isValidBet(String bet, int maxBet) {
+		if (bet.matches("([0-9])+")) {
+			int amount = Integer.parseInt(bet);
+			if (amount <= maxBet && amount >= MIN_BET)
+				return amount;
+		}
+		return -1;
 	}
 }
