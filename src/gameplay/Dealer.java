@@ -37,6 +37,7 @@ public class Dealer {
 
 	/**
 	 * Gets the deck of cards
+	 * 
 	 * @return The Deck of cards
 	 */
 	public Deck getDeck() {
@@ -47,34 +48,25 @@ public class Dealer {
 	 * Deals cards to the player and the dealer
 	 */
 	public void deal() {
-		
 		// Deal to the dealer first
-		if(dealerHand <= 17)
-		{
+		if (dealerHand <= 17) {
 			char rank = deck.getCard().getRank();
-			
-			if(rank == 'J' || rank == 'T' || rank == 'K' || rank == 'Q')
-			{
-				dealerHand += 10;
-			}
-			else if(rank == 'A')
-			{
-				if(dealerHand + 11 > 17)
-				{
-					dealerHand ++;
+
+			if (Character.isLetter(rank)) {
+				if (rank == 'A') {
+					if (dealerHand + 11 > 17) {
+						dealerHand++;
+					} else {
+						dealerHand += 11;
+					}
+				} else {
+					dealerHand += 10;
 				}
-				else
-				{
-					dealerHand += 11;
-				}
-			}
-			else
-			{
+			} else {
 				dealerHand += (int) rank;
 			}
-			
 		}
-		
+
 		// Deal to each player
 		for (int card = 0; card < deck.size(); card++) {
 			server.broadcast(deck.getCard().toString());
