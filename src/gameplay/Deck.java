@@ -28,5 +28,12 @@ public class Deck extends ArrayList<Card> {
 	public void shuffle() {
 		Collections.shuffle(this);
 	}
+	
+	public Card getCard()
+	{
+		Card card = this.get(0);
+		this.remove(0);
+		return card;
+	}
 
 }

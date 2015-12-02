@@ -28,4 +28,12 @@ public class Dealer {
 	public Deck getDeck() {
 		return this.deck;
 	}
+	
+	public void deal()
+	{
+		for(int card = 0; card < deck.size(); card++)
+		{
+			server.broadcast(deck.getCard());
+		}
+	}
 }
