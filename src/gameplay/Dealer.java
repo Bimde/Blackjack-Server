@@ -1,5 +1,7 @@
 package gameplay;
 
+import java.util.ArrayList;
+
 import connection.Server;
 import utilities.ClientList;
 
@@ -16,21 +18,43 @@ public class Dealer {
 	private Deck deck;
 	private ClientList clients;
 	private Server server;
+	private int dealerHand;
 	private int currentPlayer;
 	public int[] playerCoins;
 
+	/**
+	 *
+	 * @param server
+	 * @param clients
+	 */
 	public Dealer(Server server, ClientList clients) {
 		this.deck = new Deck(NUMBER_OF_DECKS);
 		this.currentPlayer = 0;
 		this.server = server;
 		this.clients = clients;
+		this.dealerHand = 0;
 	}
 
+	/**
+	 * Gets the deck of cards
+	 * @return The Deck of cards
+	 */
 	public Deck getDeck() {
 		return this.deck;
 	}
 
+	/**
+	 * Deals cards to the player and the dealer
+	 */
 	public void deal() {
+		
+		// Deal to the dealer first
+		if(dealerHand <= 17)
+		{
+			dealerHand += deck.getCard().getRank();
+		}
+		
+		// Deal to each player
 		for (int card = 0; card < deck.size(); card++) {
 			server.broadcast(deck.getCard().toString());
 		}
