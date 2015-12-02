@@ -1,20 +1,22 @@
 package gameplay;
 
 public class Card {
-	private String suit, rank;
+	private char suit, rank;
 
-	public Card(String suit, String rank) {
+	public Card(char suit, char rank) {
 		this.suit = suit;
 		this.rank = rank;
 	}
-	
-	public String getSuit()
-	{
+
+	public char getSuit() {
 		return suit;
 	}
-	
-	public String getRank()
-	{
+
+	public char getRank() {
 		return rank;
+	}
+
+	public String toString() {
+		return suit + " " + rank;
 	}
 }

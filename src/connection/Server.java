@@ -10,7 +10,6 @@ import utilities.ClientList;
 import utilities.Validator;
 
 public class Server {
-
 	private ClientList clients;
 	private int playersReady;
 	private boolean gameStarted;
@@ -38,7 +37,8 @@ public class Server {
 				new Thread(temp).start();
 				this.clients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client " + this.clients.size());
+				System.err.println("Error connecting to client "
+						+ this.clients.size());
 				e.printStackTrace();
 			}
 			System.err.println("Client " + this.clients.size() + " connected.");
@@ -58,6 +58,11 @@ public class Server {
 	protected synchronized void ready(int playerNo) {
 		this.playersReady++;
 		broadcast("% " + playerNo + " READY");
+		if (playersReady == this.clients.size()) {
+			// Do a 15 second timer
+
+			startGame();
+		}
 	}
 
 	private void startGame() {

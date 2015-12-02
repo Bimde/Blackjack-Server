@@ -57,11 +57,6 @@ public class ServerTester {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			// try {
-			// System.out.println(in.readLine());
-			// } catch (Exception e) {
-			// e.printStackTrace();
-			// }
 		}
 	}
 }

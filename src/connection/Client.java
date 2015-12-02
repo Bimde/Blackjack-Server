@@ -32,7 +32,8 @@ public class Client implements Runnable {
 			this.connected = false;
 		}
 		try {
-			this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+			this.in = new BufferedReader(new InputStreamReader(
+					this.socket.getInputStream()));
 		} catch (IOException e) {
 			System.out.println("Error getting client's input stream");
 			e.printStackTrace();
@@ -80,7 +81,8 @@ public class Client implements Runnable {
 				server.ready(this.playerNo);
 			}
 		} catch (IOException e) {
-			System.out.println("Error getting the \"ready\" status of the player");
+			System.out
+					.println("Error getting the \"ready\" status of the player");
 			e.printStackTrace();
 		}
 	}

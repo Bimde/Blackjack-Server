@@ -9,8 +9,9 @@ import utilities.ClientList;
  *
  */
 public class Dealer {
-	public static final String[] SUITS = { "S", "C", "H", "D" };
-	public static final String[] RANKS = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
+	public static final char[] SUITS = { 'S', 'C', 'H', 'D' };
+	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7',
+			'8', '9', 'T', 'J', 'Q', 'K' };
 	public static final int NUMBER_OF_DECKS = 4;
 	private Deck deck;
 	private ClientList clients;
@@ -28,12 +29,10 @@ public class Dealer {
 	public Deck getDeck() {
 		return this.deck;
 	}
-	
-	public void deal()
-	{
-		for(int card = 0; card < deck.size(); card++)
-		{
-			server.broadcast(deck.getCard());
+
+	public void deal() {
+		for (int card = 0; card < deck.size(); card++) {
+			server.broadcast(deck.getCard().toString());
 		}
 	}
 }

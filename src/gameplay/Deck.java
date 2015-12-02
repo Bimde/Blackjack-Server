@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Deck extends ArrayList<Card> {
-
 	private int numOfDecks;
 
 	public Deck(int numOfDecks) {
@@ -28,15 +27,10 @@ public class Deck extends ArrayList<Card> {
 	public void shuffle() {
 		Collections.shuffle(this);
 	}
-	
-	public String getCard()
-	{
-		Card card = this.get(0);
-		String suit = card.getSuit();
-		String rank = card.getRank();
-		String send = suit + " " + rank;
-		this.remove(0);
-		return send;
-	}
 
+	public Card getCard() {
+		Card card = this.get(0);
+		this.remove(0);
+		return card;
+	}
 }
