@@ -14,6 +14,7 @@ public class Server {
 	private ArrayList<Client> clients;
 	// private int noOfPlayers;
 	private int playersReady;
+	private boolean gameStarted;
 	private ServerSocket socket;
 	private Dealer dealer;
 	public static final String START_MESSAGE = "START";
@@ -74,7 +75,7 @@ public class Server {
 		}
 	}
 
-	public boolean isFull() {
+	public synchronized boolean isFull() {
 		return (clients.size() == 6);
 	}
 
