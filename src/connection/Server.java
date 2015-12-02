@@ -3,16 +3,15 @@ package connection;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import gameplay.Dealer;
+import utilities.ClientList;
 import utilities.Validator;
 
 public class Server {
 
-	private ArrayList<Client> clients;
-	// private int noOfPlayers;
+	private ClientList clients;
 	private int playersReady;
 	private boolean gameStarted;
 	private ServerSocket socket;
@@ -21,7 +20,7 @@ public class Server {
 	public static final int START_COINS = 1000;
 
 	public Server(int port) {
-		this.clients = new ArrayList<Client>();
+		this.clients = new ClientList();
 		ServerSocket socket = null;
 		this.playersReady = 0;
 
@@ -39,8 +38,7 @@ public class Server {
 				new Thread(temp).start();
 				this.clients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client "
-						+ this.clients.size());
+				System.err.println("Error connecting to client " + this.clients.size());
 				e.printStackTrace();
 			}
 			System.err.println("Client " + this.clients.size() + " connected.");
@@ -76,7 +74,7 @@ public class Server {
 	}
 
 	public synchronized boolean isFull() {
-		return (clients.size() == 6);
+		return (this.clients.size() == 6);
 	}
 
 	public static void main(String[] args) {
