@@ -12,6 +12,7 @@ import gameplay.Dealer;
 public class Server {
 
 	private ArrayList<Client> clients;
+	private int noOfPlayers;
 	private int playersReady;
 	private ServerSocket socket;
 	private Dealer dealer;
@@ -49,13 +50,15 @@ public class Server {
 			for (int i = 0; i < clients.size(); i++) {
 				if (i + 1 != playerNo) {
 					this.clients.get(i).broadcast(playerNo + " " + name);
+					noOfPlayers++;
 				}
 			}
 		}
 	}
 
-	protected synchronized void ready() {
+	protected synchronized void ready(int playerNo) {
 		this.playersReady++;
+		broadcast("% " + playerNo + " READY");
 	}
 
 	private void startGame() {
@@ -69,6 +72,10 @@ public class Server {
 				this.clients.get(i).broadcast(message);
 			}
 		}
+	}
+	
+	public boolean isFull() {
+		return (noOfPlayers == 6);
 	}
 
 	public static void main(String[] args) {
