@@ -6,10 +6,19 @@ public class ClientList {
 	private ClientNode head, tail;
 	private int playerNo;
 
+	/**
+	 * Creates a new linked list containing Client objects Starts the client
+	 * numbers from 1
+	 */
 	public ClientList() {
 		this.playerNo = 1;
 	}
 
+	/**
+	 * Add a new Client to the list
+	 * 
+	 * @param temp
+	 */
 	public void add(Client temp) {
 		ClientNode add = new ClientNode(this.playerNo, temp);
 		if (this.head == null)
@@ -21,6 +30,11 @@ public class ClientList {
 		this.playerNo++;
 	}
 
+	/**
+	 * Counts the number of Client objects in the list
+	 * 
+	 * @return The number of clients in the list
+	 */
 	public int size() {
 		ClientNode temp = this.head;
 		int size = 0;
