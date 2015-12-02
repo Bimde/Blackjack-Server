@@ -12,7 +12,7 @@ import gameplay.Dealer;
 public class Server {
 
 	private ArrayList<Client> clients;
-	private int noOfPlayers;
+	// private int noOfPlayers;
 	private int playersReady;
 	private ServerSocket socket;
 	private Dealer dealer;
@@ -38,7 +38,8 @@ public class Server {
 				new Thread(temp).start();
 				this.clients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client " + this.clients.size());
+				System.err.println("Error connecting to client "
+						+ this.clients.size());
 				e.printStackTrace();
 			}
 			System.err.println("Client " + this.clients.size() + " connected.");
@@ -50,7 +51,6 @@ public class Server {
 			for (int i = 0; i < clients.size(); i++) {
 				if (i + 1 != playerNo) {
 					this.clients.get(i).broadcast(playerNo + " " + name);
-					noOfPlayers++;
 				}
 			}
 		}
@@ -73,9 +73,9 @@ public class Server {
 			}
 		}
 	}
-	
+
 	public boolean isFull() {
-		return (noOfPlayers == 6);
+		return (clients.size() == 6);
 	}
 
 	public static void main(String[] args) {
