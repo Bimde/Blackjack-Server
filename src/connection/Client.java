@@ -41,7 +41,6 @@ public class Client implements Runnable {
 		}
 		try {
 			this.name = in.readLine();
-			System.out.println(this.name);
 		} catch (IOException e) {
 			System.out.println("Error getting client's name");
 			e.printStackTrace();
@@ -57,7 +56,6 @@ public class Client implements Runnable {
 						out.println("% LATE");
 						out.flush();
 					} else if (server.isFull()) {
-						System.out.println("Attempted to play");
 						out.println("% FULL");
 						out.flush();
 					} else {
