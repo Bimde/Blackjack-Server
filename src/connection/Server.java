@@ -3,7 +3,9 @@ package connection;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 import java.util.ArrayList;
+import utilities.Validator;
 
 import gameplay.Dealer;
 
@@ -17,13 +19,13 @@ public class Server {
 	public static final int START_COINS = 1000;
 	public static final int MIN_BET = 1;
 
-	public Server() {
+	public Server(int port) {
 		this.clients = new ArrayList<Client>();
 		ServerSocket socket = null;
 		this.playersReady = 0;
 
 		try {
-			socket = new ServerSocket(5000);
+			socket = new ServerSocket(port);
 		} catch (IOException e) {
 			System.err.println("Error starting server.");
 			e.printStackTrace();
@@ -36,7 +38,8 @@ public class Server {
 				new Thread(temp).start();
 				this.clients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client " + this.clients.size());
+				System.err.println("Error connecting to client "
+						+ this.clients.size());
 				e.printStackTrace();
 			}
 			System.err.println("Client " + this.clients.size() + " connected.");
@@ -71,7 +74,29 @@ public class Server {
 	}
 
 	public static void main(String[] args) {
-		new Server();
-	}
+		String portStr;
+		int port = -1;
+		Scanner keyboard = new Scanner(System.in);
+		if (args.length > 0) {
+			if (Validator.isValidPort(args[0])) {
+				port = Integer.parseInt(args[0]);
+			}
+		} else {
+			System.out.print("Please enter a port: ");
+			portStr = keyboard.nextLine();
+			if (Validator.isValidPort(portStr)) {
+				port = Integer.parseInt(portStr);
+			}
+		}
 
+		while (port == -1) {
+			System.out.print("Please enter a valid port: ");
+			portStr = keyboard.nextLine();
+			if (Validator.isValidPort(portStr)) {
+				port = Integer.parseInt(portStr);
+			}
+		}
+
+		new Server(port);
+	}
 }
