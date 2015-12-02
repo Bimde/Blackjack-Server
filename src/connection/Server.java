@@ -3,11 +3,11 @@ package connection;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.ArrayList;
-import utilities.Validator;
+import java.util.Scanner;
 
 import gameplay.Dealer;
+import utilities.Validator;
 
 public class Server {
 
