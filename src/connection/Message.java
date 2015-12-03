@@ -1,14 +1,35 @@
 package connection;
 
+/**
+ * Object to hold destination and content of message
+ *
+ */
+class Message {
 
-public class Message {
+	/**
+	 * Used to flag a message which is to be sent to all players
+	 */
+	public static final int ALL_CLIENTS = -1;
 
-	public static final int ALL_PLAYERS = -1;
+	/**
+	 * Content of the message
+	 */
 	public String data;
+
+	/**
+	 * Player to send the message to
+	 */
 	public int playerNo;
 
-	public Message(int player, String message) {
-		this.playerNo = player;
+	/**
+	 * 
+	 * @param playerNo
+	 *            Destination of message
+	 * @param message
+	 *            Message to send
+	 */
+	public Message(int playerNo, String message) {
+		this.playerNo = playerNo;
 		this.data = message;
 	}
 }

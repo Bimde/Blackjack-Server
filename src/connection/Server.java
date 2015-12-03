@@ -111,7 +111,7 @@ public class Server implements ActionListener {
 	 */
 	public synchronized void broadcast(String message) {
 		synchronized (this.messages) {
-			this.messages.add(new Message(Message.ALL_PLAYERS, message));
+			this.messages.add(new Message(Message.ALL_CLIENTS, message));
 		}
 	}
 
@@ -125,7 +125,7 @@ public class Server implements ActionListener {
 				return;
 			Message msg = this.messages.get(0);
 			this.messages.remove(0);
-			if (msg.playerNo == Message.ALL_PLAYERS)
+			if (msg.playerNo == Message.ALL_CLIENTS)
 				this.broadcastToAll(msg.data);
 			else {
 				Client temp = this.clients.get(msg.playerNo);
