@@ -19,7 +19,7 @@ public class Client implements Runnable {
 		this.socket = client;
 		this.server = server;
 		this.playerNo = playerNo;
-		this.coins = Server.START_COINS;
+		this.setCoins(Server.START_COINS);
 		this.connected = true;
 	}
 
@@ -33,7 +33,8 @@ public class Client implements Runnable {
 			this.connected = false;
 		}
 		try {
-			this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+			this.in = new BufferedReader(new InputStreamReader(
+					this.socket.getInputStream()));
 		} catch (IOException e) {
 			System.out.println("Error getting client's input stream");
 			e.printStackTrace();
@@ -81,7 +82,8 @@ public class Client implements Runnable {
 				server.ready(this.playerNo);
 			}
 		} catch (IOException e) {
-			System.out.println("Error getting the \"ready\" status of the player");
+			System.out
+					.println("Error getting the \"ready\" status of the player");
 			e.printStackTrace();
 		}
 	}
@@ -107,11 +109,19 @@ public class Client implements Runnable {
 		return this.out;
 	}
 
+	public int getBet() {
+		return this.currentBet;
+	}
+
 	public void setBet(int amount) {
 		this.currentBet = amount;
 	}
 
-	public int getBet() {
-		return this.currentBet;
+	public int getCoins() {
+		return coins;
+	}
+
+	public void setCoins(int coins) {
+		this.coins = coins;
 	}
 }
