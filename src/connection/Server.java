@@ -110,10 +110,8 @@ public class Server implements ActionListener {
 	 * @param message
 	 */
 	public synchronized void broadcast(String message) {
-		synchronized (this.clients) {
-			for (int i = 0; i < clients.size(); i++) {
-				this.clients.get(i).broadcast(message);
-			}
+		synchronized (this.messages) {
+			this.messages.add(new Message(Message.ALL_PLAYERS, message));
 		}
 	}
 
@@ -128,11 +126,19 @@ public class Server implements ActionListener {
 			Message msg = this.messages.get(0);
 			this.messages.remove(0);
 			if (msg.playerNo == Message.ALL_PLAYERS)
-				this.broadcast(msg.data);
+				this.broadcastToAll(msg.data);
 			else {
 				Client temp = this.clients.get(msg.playerNo);
 				if (temp != null)
 					temp.broadcast(msg.data);
+			}
+		}
+	}
+
+	private void broadcastToAll(String message) {
+		synchronized (this.clients) {
+			for (int i = 0; i < clients.size(); i++) {
+				this.clients.get(i).broadcast(message);
 			}
 		}
 	}
