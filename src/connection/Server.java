@@ -69,13 +69,13 @@ public class Server implements ActionListener {
 		// Sets up client list to hold each client
 		// Sets up the socket and the number of ready players to zero
 		this.clients = new ClientList();
-		ServerSocket socket = null;
+		this.socket = null;
 		this.playersReady = 0;
 		this.timer = new Timer(MESSAGE_DELAY, this);
 
 		// Try to start the server
 		try {
-			socket = new ServerSocket(port);
+			this.socket = new ServerSocket(port);
 		} catch (IOException e) {
 			System.err.println("Error starting server.");
 			e.printStackTrace();
