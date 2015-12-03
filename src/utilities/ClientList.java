@@ -2,6 +2,11 @@ package utilities;
 
 import connection.Client;
 
+/**
+ * Linked list containing Client objects to store and retrieve players based on
+ * their 'playerNo' parameter
+ *
+ */
 public class ClientList {
 	private ClientNode head, tail;
 
@@ -37,11 +42,18 @@ public class ClientList {
 		int lastNo = 0;
 		while (temp != null) {
 			int nextNo = temp.getPlayerNo();
+
+			// If the difference between the player numbers of clients that are
+			// next to each other is greater than 1, then there is a
+			// gap in the player numbers
 			if (nextNo > lastNo + 1)
 				return lastNo + 1;
 			lastNo = nextNo;
 			temp = temp.getNext();
 		}
+
+		// If no gaps are found, returns one more than the last client in the
+		// list's player number
 		return lastNo + 1;
 	}
 
