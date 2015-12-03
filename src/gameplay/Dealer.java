@@ -14,7 +14,7 @@ public class Dealer {
 	public static final char[] SUITS = { 'S', 'C', 'H', 'D' };
 	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7',
 			'8', '9', 'T', 'J', 'Q', 'K' };
-	public static final int NUMBER_OF_DECKS = 4;
+	public static final int NUMBER_OF_DECKS = 6;
 	private Deck deck;
 	private ClientList clients;
 	private Server server;
