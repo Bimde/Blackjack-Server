@@ -2,7 +2,6 @@ package connection;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -118,12 +117,23 @@ public class Server implements ActionListener {
 		}
 	}
 
+	/**
+	 * Gets called by 'actionPerformed' method to send the latest message to the
+	 * specified clients
+	 */
 	private void broadcast() {
 		synchronized (this.messages) {
 			if (this.messages.size() == 0)
 				return;
 			Message msg = this.messages.get(0);
 			this.messages.remove(0);
+			if (msg.playerNo == Message.ALL_PLAYERS)
+				this.broadcast(msg.data);
+			else {
+				Client temp = this.clients.get(msg.playerNo);
+				if (temp != null)
+					temp.broadcast(msg.data);
+			}
 		}
 	}
 
