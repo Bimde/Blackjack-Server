@@ -33,6 +33,15 @@ public class Card {
 	}
 	
 	/**
+	 * Gets the integer value of value
+	 * @return Value variable value
+	 */
+	public int getValue()
+	{
+		return value;
+	}
+	
+	/**
 	 * Gets the suit of a card
 	 * 
 	 * @return The suit of the card
@@ -55,6 +64,6 @@ public class Card {
 	 * into a String message for client broadcast.
 	 */
 	public String toString() {
-		return "#" + " " + suit + " " + rank;
+		return suit + " " + rank;
 	}
 }
