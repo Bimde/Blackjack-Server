@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.Timer;
@@ -23,6 +24,7 @@ public class Server implements ActionListener {
 	public static final String START_MESSAGE = "START";
 	public static final int START_COINS = 1000, MESSAGE_DELAY = 500;
 	private Timer timer;
+	private ArrayList<Message> messages;
 
 	public Server(int port) {
 
@@ -116,6 +118,15 @@ public class Server implements ActionListener {
 		}
 	}
 
+	private void broadcast() {
+		synchronized (this.messages) {
+			if (this.messages.size() == 0)
+				return;
+			Message msg = this.messages.get(0);
+			this.messages.remove(0);
+		}
+	}
+
 	/**
 	 * Determines whether or not the lobby is full.
 	 * 
@@ -165,5 +176,6 @@ public class Server implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		this.broadcast();
 	}
 }
