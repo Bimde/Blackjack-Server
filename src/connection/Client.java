@@ -12,14 +12,15 @@ public class Client implements Runnable {
 	private BufferedReader in;
 	private PrintWriter out;
 	private String name;
-	private int playerNo, gameMode, coins;
-	private boolean connected = true;
+	private int playerNo, gameMode, coins, currentBet;
+	private boolean connected;
 
 	public Client(Socket client, Server server, int playerNo) {
 		this.socket = client;
 		this.server = server;
 		this.playerNo = playerNo;
 		this.coins = Server.START_COINS;
+		this.connected = true;
 	}
 
 	@Override
@@ -97,12 +98,20 @@ public class Client implements Runnable {
 	public String getName() {
 		return this.name;
 	}
-	
+
 	public BufferedReader getIn() {
 		return this.in;
 	}
-	
+
 	public PrintWriter getOut() {
 		return this.out;
+	}
+
+	public void setBet(int amount) {
+		this.currentBet = amount;
+	}
+
+	public int getBet() {
+		return this.currentBet;
 	}
 }

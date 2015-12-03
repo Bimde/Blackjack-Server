@@ -50,8 +50,7 @@ public class Server implements ActionListener {
 				new Thread(temp).start();
 				this.clients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client "
-						+ this.clients.size());
+				System.err.println("Error connecting to client " + this.clients.size());
 				e.printStackTrace();
 			}
 			System.err.println("Client " + this.clients.size() + " connected.");
@@ -102,7 +101,6 @@ public class Server implements ActionListener {
 	private void startGame() {
 		this.broadcast(START_MESSAGE);
 		this.dealer = new Dealer(this, this.clients);
-		dealer.startGame();
 	}
 
 	/**
