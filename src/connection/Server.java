@@ -15,17 +15,16 @@ import utilities.ClientList;
 import utilities.Validator;
 
 public class Server implements ActionListener {
-	private static ClientList clients;
-	private static int playersReady;
-	private static boolean gameStarted;
-	private static ServerSocket socket;
-	private static Dealer dealer;
+	private ClientList clients;
+	private int playersReady;
+	private boolean gameStarted;
+	private ServerSocket socket;
+	private Dealer dealer;
 	private static final String START_MESSAGE = "START";
 	private static final int START_COINS = 1000, MESSAGE_DELAY = 500;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
-	public static boolean[] playerNumbers = {true, false, false, false, false,
-			false, false };
+	public static boolean[] playerNumbers = { true, false, false, false, false, false, false };
 
 	public String getStartMessage() {
 		return START_MESSAGE;
@@ -38,26 +37,24 @@ public class Server implements ActionListener {
 	public int getMessageDelay() {
 		return MESSAGE_DELAY;
 	}
-	
-	/** Change a player number to unused as a player disconnects from the lobby
+
+	/**
+	 * Change a player number to unused as a player disconnects from the lobby
 	 * 
 	 * @param playerNumber
 	 */
-	public void clearPlayerNumber (int playerNumber)
-	{
+	public void clearPlayerNumber(int playerNumber) {
 		playerNumbers[playerNumber] = false;
 	}
-	
-	/** Return the first unused player number and -1 if everything is used
-	 *  
+
+	/**
+	 * Return the first unused player number and -1 if everything is used
+	 * 
 	 * @return the first unused player number
 	 */
-	public int returnAndUsePlayerNumber()
-	{
-		for (int no = 1; no < playerNumbers.length; no++)
-		{
-			if (!playerNumbers[no])
-			{
+	public int returnAndUsePlayerNumber() {
+		for (int no = 1; no < playerNumbers.length; no++) {
+			if (!playerNumbers[no]) {
 				return no;
 			}
 		}
@@ -89,12 +86,11 @@ public class Server implements ActionListener {
 			System.err.println("Waiting for client to connect...");
 			try {
 				Socket client = socket.accept();
-				Client temp = new Client(client,this);
+				Client temp = new Client(client, this);
 				new Thread(temp).start();
 				clients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client "
-						+ clients.size());
+				System.err.println("Error connecting to client " + clients.size());
 				e.printStackTrace();
 			}
 			System.err.println("Client " + clients.size() + " connected.");
@@ -102,7 +98,8 @@ public class Server implements ActionListener {
 	}
 
 	//////////////////////////////////////////////////////////////
-	// Why is this broadcasting to every individual client if broadcast already does that?
+	// Why is this broadcasting to every individual client if broadcast already
+	////////////////////////////////////////////////////////////// does that?
 	/////////////////////////////////////////////////////////////
 	/**
 	 * Allows individual client threads to add their associated client as a
@@ -122,7 +119,6 @@ public class Server implements ActionListener {
 			}
 		}
 	}
-	
 
 	/**
 	 * Waits for the player to be ready. Once the player is ready start the
