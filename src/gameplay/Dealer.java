@@ -15,7 +15,7 @@ public class Dealer {
 	public static final char[] SUITS = { 'S', 'C', 'H', 'D' };
 	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7',
 			'8', '9', 'T', 'J', 'Q', 'K' };
-	public static final int NUMBER_OF_DECKS = 4;
+	public static final int NUMBER_OF_DECKS = 6;
 	private Deck deck;
 	private ClientList clients;
 	private Server server;
@@ -54,17 +54,26 @@ public class Dealer {
 		if (dealerHand <= 17) {
 			char rank = deck.getCard().getRank();
 
+			//If the rank is a character
 			if (Character.isLetter(rank)) {
+				
+				//If the rank is an ace, determine whether the value should be 11 or 1
 				if (rank == 'A') {
 					if (dealerHand + 11 > 17) {
 						dealerHand++;
 					} else {
 						dealerHand += 11;
 					}
-				} else {
+				} 
+				
+				//All other character values (J,K,Q,T) are worth ten
+				else {
 					dealerHand += 10;
 				}
-			} else {
+			} 
+			
+			// If the rank is numeric, add it's value accordingly
+			else {
 				dealerHand += (int) rank;
 			}
 		}
