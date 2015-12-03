@@ -7,33 +7,38 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client implements Runnable {
-	private Server server;
 	private Socket socket;
-	private BufferedReader in;
-	private PrintWriter out;
+	private BufferedReader input;
+	private PrintWriter output;
 	private String name;
-	private int playerNo, gameMode, coins, currentBet;
 	private boolean connected;
 
-	public Client(Socket client, Server server, int playerNo) {
+	private Server server;
+
+	// Potential Player or Spectator object
+	private Player player;
+	private Spectator spectator;
+
+	// 'U' for unassigned, 'P' for player and 'S' for spectator
+	private char userType;
+
+	public Client(Socket client, Server server) {
 		this.socket = client;
-		this.server = server;
-		this.playerNo = playerNo;
-		this.setCoins(Server.START_COINS);
 		this.connected = true;
+		this.server = server;
 	}
 
 	@Override
 	public void run() {
 		try {
-			this.out = new PrintWriter(this.socket.getOutputStream());
+			this.output = new PrintWriter(this.socket.getOutputStream());
 		} catch (IOException e) {
 			System.out.println("Error getting client's output stream");
 			e.printStackTrace();
 			this.connected = false;
 		}
 		try {
-			this.in = new BufferedReader(new InputStreamReader(
+			this.input = new BufferedReader(new InputStreamReader(
 					this.socket.getInputStream()));
 		} catch (IOException e) {
 			System.out.println("Error getting client's input stream");
@@ -41,45 +46,52 @@ public class Client implements Runnable {
 			this.connected = false;
 		}
 		try {
-			this.name = in.readLine();
+			this.name = input.readLine();
 		} catch (IOException e) {
 			System.out.println("Error getting client's name");
 			e.printStackTrace();
 			this.connected = false;
 		}
 
-		this.gameMode = -1;
+		// The user is unassigned at first
+		this.userType = 'U';
+
 		try {
-			while (this.gameMode == -1) {
-				if (this.in.readLine().equals("PLAY")) {
-					if (this.server.gameStarted()) {
-						this.gameMode = 1;
-						this.out.println("% LATE");
-						this.out.flush();
+			while (this.userType == 'U') {
+				String message = input.readLine();
+
+				if (message.equalsIgnoreCase("PLAY")) {
+					if (server.gameStarted()) {
+						this.userType = 'S';
+						this.output.println("% LATE");
+						this.output.flush();
 					} else if (server.isFull()) {
-						this.out.println("% FULL");
-						this.out.flush();
+						this.output.println("% FULL");
+						this.output.flush();
 					} else {
-						this.gameMode = 0;
-						this.out.println("% ACCEPTED");
-						this.out.flush();
-						this.server.newPlayer(this.playerNo, this.name);
+						this.userType = 'P';
+						this.output.println("% ACCEPTED");
+						this.output.flush();
+						int playerNumber = server.returnAndUsePlayerNumber();
+
+						player = new Player(server, playerNumber);
+						server.broadcast("@ " + playerNumber + " " + name);
 					}
 				} else {
-					this.gameMode = 1;
-					this.out.println("% ACCEPTED");
-					this.out.flush();
+					this.userType = 'S';
+					this.output.println("% ACCEPTED");
+					this.output.flush();
 				}
 			}
 		} catch (IOException e) {
 			System.out.println("Error getting the client's game mode");
 			e.printStackTrace();
-			this.gameMode = 0;
+			this.userType = 0;
 		}
 
 		try {
-			if (in.readLine().equals("READY")) {
-				server.ready(this.playerNo);
+			if (input.readLine().equals("READY")) {
+				server.ready(player.getPlayerNo());
 			}
 		} catch (IOException e) {
 			System.out
@@ -89,8 +101,8 @@ public class Client implements Runnable {
 	}
 
 	public void broadcast(String message) {
-		this.out.println(message);
-		this.out.flush();
+		this.output.println(message);
+		this.output.flush();
 	}
 
 	protected Socket getSocket() {
@@ -102,26 +114,30 @@ public class Client implements Runnable {
 	}
 
 	public BufferedReader getIn() {
-		return this.in;
+		return this.input;
 	}
 
 	public PrintWriter getOut() {
-		return this.out;
+		return this.output;
 	}
 
 	public int getBet() {
-		return this.currentBet;
-	}
 
-	public void setBet(int amount) {
-		this.currentBet = amount;
+		return player.getCurrentBet();
 	}
 
 	public int getCoins() {
-		return coins;
+
+		return player.getCoins();
 	}
 
-	public void setCoins(int coins) {
-		this.coins = coins;
+	public void setBet(int betAmount) {
+		player.setCurrentBet(betAmount);
+
+	}
+
+	public void setCoins(int noOfCoins) {
+		player.setCoins(noOfCoins);
+
 	}
 }
