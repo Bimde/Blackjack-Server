@@ -99,4 +99,12 @@ public class Client implements Runnable {
 	public String getName() {
 		return this.name;
 	}
+	
+	public BufferedReader getIn() {
+		return this.in;
+	}
+	
+	public PrintWriter getOut() {
+		return this.out;
+	}
 }
