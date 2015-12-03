@@ -2,12 +2,36 @@ package gameplay;
 
 public class Card {
 	private char suit, rank;
+	private int value;
 
 	public Card(char suit, char rank) {
 		this.suit = suit;
 		this.rank = rank;
+
+		// Assign the card value to the card, everything else is just for show
+		if (rank == 'A') {
+			value = 11;
+		} else if (rank == 'T' || rank == 'J' || rank == 'Q' || rank == 'K') {
+			value = 10;
+		} else {
+			value = Integer.parseInt(rank + "");
+		}
 	}
 
+	/** De-ranks the card from 11 to 1 if it is an ace
+	 * 
+	 * @return whether or not the card is an ace
+	 */
+	public boolean derankAce()
+	{
+		boolean isAce = (rank=='A');
+		if (isAce)
+		{
+			value = 1;
+		}
+		return isAce;
+	}
+	
 	/**
 	 * Gets the suit of a card
 	 * 
