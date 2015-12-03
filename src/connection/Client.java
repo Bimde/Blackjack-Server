@@ -32,8 +32,7 @@ public class Client implements Runnable {
 			this.connected = false;
 		}
 		try {
-			this.in = new BufferedReader(new InputStreamReader(
-					this.socket.getInputStream()));
+			this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 		} catch (IOException e) {
 			System.out.println("Error getting client's input stream");
 			e.printStackTrace();
@@ -47,33 +46,33 @@ public class Client implements Runnable {
 			this.connected = false;
 		}
 
-		gameMode = -1;
+		this.gameMode = -1;
 		try {
-			while (gameMode == -1) {
-				if (in.readLine().equals("PLAY")) {
-					if (server.gameStarted()) {
-						gameMode = 1;
-						out.println("% LATE");
-						out.flush();
+			while (this.gameMode == -1) {
+				if (this.in.readLine().equals("PLAY")) {
+					if (this.server.gameStarted()) {
+						this.gameMode = 1;
+						this.out.println("% LATE");
+						this.out.flush();
 					} else if (server.isFull()) {
-						out.println("% FULL");
-						out.flush();
+						this.out.println("% FULL");
+						this.out.flush();
 					} else {
-						gameMode = 0;
-						out.println("% ACCEPTED");
-						out.flush();
-						server.newPlayer(this.playerNo, this.name);
+						this.gameMode = 0;
+						this.out.println("% ACCEPTED");
+						this.out.flush();
+						this.server.newPlayer(this.playerNo, this.name);
 					}
 				} else {
-					gameMode = 1;
-					out.println("% ACCEPTED");
-					out.flush();
+					this.gameMode = 1;
+					this.out.println("% ACCEPTED");
+					this.out.flush();
 				}
 			}
 		} catch (IOException e) {
 			System.out.println("Error getting the client's game mode");
 			e.printStackTrace();
-			gameMode = 0;
+			this.gameMode = 0;
 		}
 
 		try {
@@ -81,8 +80,7 @@ public class Client implements Runnable {
 				server.ready(this.playerNo);
 			}
 		} catch (IOException e) {
-			System.out
-					.println("Error getting the \"ready\" status of the player");
+			System.out.println("Error getting the \"ready\" status of the player");
 			e.printStackTrace();
 		}
 	}
