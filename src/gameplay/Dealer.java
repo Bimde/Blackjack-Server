@@ -1,5 +1,6 @@
 package gameplay;
 
+import java.io.*;
 import java.util.ArrayList;
 
 import connection.Server;
@@ -21,6 +22,7 @@ public class Dealer {
 	private int dealerHand;
 	private int currentPlayer;
 	public int[] playerCoins;
+	public int[] currentBets;
 
 	/**
 	 *
@@ -79,6 +81,37 @@ public class Dealer {
 		// Deal to each player
 		for (int card = 0; card < deck.size(); card++) {
 			server.broadcast(deck.getCard().toString());
+		}
+	}
+	
+	public void startGame() {
+		for (int player = 0; player < playerCoins.length; player++) {
+			playerCoins[player] = 1000;
+		}
+		while (true) { // Keep playing until when?
+			this.server.broadcast("NEWROUND");
+			int playersBet = 0;
+			while (playersBet != clients.size()) {
+				for (int player = 0; player < clients.size(); player++) {
+					BufferedReader currentIn = clients.get(player).getIn();
+					PrintWriter currentOut = clients.get(player).getOut();
+					
+					try {
+						if (currentIn.ready()) {
+							currentBets[player] = Integer.parseInt(currentIn.readLine());
+							if (currentBets[player] < 10 || currentBets[player] > playerCoins[player]) {
+								currentOut.println("% FORMATERROR");
+								currentOut.flush();
+							} else {
+								playersBet++;
+							}
+						}
+					} catch (IOException e) {
+						System.out.println("Error getting player's bet");
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 	}
 }

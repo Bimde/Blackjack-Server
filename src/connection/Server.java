@@ -95,6 +95,7 @@ public class Server {
 	private void startGame() {
 		this.broadcast(START_MESSAGE);
 		this.dealer = new Dealer(this, this.clients);
+		dealer.startGame();
 	}
 
 	/**

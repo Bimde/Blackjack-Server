@@ -1,5 +1,6 @@
 package connection;
 
+
 public class Message {
 
 	public static final int ALL_PLAYERS = -1;
