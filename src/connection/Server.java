@@ -1,22 +1,28 @@
 package connection;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+import javax.swing.Timer;
+
 import gameplay.Dealer;
 import utilities.ClientList;
 import utilities.Validator;
 
-public class Server {
+public class Server implements ActionListener {
 	private ClientList clients;
 	private int playersReady;
 	private boolean gameStarted;
 	private ServerSocket socket;
 	private Dealer dealer;
 	public static final String START_MESSAGE = "START";
-	public static final int START_COINS = 1000;
+	public static final int START_COINS = 1000, MESSAGE_DELAY = 500;
+	private Timer timer;
 
 	public Server(int port) {
 
@@ -25,6 +31,7 @@ public class Server {
 		this.clients = new ClientList();
 		ServerSocket socket = null;
 		this.playersReady = 0;
+		this.timer = new Timer(MESSAGE_DELAY, this);
 
 		// Try to start the server
 		try {
@@ -83,8 +90,8 @@ public class Server {
 
 			// Do a 15 second timer (otherwise the player times out)
 
-			gameStarted = true;
-			startGame();
+			this.gameStarted = true;
+			this.startGame();
 		}
 	}
 
@@ -133,8 +140,8 @@ public class Server {
 		String portStr;
 		int port = -1;
 		Scanner keyboard = new Scanner(System.in);
-		
-		// 
+
+		//
 		if (args.length > 0) {
 			if (Validator.isValidPort(args[0])) {
 				port = Integer.parseInt(args[0]);
@@ -156,5 +163,9 @@ public class Server {
 		}
 
 		new Server(port);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
 	}
 }
