@@ -19,16 +19,22 @@ public class Server {
 	public static final int START_COINS = 1000;
 
 	public Server(int port) {
+
+		// Sets up client list to hold each client
+		// Sets up the socket and the number of ready players to zero
 		this.clients = new ClientList();
 		ServerSocket socket = null;
 		this.playersReady = 0;
 
+		// Try to start the server
 		try {
 			socket = new ServerSocket(port);
 		} catch (IOException e) {
 			System.err.println("Error starting server.");
 			e.printStackTrace();
 		}
+
+		// Try to connect to a client while the server has been started
 		while (true) {
 			System.err.println("Waiting for client to connect...");
 			try {
@@ -45,6 +51,15 @@ public class Server {
 		}
 	}
 
+	/**
+	 * Allows individual client threads to add their associated client as a
+	 * player
+	 * 
+	 * @param playerNo
+	 *            The assigned number of the client
+	 * @param name
+	 *            The name of the client
+	 */
 	protected synchronized void newPlayer(int playerNo, String name) {
 		synchronized (this.clients) {
 			for (int i = 0; i < clients.size(); i++) {
@@ -55,22 +70,38 @@ public class Server {
 		}
 	}
 
+	/**
+	 * Waits for the player to be ready. Once the player is ready start the
+	 * game.
+	 * 
+	 * @param playerNo
+	 */
 	protected synchronized void ready(int playerNo) {
 		this.playersReady++;
 		broadcast("% " + playerNo + " READY");
 		if (playersReady == this.clients.size()) {
-			// Do a 15 second timer
+
+			// Do a 15 second timer (otherwise the player times out)
 
 			gameStarted = true;
 			startGame();
 		}
 	}
 
+	/**
+	 * Starts the game. Broadcasts a start game message and sets up the dealer
+	 * for the game.
+	 */
 	private void startGame() {
 		this.broadcast(START_MESSAGE);
 		this.dealer = new Dealer(this, this.clients);
 	}
 
+	/**
+	 * Broadcasts a message to each client.
+	 * 
+	 * @param message
+	 */
 	public synchronized void broadcast(String message) {
 		synchronized (this.clients) {
 			for (int i = 0; i < clients.size(); i++) {
@@ -79,10 +110,20 @@ public class Server {
 		}
 	}
 
+	/**
+	 * Determines whether or not the lobby is full.
+	 * 
+	 * @return Whether or not the lobby is full.
+	 */
 	public synchronized boolean isFull() {
 		return (this.clients.size() == 6);
 	}
-	
+
+	/**
+	 * Determines if the game has started or not.
+	 * 
+	 * @return Whether or not the game has started.
+	 */
 	public boolean gameStarted() {
 		return this.gameStarted;
 	}
@@ -91,6 +132,8 @@ public class Server {
 		String portStr;
 		int port = -1;
 		Scanner keyboard = new Scanner(System.in);
+		
+		// 
 		if (args.length > 0) {
 			if (Validator.isValidPort(args[0])) {
 				port = Integer.parseInt(args[0]);
