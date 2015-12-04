@@ -15,7 +15,7 @@ import utilities.ClientList;
 import utilities.Validator;
 
 public class Server implements ActionListener {
-	private ClientList clients;
+	private ArrayList<Client> clients;
 	private int playersReady;
 	private boolean gameStarted;
 	private ServerSocket socket;
@@ -24,7 +24,8 @@ public class Server implements ActionListener {
 	private static final int START_COINS = 1000, MESSAGE_DELAY = 500;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
-	public static boolean[] playerNumbers = { true, false, false, false, false, false, false };
+	public static boolean[] playerNumbers = { true, false, false, false, false,
+			false, false };
 
 	public String getStartMessage() {
 		return START_MESSAGE;
@@ -68,7 +69,7 @@ public class Server implements ActionListener {
 
 		// Sets up client list to hold each client
 		// Sets up the socket and the number of ready players to zero
-		this.clients = new ClientList();
+		this.clients = new ArrayList<Client>();
 		this.socket = null;
 		this.playersReady = 0;
 		this.timer = new Timer(MESSAGE_DELAY, this);
@@ -90,35 +91,37 @@ public class Server implements ActionListener {
 				new Thread(temp).start();
 				clients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client " + clients.size());
+				System.err.println("Error connecting to client "
+						+ clients.size());
 				e.printStackTrace();
 			}
 			System.err.println("Client " + clients.size() + " connected.");
 		}
 	}
 
-	//////////////////////////////////////////////////////////////
-	// Why is this broadcasting to every individual client if broadcast already
-	////////////////////////////////////////////////////////////// does that?
-	/////////////////////////////////////////////////////////////
-	/**
-	 * Allows individual client threads to add their associated client as a
-	 * player
-	 * 
-	 * @param playerNo
-	 *            The assigned number of the client
-	 * @param name
-	 *            The name of the client
-	 */
-	protected synchronized void newPlayer(int playerNo, String name) {
-		synchronized (this.clients) {
-			for (int i = 0; i < clients.size(); i++) {
-				if (i + 1 != playerNo) {
-					this.clients.get(i).broadcast(playerNo + " " + name);
-				}
-			}
-		}
-	}
+	// //////////////////////////////////////////////
+	// We can just broadcast the new player client to the newly joined player
+	// too
+	// ///////////////////////////////////////////////
+
+	// /**
+	// * Allows individual client threads to add their associated client as a
+	// * player
+	// *
+	// * @param playerNo
+	// * The assigned number of the client
+	// * @param name
+	// * The name of the client
+	// */
+	// protected synchronized void newPlayer(int playerNo, String name) {
+	// synchronized (this.clients) {
+	// for (int i = 0; i < clients.size(); i++) {
+	// if (i + 1 != playerNo) {
+	// this.clients.get(i).message(playerNo + " " + name);
+	// }
+	// }
+	// }
+	// }
 
 	/**
 	 * Waits for the player to be ready. Once the player is ready start the
@@ -132,7 +135,6 @@ public class Server implements ActionListener {
 		if (playersReady == this.clients.size()) {
 
 			// Do a 15 second timer (otherwise the player times out)
-
 			this.gameStarted = true;
 			this.startGame();
 		}
@@ -152,17 +154,19 @@ public class Server implements ActionListener {
 	 * 
 	 * @param message
 	 */
-	public synchronized void broadcast(String message) {
-		synchronized (this.messages) {
-			this.messages.add(new Message(Message.ALL_CLIENTS, message));
+	public void broadcast(String message) {
+		for (int no = 0; no < clients.size(); no++)
+		{
+			clients.get(no).message(message);
 		}
+		
 	}
 
 	/**
 	 * Gets called by 'actionPerformed' method to send the latest message to the
 	 * specified clients
 	 */
-	private void broadcast() {
+	private void broadcastActionPerformed() {
 		synchronized (this.messages) {
 			if (this.messages.size() == 0)
 				return;
@@ -173,7 +177,7 @@ public class Server implements ActionListener {
 			else {
 				Client temp = this.clients.get(msg.playerNo);
 				if (temp != null)
-					temp.broadcast(msg.data);
+					temp.message(msg.data);
 			}
 		}
 	}
@@ -181,7 +185,7 @@ public class Server implements ActionListener {
 	private void broadcastToAll(String message) {
 		synchronized (this.clients) {
 			for (int i = 0; i < clients.size(); i++) {
-				this.clients.get(i).broadcast(message);
+				this.clients.get(i).message(message);
 			}
 		}
 	}
@@ -196,6 +200,18 @@ public class Server implements ActionListener {
 	}
 
 	/**
+	 *  Disconnect a client from the server
+	 * @param client
+	 */
+	public synchronized void disconnectClient(Client client) {
+		if (client.isReady())
+		{
+			playersReady--;
+		}
+		clients.remove(client);
+	}
+
+	/**
 	 * Determines if the game has started or not.
 	 * 
 	 * @return Whether or not the game has started.
@@ -206,7 +222,7 @@ public class Server implements ActionListener {
 
 	public static void main(String[] args) {
 		String portStr;
-		int port = -1;
+		int port = 5000;
 		Scanner keyboard = new Scanner(System.in);
 
 		//
@@ -235,6 +251,6 @@ public class Server implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		this.broadcast();
+		this.broadcastActionPerformed();
 	}
 }

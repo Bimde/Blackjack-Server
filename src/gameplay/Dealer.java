@@ -18,7 +18,7 @@ public class Dealer {
 	public static final int NUMBER_OF_DECKS = 6;
 	private ArrayList<Card> dealerCards;
 	private Deck deck;
-	private ClientList clients;
+	private ArrayList<Client> clients;
 	private boolean[] isStand;
 	private Server server;
 	private int dealerHand;
@@ -29,7 +29,7 @@ public class Dealer {
 	 * @param server
 	 * @param clients
 	 */
-	public Dealer(Server server, ClientList clients) {
+	public Dealer(Server server, ArrayList<Client> clients) {
 
 		this.deck = new Deck(NUMBER_OF_DECKS);
 		this.server = server;
@@ -124,7 +124,7 @@ public class Dealer {
 
 		// Assigns each player a number of coins
 		for (int player = 0; player < clients.size(); player++) {
-			clients.get(player).setCoins(1000);
+			 clients.get(player).setCoins(1000);
 		}
 
 		// While the number of clients available is over 0 keep playing

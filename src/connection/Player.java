@@ -22,8 +22,9 @@ public class Player {
 		
 		coins = this.server.getStartCoins();
 		this.playerNo = playerNo;
+
 	}
-	
+
 	/** Adds a card to the player's hand
 	 * 
 	 * @param newCard the new card to add to the player's hand

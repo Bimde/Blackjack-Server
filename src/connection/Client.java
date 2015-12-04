@@ -15,12 +15,50 @@ public class Client implements Runnable {
 
 	private Server server;
 
+	// Whether or not the player is ready to start the game
+	private boolean isReady = false;
+
 	// Potential Player or Spectator object
 	private Player player;
-	private Spectator spectator;
 
 	// 'U' for unassigned, 'P' for player and 'S' for spectator
 	private char userType;
+
+
+	/**
+	 * Disconnect/timeout the player
+	 */
+	public void disconnect() {
+
+		if (userType == 'P') {
+			System.out.println(player.getPlayerNo() + " has disconnected");
+			server.broadcast("! " + player.getPlayerNo());
+		}
+		else
+		{
+			System.out.println("Client has disconnected");
+		}
+
+		connected = false;
+		try {
+			input.close();
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		output.close();
+		server.disconnectClient(this);
+
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
 
 	public Client(Socket client, Server server) {
 		this.socket = client;
@@ -56,10 +94,14 @@ public class Client implements Runnable {
 		// The user is unassigned at first
 		this.userType = 'U';
 
-		try {
-			while (this.userType == 'U') {
-				String message = input.readLine();
+		// Set the user's account type, either enter the user into the game or
+		// assign as a spectator
 
+		while (this.userType == 'U' && connected) {
+
+			try {
+				String message = input.readLine();
+				
 				if (message.equalsIgnoreCase("PLAY")) {
 					if (server.gameStarted()) {
 						this.userType = 'S';
@@ -77,40 +119,53 @@ public class Client implements Runnable {
 						player = new Player(server, playerNumber);
 						server.broadcast("@ " + playerNumber + " " + name);
 					}
-				} else {
+				} else if (message.equalsIgnoreCase("SPECTATE")) {
 					this.userType = 'S';
 					this.output.println("% ACCEPTED");
 					this.output.flush();
 				}
+			} catch (IOException e) {
+				disconnect();
 			}
-		} catch (IOException e) {
-			System.out.println("Error getting the client's game mode");
-			e.printStackTrace();
-			this.userType = 0;
+
 		}
 
-		try {
-			if (input.readLine().equals("READY")) {
-				server.ready(player.getPlayerNo());
+		while (connected && !isReady) {
+			try {
+				String message = input.readLine();
+
+				if (message.equalsIgnoreCase("READY")) {
+					server.ready(player.getPlayerNo());
+					isReady = true;
+				}
+			} catch (IOException e) {
+				disconnect();
 			}
-		} catch (IOException e) {
-			System.out
-					.println("Error getting the \"ready\" status of the player");
-			e.printStackTrace();
+
+		}
+
+		while (connected) {
+			// Do clienty stuff / player stuff
 		}
 	}
 
-	public void broadcast(String message) {
-		this.output.println(message);
-		this.output.flush();
+	/**
+	 * Send a message to the client
+	 * 
+	 * @param message
+	 *            the message to send
+	 */
+	public void message(String message) {
+		output.println(message);
+		output.flush();
 	}
 
 	protected Socket getSocket() {
-		return this.socket;
+		return socket;
 	}
 
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	public BufferedReader getIn() {
@@ -140,4 +195,13 @@ public class Client implements Runnable {
 		player.setCoins(noOfCoins);
 
 	}
+
+	public boolean isReady() {
+		return isReady;
+	}
+
+	public void setReady(boolean isReady) {
+		this.isReady = isReady;
+	}
+
 }
