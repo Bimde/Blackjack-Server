@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.io.*;
 
 import connection.Client;
+import connection.Player;
 import connection.Server;
 import utilities.ClientList;
 
@@ -117,6 +118,11 @@ public class Dealer {
 		return this.deck;
 	}
 
+	public void findWinner()
+	{
+		
+	}
+	
 	/**
 	 * Actual game play. Starts and runs the game.
 	 */
@@ -176,27 +182,24 @@ public class Dealer {
 						server.broadcast("% " + (client + 1) + " turn");
 						// timer needed here
 
+						Card card = this.deck.getCard();
 						if (clients.get(client).getIn().equals("hit")) {
-							server.broadcast("# " + (client + 1) + " "
-									+ this.deck.getCard().toString());
-						} else if (clients.get(client).getIn().equals("stand")) { // /////should
-																					// we
-																					// broadcast
-																					// the
-																					// stand?
+							clients.get(client).message("# " + (client + 1) + " "
+									+ card.toString());
+							clients.get(client).getPlayer().addCard(card);
+						} else if (clients.get(client).getIn().equals("stand")) { 
 							isStand[client] = true;
 							totalActive--;
 						} else if (clients.get(client).getIn()
 								.equals("doubledown")) {
-							
-							//Not very sure how doubledown works exactly
 							clients.get(client).setBet(clientBet*2);
-							server.broadcast("# " + (client + 1) + " "
+							clients.get(client).message("# " + (client + 1) + " "
 									+ this.deck.getCard().toString());
+							clients.get(client).getPlayer().addCard(card);
 						}
 					}
 					
-					//If a clients keeps hitting for some reason, Idk if this is even a possibility
+					//Reloads the deck when there aren't enough cards
 					if(deck.getCards() <= 6)
 					{
 						deck.reloadDeck();
@@ -210,6 +213,15 @@ public class Dealer {
 			{
 				server.broadcast("# 0 "
 						+ this.deck.getCard().toString());
+			}
+			
+			findWinner();
+			
+			//Clear the cards of each player including the dealer
+			dealerCards.clear();
+			for(int i = 0; i < clients.size(); i++)
+			{
+				clients.get(i).getPlayer().clearHand();
 			}
 			
 			//Shuffle deck and broadcast the message
