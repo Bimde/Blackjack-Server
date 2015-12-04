@@ -29,29 +29,6 @@ public class Server implements ActionListener {
 	public boolean[] playerNumbers = { true, false, false, false, false, false,
 			false };
 
-	/**
-	 * Change a player number to unused as a player disconnects from the lobby
-	 * 
-	 * @param playerNumber
-	 */
-	public void clearPlayerNumber(int playerNumber) {
-		this.playerNumbers[playerNumber] = false;
-	}
-
-	/**
-	 * Return the first unused player number and -1 if everything is used
-	 * 
-	 * @return the first unused player number
-	 */
-	public int returnAndUsePlayerNumber() {
-		for (int no = 1; no < this.playerNumbers.length; no++) {
-			if (!this.playerNumbers[no]) {
-				return no;
-			}
-		}
-		return -1;
-	}
-
 	private Timer timer;
 	private ArrayList<Message> messages;
 
@@ -90,29 +67,29 @@ public class Server implements ActionListener {
 		}
 	}
 
-	// //////////////////////////////////////////////
-	// We can just broadcast the new player client to the newly joined player
-	// too
-	// ///////////////////////////////////////////////
+	/**
+	 * Change a player number to unused as a player disconnects from the lobby
+	 * 
+	 * @param playerNumber
+	 */
+	public void clearPlayerNumber(int playerNumber) {
+		this.playerNumbers[playerNumber] = false;
+	}
 
-	// /**
-	// * Allows individual client threads to add their associated client as a
-	// * player
-	// *
-	// * @param playerNo
-	// * The assigned number of the client
-	// * @param name
-	// * The name of the client
-	// */
-	// protected synchronized void newPlayer(int playerNo, String name) {
-	// synchronized (this.clients) {
-	// for (int i = 0; i < clients.size(); i++) {
-	// if (i + 1 != playerNo) {
-	// this.clients.get(i).message(playerNo + " " + name);
-	// }
-	// }
-	// }
-	// }
+	/**
+	 * Return the first unused player number and -1 if everything is used
+	 * 
+	 * @return the first unused player number
+	 */
+	private int returnAndUsePlayerNumber() {
+		for (int no = 1; no < this.playerNumbers.length; no++) {
+			if (!this.playerNumbers[no]) {
+				this.playerNumbers[no] = true;
+				return no;
+			}
+		}
+		return -1;
+	}
 
 	/**
 	 * Waits for the player to be ready. Once the player is ready start the
@@ -122,8 +99,9 @@ public class Server implements ActionListener {
 	 */
 	protected synchronized void ready(int playerNo) {
 		this.playersReady++;
-		this.broadcast("% " + playerNo + " READY");
-		if (playersReady == this.clients.size()) {
+		this.sendMessage(new Message(Message.ALL_CLIENTS, "% " + playerNo
+				+ " READY"));
+		if (this.playersReady == this.clients.size()) {
 
 			// Do a 15 second timer (otherwise the player times out)
 			this.gameStarted = true;
@@ -131,12 +109,16 @@ public class Server implements ActionListener {
 		}
 	}
 
+	public void playerDisconnected(Client source) {
+		this.players.remove(source);
+	}
+
 	/**
 	 * Starts the game. Broadcasts a start game message and sets up the dealer
 	 * for the game.
 	 */
 	private void startGame() {
-		this.broadcast(START_MESSAGE);
+		this.broadcastToAll(START_MESSAGE);
 		this.dealer = new Dealer(this, this.clients);
 	}
 
@@ -145,11 +127,17 @@ public class Server implements ActionListener {
 	 * 
 	 * @param message
 	 */
-	public void broadcast(String message) {
-		for (int no = 0; no < clients.size(); no++) {
-			clients.get(no).message(message);
+	private void sendMessage(Message message) {
+		synchronized (this.messages) {
+			for (int no = 0; no < clients.size(); no++) {
+				this.messages.add(message);
+			}
 		}
+	}
 
+	public void newPlayer(Client source) {
+		source.setPlayer(new Player(this, this.returnAndUsePlayerNumber()));
+		this.players.add(source);
 	}
 
 	/**
@@ -174,7 +162,7 @@ public class Server implements ActionListener {
 
 	private void broadcastToAll(String message) {
 		synchronized (this.clients) {
-			for (int i = 0; i < clients.size(); i++) {
+			for (int i = 0; i < this.clients.size(); i++) {
 				this.clients.get(i).message(message);
 			}
 		}
@@ -207,7 +195,7 @@ public class Server implements ActionListener {
 	 * @return Whether or not the game has started.
 	 */
 	public boolean gameStarted() {
-		return gameStarted;
+		return this.gameStarted;
 	}
 
 	public static void main(String[] args) {
@@ -215,7 +203,6 @@ public class Server implements ActionListener {
 		int port = 5000;
 		Scanner keyboard = new Scanner(System.in);
 
-		//
 		if (args.length > 0) {
 			if (Validator.isValidPort(args[0])) {
 				port = Integer.parseInt(args[0]);
@@ -242,5 +229,9 @@ public class Server implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		this.broadcastActionPerformed();
+	}
+
+	public void broadcast(String message) {
+		this.sendMessage(new Message(Message.ALL_CLIENTS, message));
 	}
 }

@@ -88,4 +88,19 @@ public class ClientList {
 		}
 		return null;
 	}
+
+	public void remove(Client client) {
+		ClientNode temp = this.head;
+		while (temp != null) {
+			if (temp.getClient() == client)
+				this.remove(temp);
+		}
+	}
+
+	// TODO FINISH THIS
+	private void remove(ClientNode client) {
+		if (this.head == client) {
+			this.head = client.getNext();
+		}
+	}
 }

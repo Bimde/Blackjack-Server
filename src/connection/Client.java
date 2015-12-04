@@ -31,6 +31,7 @@ public class Client implements Runnable {
 
 		if (this.userType == 'P') {
 			System.out.println(this.player.getPlayerNo() + " has disconnected");
+			//CHANGE THIS
 			this.server.broadcast("! " + this.player.getPlayerNo());
 		} else {
 			System.out.println("Client has disconnected");
@@ -111,11 +112,7 @@ public class Client implements Runnable {
 						this.userType = 'P';
 						this.output.println("% ACCEPTED");
 						this.output.flush();
-						int playerNumber = this.server
-								.returnAndUsePlayerNumber();
-
-						this.player = new Player(server, playerNumber);
-						this.server.broadcast("@ " + playerNumber + " " + name);
+						this.server.newPlayer(this);
 					}
 				} else if (message.equalsIgnoreCase("SPECTATE")) {
 					this.userType = 'S';
