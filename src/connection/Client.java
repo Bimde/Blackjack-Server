@@ -12,6 +12,7 @@ public class Client implements Runnable {
 	private PrintWriter output;
 	private String name;
 	private boolean connected;
+	private boolean isStanding;
 
 	private Server server;
 
@@ -24,6 +25,10 @@ public class Client implements Runnable {
 	// 'U' for unassigned, 'P' for player and 'S' for spectator
 	private char userType;
 
+	Client() {
+		isStanding = false;
+	}
+
 	/**
 	 * Disconnect/timeout the player
 	 */
@@ -31,7 +36,7 @@ public class Client implements Runnable {
 
 		if (this.userType == 'P') {
 			System.out.println(this.player.getPlayerNo() + " has disconnected");
-			//CHANGE THIS
+			// CHANGE THIS
 			this.server.broadcast("! " + this.player.getPlayerNo());
 		} else {
 			System.out.println("Client has disconnected");
@@ -140,9 +145,8 @@ public class Client implements Runnable {
 		}
 
 		// Game
-		while (this.connected) 
-		{
-			
+		while (this.connected) {
+
 			
 		}
 	}
@@ -160,6 +164,14 @@ public class Client implements Runnable {
 
 	protected Socket getSocket() {
 		return socket;
+	}
+
+	public boolean getIsStanding() {
+		return isStanding;
+	}
+
+	public void setIsStanding(boolean isStanding) {
+		this.isStanding = isStanding;
 	}
 
 	public String getName() {

@@ -80,7 +80,7 @@ public class Dealer {
 	}
 
 	/**
-	 * Handles dealing for the dealer
+	 * Handles dealing to the dealer
 	 */
 	public void dealerDeal(Card card) {
 		if (Character.isLetter(card.getRank())) {
@@ -121,6 +121,7 @@ public class Dealer {
 	//TODO
 	public void findWinner() {
 
+		
 	}
 
 	/**
@@ -177,10 +178,8 @@ public class Dealer {
 				// Goes through each client
 				for (int client = 0; client < this.isStand.length; client++) {
 
-					if (this.isStand[client] != true) {
+					if (this.clients.get(client).getIsStanding() != true) {
 						this.server.broadcast("% " + (client + 1) + " turn");
-						// timer needed here
-
 						Card card = this.deck.getCard();
 						if (this.clients.get(client).getIn().equals("hit")) {
 							this.clients.get(client)
@@ -190,15 +189,19 @@ public class Dealer {
 							this.clients.get(client).getPlayer().addCard(card);
 						} else if (this.clients.get(client).getIn()
 								.equals("stand")) {
-							this.isStand[client] = true;
+							this.clients.get(client).setIsStanding(true);
 							this.totalActive--;
 						} else if (this.clients.get(client).getIn()
 								.equals("doubledown")) {
+							
+							//If the client double downs, double their bet
 							this.clients.get(client).setBet(clientBet * 2);
 							this.clients.get(client).message(
 									"# " + (client + 1) + " "
 											+ this.deck.getCard().toString());
 							this.clients.get(client).getPlayer().addCard(card);
+							this.clients.get(client).setIsStanding(true);
+							this.totalActive--;
 						}
 					}
 
