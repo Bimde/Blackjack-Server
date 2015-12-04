@@ -1,6 +1,7 @@
 package connection;
+
 import gameplay.Card;
-import java.net.Socket;
+
 import java.util.ArrayList;
 
 public class Player {
@@ -10,8 +11,9 @@ public class Player {
 	private int playerNo;
 	private int currentBet;
 	private Server server;
-	
-	/** Initialize a new player
+
+	/**
+	 * Initialize a new player
 	 * 
 	 * @param client
 	 * @param server
@@ -19,31 +21,29 @@ public class Player {
 	 */
 	public Player(Server server, int playerNo) {
 		this.server = server;
-		
-		coins = this.server.getStartCoins();
+		this.coins = this.server.getStartCoins();
 		this.playerNo = playerNo;
-
 	}
 
-	/** Adds a card to the player's hand
-	 * 
-	 * @param newCard the new card to add to the player's hand
-	 */
-	public void addCard (Card newCard)
-	{
-		currentCards.add(newCard);
-	}
-	
 	/**
-	 *  Clears the current player's hand
+	 * Adds a card to the player's hand
+	 * 
+	 * @param newCard
+	 *            the new card to add to the player's hand
 	 */
-	public void clearHand ()
-	{
-		currentCards.clear();
+	public void addCard(Card newCard) {
+		this.currentCards.add(newCard);
+	}
+
+	/**
+	 * Clears the current player's hand
+	 */
+	public void clearHand() {
+		this.currentCards.clear();
 	}
 
 	public ArrayList<Card> getCurrentCards() {
-		return currentCards;
+		return this.currentCards;
 	}
 
 	public void setCurrentCards(ArrayList<Card> currentCards) {
@@ -51,7 +51,7 @@ public class Player {
 	}
 
 	public int getCoins() {
-		return coins;
+		return this.coins;
 	}
 
 	public void setCoins(int coins) {
@@ -59,7 +59,7 @@ public class Player {
 	}
 
 	public int getPlayerNo() {
-		return playerNo;
+		return this.playerNo;
 	}
 
 	public void setPlayerNo(int playerNo) {
@@ -67,12 +67,11 @@ public class Player {
 	}
 
 	public int getCurrentBet() {
-		return currentBet;
+		return this.currentBet;
 	}
 
 	public void setCurrentBet(int currentBet) {
 		this.currentBet = currentBet;
 	}
-	
-	
+
 }

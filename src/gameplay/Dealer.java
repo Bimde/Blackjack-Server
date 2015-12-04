@@ -6,7 +6,7 @@ import java.io.*;
 import connection.Client;
 import connection.Player;
 import connection.Server;
-import utilities.ClientList;
+import utilities.PlayerList;
 
 /**
  * Handles the actual gameplay, i.e. which player's turn is it, giving the

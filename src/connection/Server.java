@@ -1,5 +1,7 @@
 package connection;
 
+import gameplay.Dealer;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -10,12 +12,12 @@ import java.util.Scanner;
 
 import javax.swing.Timer;
 
-import gameplay.Dealer;
-import utilities.ClientList;
+import utilities.PlayerList;
 import utilities.Validator;
 
 public class Server implements ActionListener {
 	private ArrayList<Client> clients;
+	private PlayerList players;
 	private int playersReady;
 	private boolean gameStarted;
 	private ServerSocket socket;
@@ -24,8 +26,8 @@ public class Server implements ActionListener {
 	private static final int START_COINS = 1000, MESSAGE_DELAY = 500;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
-	public static boolean[] playerNumbers = { true, false, false, false, false,
-			false, false };
+	public boolean[] playerNumbers = { true, false, false, false, false, false,
+			false };
 
 	public String getStartMessage() {
 		return START_MESSAGE;
@@ -45,7 +47,7 @@ public class Server implements ActionListener {
 	 * @param playerNumber
 	 */
 	public void clearPlayerNumber(int playerNumber) {
-		playerNumbers[playerNumber] = false;
+		this.playerNumbers[playerNumber] = false;
 	}
 
 	/**
@@ -54,8 +56,8 @@ public class Server implements ActionListener {
 	 * @return the first unused player number
 	 */
 	public int returnAndUsePlayerNumber() {
-		for (int no = 1; no < playerNumbers.length; no++) {
-			if (!playerNumbers[no]) {
+		for (int no = 1; no < this.playerNumbers.length; no++) {
+			if (!this.playerNumbers[no]) {
 				return no;
 			}
 		}
@@ -86,16 +88,16 @@ public class Server implements ActionListener {
 		while (true) {
 			System.err.println("Waiting for client to connect...");
 			try {
-				Socket client = socket.accept();
+				Socket client = this.socket.accept();
 				Client temp = new Client(client, this);
 				new Thread(temp).start();
-				clients.add(temp);
+				this.clients.add(temp);
 			} catch (Exception e) {
 				System.err.println("Error connecting to client "
-						+ clients.size());
+						+ this.clients.size());
 				e.printStackTrace();
 			}
-			System.err.println("Client " + clients.size() + " connected.");
+			System.err.println("Client " + this.clients.size() + " connected.");
 		}
 	}
 
@@ -155,11 +157,10 @@ public class Server implements ActionListener {
 	 * @param message
 	 */
 	public void broadcast(String message) {
-		for (int no = 0; no < clients.size(); no++)
-		{
+		for (int no = 0; no < clients.size(); no++) {
 			clients.get(no).message(message);
 		}
-		
+
 	}
 
 	/**
@@ -196,19 +197,19 @@ public class Server implements ActionListener {
 	 * @return Whether or not the lobby is full.
 	 */
 	public synchronized boolean isFull() {
-		return (clients.size() == 6);
+		return (this.clients.size() == 6);
 	}
 
 	/**
-	 *  Disconnect a client from the server
+	 * Disconnect a client from the server
+	 * 
 	 * @param client
 	 */
 	public synchronized void disconnectClient(Client client) {
-		if (client.isReady())
-		{
-			playersReady--;
+		if (client.isReady()) {
+			this.playersReady--;
 		}
-		clients.remove(client);
+		this.clients.remove(client);
 	}
 
 	/**

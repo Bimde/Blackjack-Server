@@ -30,30 +30,30 @@ public class Client implements Runnable {
 	 */
 	public void disconnect() {
 
-		if (userType == 'P') {
-			System.out.println(player.getPlayerNo() + " has disconnected");
-			server.broadcast("! " + player.getPlayerNo());
+		if (this.userType == 'P') {
+			System.out.println(this.player.getPlayerNo() + " has disconnected");
+			this.server.broadcast("! " + this.player.getPlayerNo());
 		}
 		else
 		{
 			System.out.println("Client has disconnected");
 		}
 
-		connected = false;
+		this.connected = false;
 		try {
-			input.close();
-			socket.close();
+			this.input.close();
+			this.socket.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		output.close();
-		server.disconnectClient(this);
+		this.output.close();
+		this.server.disconnectClient(this);
 
 	}
 
 	public Player getPlayer() {
-		return player;
+		return this.player;
 	}
 
 	public void setPlayer(Player player) {
@@ -97,13 +97,13 @@ public class Client implements Runnable {
 		// Set the user's account type, either enter the user into the game or
 		// assign as a spectator
 
-		while (this.userType == 'U' && connected) {
+		while (this.userType == 'U' && this.connected) {
 
 			try {
-				String message = input.readLine();
+				String message = this.input.readLine();
 				
 				if (message.equalsIgnoreCase("PLAY")) {
-					if (server.gameStarted()) {
+					if (this.server.gameStarted()) {
 						this.userType = 'S';
 						this.output.println("% LATE");
 						this.output.flush();
@@ -114,10 +114,10 @@ public class Client implements Runnable {
 						this.userType = 'P';
 						this.output.println("% ACCEPTED");
 						this.output.flush();
-						int playerNumber = server.returnAndUsePlayerNumber();
+						int playerNumber = this.server.returnAndUsePlayerNumber();
 
-						player = new Player(server, playerNumber);
-						server.broadcast("@ " + playerNumber + " " + name);
+						this.player = new Player(server, playerNumber);
+						this.server.broadcast("@ " + playerNumber + " " + name);
 					}
 				} else if (message.equalsIgnoreCase("SPECTATE")) {
 					this.userType = 'S';
@@ -130,13 +130,13 @@ public class Client implements Runnable {
 
 		}
 
-		while (connected && !isReady) {
+		while (this.connected && !this.isReady) {
 			try {
-				String message = input.readLine();
+				String message = this.input.readLine();
 
 				if (message.equalsIgnoreCase("READY")) {
-					server.ready(player.getPlayerNo());
-					isReady = true;
+					this.server.ready(this.player.getPlayerNo());
+					this.isReady = true;
 				}
 			} catch (IOException e) {
 				disconnect();
@@ -144,7 +144,7 @@ public class Client implements Runnable {
 
 		}
 
-		while (connected) {
+		while (this.connected) {
 			// Do clienty stuff / player stuff
 		}
 	}
@@ -156,8 +156,8 @@ public class Client implements Runnable {
 	 *            the message to send
 	 */
 	public void message(String message) {
-		output.println(message);
-		output.flush();
+		this.output.println(message);
+		this.output.flush();
 	}
 
 	protected Socket getSocket() {
@@ -187,12 +187,12 @@ public class Client implements Runnable {
 	}
 
 	public void setBet(int betAmount) {
-		player.setCurrentBet(betAmount);
+		this.player.setCurrentBet(betAmount);
 
 	}
 
 	public void setCoins(int noOfCoins) {
-		player.setCoins(noOfCoins);
+		this.player.setCoins(noOfCoins);
 
 	}
 
