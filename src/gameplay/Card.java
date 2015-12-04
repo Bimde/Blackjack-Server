@@ -10,11 +10,11 @@ public class Card {
 
 		// Assign the card value to the card, everything else is just for show
 		if (rank == 'A') {
-			value = 11;
+			this.value = 11;
 		} else if (rank == 'T' || rank == 'J' || rank == 'Q' || rank == 'K') {
-			value = 10;
+			this.value = 10;
 		} else {
-			value = Integer.parseInt(rank + "");
+			this.value = Integer.parseInt(rank + "");
 		}
 	}
 
@@ -27,7 +27,7 @@ public class Card {
 		boolean isAce = (rank=='A');
 		if (isAce)
 		{
-			value = 1;
+			this.value = 1;
 		}
 		return isAce;
 	}

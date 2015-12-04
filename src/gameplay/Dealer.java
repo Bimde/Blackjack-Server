@@ -61,7 +61,7 @@ public class Dealer {
 
 		// If the dealer has a blackjack the round ends immediately
 		// Otherwise continue normally
-		if (dealerHand == 21) {
+		if (this.dealerHand == 21) {
 			this.server.broadcast("% NEWROUND");
 			this.server.broadcast("% SHUFFLE");
 		} else {
@@ -105,8 +105,8 @@ public class Dealer {
 		else {
 			this.dealerHand += (int) card.getRank();
 		}
-		
-		dealerCards.add(card);
+
+		this.dealerCards.add(card);
 	}
 
 	/**
@@ -118,11 +118,11 @@ public class Dealer {
 		return this.deck;
 	}
 
-	public void findWinner()
-	{
-		
+	//TODO
+	public void findWinner() {
+
 	}
-	
+
 	/**
 	 * Actual game play. Starts and runs the game.
 	 */
@@ -130,11 +130,11 @@ public class Dealer {
 
 		// Assigns each player a number of coins
 		for (int player = 0; player < clients.size(); player++) {
-			 clients.get(player).setCoins(1000);
+			this.clients.get(player).setCoins(1000);
 		}
 
 		// While the number of clients available is over 0 keep playing
-		while (clients.size() > 0) {
+		while (this.clients.size() > 0) {
 			this.server.broadcast("NEWROUND");
 			int playersBet = 0;
 			int clientBet = 0;
@@ -148,8 +148,7 @@ public class Dealer {
 						if (currentIn.ready()) {
 							currentPlayer.setBet(Integer.parseInt(currentIn
 									.readLine()));
-							clientBet = Integer.parseInt(currentIn
-									.readLine());
+							clientBet = Integer.parseInt(currentIn.readLine());
 							if (currentPlayer.getBet() < 10
 									|| currentPlayer.getBet() > currentPlayer
 											.getCoins()) {
@@ -168,65 +167,65 @@ public class Dealer {
 				}
 			}
 
-			//While at least more than one player is willing to hit
-			while (totalActive >= 0) {
+			// While at least more than one player is willing to hit
+			while (this.totalActive >= 0) {
 				// Dealer must take cards while less than 17
-				if (dealerHand <= 17) {
-					dealerDeal(this.deck.getCard());
+				if (this.dealerHand <= 17) {
+					this.dealerDeal(this.deck.getCard());
 				}
 
 				// Goes through each client
-				for (int client = 0; client < isStand.length; client++) {
+				for (int client = 0; client < this.isStand.length; client++) {
 
-					if (isStand[client] != true) {
-						server.broadcast("% " + (client + 1) + " turn");
+					if (this.isStand[client] != true) {
+						this.server.broadcast("% " + (client + 1) + " turn");
 						// timer needed here
 
 						Card card = this.deck.getCard();
-						if (clients.get(client).getIn().equals("hit")) {
-							clients.get(client).message("# " + (client + 1) + " "
-									+ card.toString());
-							clients.get(client).getPlayer().addCard(card);
-						} else if (clients.get(client).getIn().equals("stand")) { 
-							isStand[client] = true;
-							totalActive--;
-						} else if (clients.get(client).getIn()
+						if (this.clients.get(client).getIn().equals("hit")) {
+							this.clients.get(client)
+									.message(
+											"# " + (client + 1) + " "
+													+ card.toString());
+							this.clients.get(client).getPlayer().addCard(card);
+						} else if (this.clients.get(client).getIn()
+								.equals("stand")) {
+							this.isStand[client] = true;
+							this.totalActive--;
+						} else if (this.clients.get(client).getIn()
 								.equals("doubledown")) {
-							clients.get(client).setBet(clientBet*2);
-							clients.get(client).message("# " + (client + 1) + " "
-									+ this.deck.getCard().toString());
-							clients.get(client).getPlayer().addCard(card);
+							this.clients.get(client).setBet(clientBet * 2);
+							this.clients.get(client).message(
+									"# " + (client + 1) + " "
+											+ this.deck.getCard().toString());
+							this.clients.get(client).getPlayer().addCard(card);
 						}
 					}
-					
-					//Reloads the deck when there aren't enough cards
-					if(deck.getCards() <= 6)
-					{
-						deck.reloadDeck();
+
+					// Reloads the deck when there aren't enough cards
+					if (this.deck.size() <= 6) {
+						this.deck.reloadDeck();
 					}
 				}
-				
+
 			}
-			
-			//Broadcast the cards in the dealer's hand
-			for(int i = 0; i < dealerCards.size(); i++)
-			{
-				server.broadcast("# 0 "
-						+ this.deck.getCard().toString());
+
+			// Broadcast the cards in the dealer's hand
+			for (int i = 0; i < this.dealerCards.size(); i++) {
+				this.server.broadcast("# 0 " + this.deck.getCard().toString());
 			}
-			
-			findWinner();
-			
-			//Clear the cards of each player including the dealer
-			dealerCards.clear();
-			for(int i = 0; i < clients.size(); i++)
-			{
-				clients.get(i).getPlayer().clearHand();
+
+			this.findWinner();
+
+			// Clear the cards of each player including the dealer
+			this.dealerCards.clear();
+			for (int i = 0; i < this.clients.size(); i++) {
+				this.clients.get(i).getPlayer().clearHand();
 			}
-			
-			//Shuffle deck and broadcast the message
-			deck.reloadDeck(); // Requirements for when to shuffle?
-			server.broadcast("% SHUFFLE");
+
+			// Shuffle deck and broadcast the message
+			this.deck.reloadDeck(); // Requirements for when to shuffle?
+			this.server.broadcast("% SHUFFLE");
 		}
 	}
 }
