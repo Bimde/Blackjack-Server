@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Queue;
 import java.util.Scanner;
 
 import javax.swing.Timer;
@@ -30,8 +31,12 @@ public class Server implements ActionListener {
 			false };
 
 	private Timer timer;
-	private ArrayList<Message> messages;
-
+	private Queue<Message> messages;
+	
+	/**
+	 *  Constructor 
+	 * @param port
+	 */
 	public Server(int port) {
 
 		// Sets up client list to hold each client
@@ -49,6 +54,8 @@ public class Server implements ActionListener {
 			System.err.println("Error starting server.");
 			e.printStackTrace();
 		}
+		
+		
 
 		// Try to connect to a client while the server has been started
 		while (true) {
@@ -99,7 +106,7 @@ public class Server implements ActionListener {
 	 */
 	protected synchronized void ready(int playerNo) {
 		this.playersReady++;
-		this.sendMessage(new Message(Message.ALL_CLIENTS, "% " + playerNo
+		this.queueMessage(new Message(Message.ALL_CLIENTS, "% " + playerNo
 				+ " READY"));
 		if (this.playersReady == this.clients.size()) {
 
@@ -118,16 +125,16 @@ public class Server implements ActionListener {
 	 * for the game.
 	 */
 	private void startGame() {
-		this.broadcastToAll(START_MESSAGE);
+		this.queueMessage(new Message(Message.ALL_CLIENTS,"% START"));
 		this.dealer = new Dealer(this, this.clients);
 	}
 
 	/**
-	 * Broadcasts a message to each client.
+	 * Places the message in the queue for message broadcasts
 	 * 
-	 * @param message
+	 * @param message the message to send
 	 */
-	private void sendMessage(Message message) {
+	private void queueMessage(Message message) {
 		synchronized (this.messages) {
 			for (int no = 0; no < clients.size(); no++) {
 				this.messages.add(message);
@@ -148,8 +155,7 @@ public class Server implements ActionListener {
 		synchronized (this.messages) {
 			if (this.messages.size() == 0)
 				return;
-			Message msg = this.messages.get(0);
-			this.messages.remove(0);
+			Message msg = this.messages.remove();
 			if (msg.playerNo == Message.ALL_CLIENTS)
 				this.broadcastToAll(msg.data);
 			else {
@@ -160,6 +166,10 @@ public class Server implements ActionListener {
 		}
 	}
 
+	/**
+	 *  Instantly broadcast a message
+	 * @param message
+	 */
 	private void broadcastToAll(String message) {
 		synchronized (this.clients) {
 			for (int i = 0; i < this.clients.size(); i++) {
@@ -232,6 +242,6 @@ public class Server implements ActionListener {
 	}
 
 	public void broadcast(String message) {
-		this.sendMessage(new Message(Message.ALL_CLIENTS, message));
+		this.queueMessage(new Message(Message.ALL_CLIENTS, message));
 	}
 }

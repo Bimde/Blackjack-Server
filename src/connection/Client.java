@@ -139,8 +139,11 @@ public class Client implements Runnable {
 
 		}
 
-		while (this.connected) {
-			// Do clienty stuff / player stuff
+		// Game
+		while (this.connected) 
+		{
+			
+			
 		}
 	}
 

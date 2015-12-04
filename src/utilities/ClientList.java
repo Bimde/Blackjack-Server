@@ -74,15 +74,15 @@ public class ClientList {
 
 	/**
 	 * 
-	 * @param playerNo
-	 *            The number associated with the desired client
+	 * @param playerNo The number associated with the desired client
 	 * @return Client associated with specified player number, or null or not
 	 *         found
 	 */
 	public Client get(int playerNo) {
 		ClientNode temp = this.head;
 		while (temp != null) {
-			if (temp.getClient().getPlayer().getPlayerNo() == playerNo)
+			
+			if ((temp.getClient().getPlayer().getPlayerNo() == playerNo))
 				return temp.getClient();
 			temp = temp.getNext();
 		}
