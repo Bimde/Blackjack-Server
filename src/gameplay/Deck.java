@@ -42,6 +42,10 @@ public class Deck extends ArrayList<Card> {
 		Collections.shuffle(this);
 	}
 
+	public int getCards()
+	{
+		return this.size();
+	}
 	/**
 	 * Removes a card from the deck and returns that card
 	 * 

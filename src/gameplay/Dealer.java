@@ -16,10 +16,13 @@ public class Dealer {
 	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7',
 			'8', '9', 'T', 'J', 'Q', 'K' };
 	public static final int NUMBER_OF_DECKS = 6;
+	private ArrayList<Card> dealerCards;
 	private Deck deck;
 	private ClientList clients;
+	private boolean[] isStand;
 	private Server server;
 	private int dealerHand;
+	private int totalActive;
 
 	/**
 	 *
@@ -27,28 +30,25 @@ public class Dealer {
 	 * @param clients
 	 */
 	public Dealer(Server server, ClientList clients) {
+
 		this.deck = new Deck(NUMBER_OF_DECKS);
 		this.server = server;
 		this.clients = clients;
 		this.dealerHand = 0;
+		this.isStand = new boolean[clients.size()];
+		this.totalActive = clients.size();
 
 		// Deal to the dealer first
 		// Handle the situation where the first card drawn is also an ace
 		Card temp = this.deck.getCard();
 		if (Character.isLetter(temp.getRank())) {
-
-			// If the rank is an ace, determine whether the value should be
-			// 11 or 1
 			if (temp.getRank() == 'A') {
 				if (this.dealerHand + 11 > 17) {
 					this.dealerHand++;
 				} else {
 					this.dealerHand += 11;
 				}
-			}
-
-			// All other character values (J,K,Q,T) are worth ten
-			else {
+			} else {
 				this.dealerHand += 10;
 			}
 		}
@@ -57,20 +57,29 @@ public class Dealer {
 		else {
 			this.dealerHand += (int) temp.getRank();
 		}
-		this.server.broadcast("# 0 X X");
-		this.server.broadcast("# 0" + " " + temp.toString());
 
-		// Go through each player and deal them two cards each
-		for (int card = 0; card <= clients.size(); card++) {
-			this.server.broadcast("# " + this.deck.getCard().toString());
-			this.server.broadcast("# " + this.deck.getCard().toString());
+		// If the dealer has a blackjack the round ends immediately
+		// Otherwise continue normally
+		if (dealerHand == 21) {
+			this.server.broadcast("% NEWROUND");
+			this.server.broadcast("% SHUFFLE");
+		} else {
+			// Broadcast this to the clients
+			this.server.broadcast("# 0 X X");
+			this.server.broadcast("# 0" + " " + temp.toString());
 
+			// Go through each player and deal them two cards each
+			for (int card = 0; card <= clients.size(); card++) {
+				this.server.broadcast("# " + this.deck.getCard().toString());
+				this.server.broadcast("# " + this.deck.getCard().toString());
+
+			}
 		}
 
 	}
 
 	/**
-	 * Special case for the dealer
+	 * Handles dealing for the dealer
 	 */
 	public void dealerDeal(Card card) {
 		if (Character.isLetter(card.getRank())) {
@@ -95,25 +104,8 @@ public class Dealer {
 		else {
 			this.dealerHand += (int) card.getRank();
 		}
-	}
-
-	public void circle() {
-		// Each round go through each client that has not stood and ask hit or
-		// not
-		// Ask for bets once
-
-		// Go around and ask for hits
-		// If hit is requested deal
-
-		if (dealerHand <= 17) {
-			dealerDeal(this.deck.getCard());
-		}
-		for (int client = 0; client < clients.size(); client++) {
-			this.server.broadcast("% " + (client + 1) + " turn");
-			// There are some timer specifics that need to put here I guess
-
-		}
-
+		
+		dealerCards.add(card);
 	}
 
 	/**
@@ -126,19 +118,20 @@ public class Dealer {
 	}
 
 	/**
-	 * Deals cards to the player or the dealer if hit is requested
+	 * Actual game play. Starts and runs the game.
 	 */
-	public void hit() {
-		this.server.broadcast("#" + " " + this.deck.getCard().toString());
-	}
-
 	private void startGame() {
+
+		// Assigns each player a number of coins
 		for (int player = 0; player < clients.size(); player++) {
 			clients.get(player).setCoins(1000);
 		}
-		while (clients.size() > 0) { // Keep playing until when?
+
+		// While the number of clients available is over 0 keep playing
+		while (clients.size() > 0) {
 			this.server.broadcast("NEWROUND");
 			int playersBet = 0;
+			int clientBet = 0;
 			while (playersBet != clients.size()) {
 				for (int player = 0; player < clients.size(); player++) {
 					Client currentPlayer = clients.get(player);
@@ -149,6 +142,8 @@ public class Dealer {
 						if (currentIn.ready()) {
 							currentPlayer.setBet(Integer.parseInt(currentIn
 									.readLine()));
+							clientBet = Integer.parseInt(currentIn
+									.readLine());
 							if (currentPlayer.getBet() < 10
 									|| currentPlayer.getBet() > currentPlayer
 											.getCoins()) {
@@ -156,6 +151,8 @@ public class Dealer {
 								currentOut.flush();
 							} else {
 								playersBet++;
+								server.broadcast("$ " + (currentPlayer)
+										+ "bets " + currentPlayer.getBet());
 							}
 						}
 					} catch (IOException e) {
@@ -164,6 +161,60 @@ public class Dealer {
 					}
 				}
 			}
+
+			//While at least more than one player is willing to hit
+			while (totalActive >= 0) {
+				// Dealer must take cards while less than 17
+				if (dealerHand <= 17) {
+					dealerDeal(this.deck.getCard());
+				}
+
+				// Goes through each client
+				for (int client = 0; client < isStand.length; client++) {
+
+					if (isStand[client] != true) {
+						server.broadcast("% " + (client + 1) + " turn");
+						// timer needed here
+
+						if (clients.get(client).getIn().equals("hit")) {
+							server.broadcast("# " + (client + 1) + " "
+									+ this.deck.getCard().toString());
+						} else if (clients.get(client).getIn().equals("stand")) { // /////should
+																					// we
+																					// broadcast
+																					// the
+																					// stand?
+							isStand[client] = true;
+							totalActive--;
+						} else if (clients.get(client).getIn()
+								.equals("doubledown")) {
+							
+							//Not very sure how doubledown works exactly
+							clients.get(client).setBet(clientBet*2);
+							server.broadcast("# " + (client + 1) + " "
+									+ this.deck.getCard().toString());
+						}
+					}
+					
+					//If a clients keeps hitting for some reason, Idk if this is even a possibility
+					if(deck.getCards() <= 6)
+					{
+						deck.reloadDeck();
+					}
+				}
+				
+			}
+			
+			//Broadcast the cards in the dealer's hand
+			for(int i = 0; i < dealerCards.size(); i++)
+			{
+				server.broadcast("# 0 "
+						+ this.deck.getCard().toString());
+			}
+			
+			//Shuffle deck and broadcast the message
+			deck.reloadDeck(); // Requirements for when to shuffle?
+			server.broadcast("% SHUFFLE");
 		}
 	}
 }
