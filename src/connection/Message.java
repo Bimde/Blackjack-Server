@@ -14,12 +14,12 @@ class Message {
 	/**
 	 * Content of the message
 	 */
-	public String data;
+	private String message;
 
 	/**
 	 * Player to send the message to
 	 */
-	public int playerNo;
+	private int playerNo;
 
 	/**
 	 * 
@@ -30,6 +30,25 @@ class Message {
 	 */
 	public Message(int playerNo, String message) {
 		this.playerNo = playerNo;
-		this.data = message;
+		this.message = message;
 	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public int getPlayerNo() {
+		return playerNo;
+	}
+
+	public void setPlayerNo(int playerNo) {
+		this.playerNo = playerNo;
+	}
+	
+	
+	
 }

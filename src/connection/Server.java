@@ -32,9 +32,10 @@ public class Server implements ActionListener {
 
 	private Timer timer;
 	private Queue<Message> messages;
-	
+
 	/**
-	 *  Constructor 
+	 * Constructor
+	 * 
 	 * @param port
 	 */
 	public Server(int port) {
@@ -54,8 +55,6 @@ public class Server implements ActionListener {
 			System.err.println("Error starting server.");
 			e.printStackTrace();
 		}
-		
-		
 
 		// Try to connect to a client while the server has been started
 		while (true) {
@@ -125,14 +124,15 @@ public class Server implements ActionListener {
 	 * for the game.
 	 */
 	private void startGame() {
-		this.queueMessage(new Message(Message.ALL_CLIENTS,"% START"));
+		this.queueMessage(new Message(Message.ALL_CLIENTS, "% START"));
 		this.dealer = new Dealer(this, this.clients);
 	}
 
 	/**
 	 * Places the message in the queue for message broadcasts
 	 * 
-	 * @param message the message to send
+	 * @param message
+	 *            the message to send
 	 */
 	private void queueMessage(Message message) {
 		synchronized (this.messages) {
@@ -148,34 +148,13 @@ public class Server implements ActionListener {
 	}
 
 	/**
-	 * Gets called by 'actionPerformed' method to send the latest message to the
-	 * specified clients
-	 */
-	private void broadcastActionPerformed() {
-		synchronized (this.messages) {
-			if (this.messages.size() == 0)
-				return;
-			Message msg = this.messages.remove();
-			if (msg.playerNo == Message.ALL_CLIENTS)
-				this.broadcastToAll(msg.data);
-			else {
-				Client temp = this.clients.get(msg.playerNo);
-				if (temp != null)
-					temp.message(msg.data);
-			}
-		}
-	}
-
-	/**
-	 *  Instantly broadcast a message
+	 * Queue a message to broadcast
+	 * 
 	 * @param message
+	 *            the message to queue
 	 */
-	private void broadcastToAll(String message) {
-		synchronized (this.clients) {
-			for (int i = 0; i < this.clients.size(); i++) {
-				this.clients.get(i).message(message);
-			}
-		}
+	public void broadcast(String message) {
+		this.queueMessage(new Message(Message.ALL_CLIENTS, message));
 	}
 
 	/**
@@ -236,12 +215,28 @@ public class Server implements ActionListener {
 		new Server(port);
 	}
 
-	@Override
+	/**
+	 * Gets called by 'actionPerformed' method to send the latest message to the
+	 * specified clients
+	 */
 	public void actionPerformed(ActionEvent arg0) {
-		this.broadcastActionPerformed();
-	}
+		synchronized (this.messages) {
+			if (this.messages.size() == 0)
+				return;
+			Message msg = this.messages.remove();
+			if (msg.getPlayerNo() == Message.ALL_CLIENTS)
 
-	public void broadcast(String message) {
-		this.queueMessage(new Message(Message.ALL_CLIENTS, message));
+				synchronized (this.clients) {
+
+					for (int i = 0; i < this.clients.size(); i++) {
+						this.clients.get(i).message(msg.getMessage());
+					}
+				}
+			else {
+				Client temp = this.clients.get(msg.getPlayerNo());
+				if (temp != null)
+					temp.message(msg.getMessage());
+			}
+		}
 	}
 }
