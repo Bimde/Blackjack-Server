@@ -1,19 +1,19 @@
 package utilities;
 
-import connection.Player;
+import connection.Client;
 
 /**
  * Linked list containing Client objects to store and retrieve players based on
  * their 'playerNo' parameter
  *
  */
-public class PlayerList {
-	private PlayerNode head, tail;
+public class ClientList {
+	private ClientNode head, tail;
 
 	/**
 	 * Creates a new linked list containing Client objects
 	 */
-	public PlayerList() {
+	public ClientList() {
 	}
 
 	/**
@@ -22,8 +22,8 @@ public class PlayerList {
 	 * @param temp
 	 *            Client to add to list
 	 */
-	public void add(Player temp) {
-		PlayerNode add = new PlayerNode(this.findEmptyPlayerNo(), temp);
+	public void add(Client temp) {
+		ClientNode add = new ClientNode(temp);
 		if (this.head == null)
 			this.head = this.tail = add;
 		else {
@@ -38,10 +38,10 @@ public class PlayerList {
 	 * @return Next available player number
 	 */
 	private int findEmptyPlayerNo() {
-		PlayerNode temp = this.head;
+		ClientNode temp = this.head;
 		int lastNo = 0;
 		while (temp != null) {
-			int nextNo = temp.getPlayerNo();
+			int nextNo = temp.getClient().getPlayer().getPlayerNo();
 
 			// If the difference between the player numbers of clients that are
 			// next to each other is greater than 1, then there is a
@@ -63,7 +63,7 @@ public class PlayerList {
 	 * @return Number of clients in list
 	 */
 	public int size() {
-		PlayerNode temp = this.head;
+		ClientNode temp = this.head;
 		int size = 0;
 		while (temp != null) {
 			size++;
@@ -79,11 +79,11 @@ public class PlayerList {
 	 * @return Client associated with specified player number, or null or not
 	 *         found
 	 */
-	public Player get(int playerNo) {
-		PlayerNode temp = this.head;
+	public Client get(int playerNo) {
+		ClientNode temp = this.head;
 		while (temp != null) {
-			if (temp.getPlayerNo() == playerNo)
-				return temp.getPlayer();
+			if (temp.getClient().getPlayer().getPlayerNo() == playerNo)
+				return temp.getClient();
 			temp = temp.getNext();
 		}
 		return null;

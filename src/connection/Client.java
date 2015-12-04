@@ -24,7 +24,6 @@ public class Client implements Runnable {
 	// 'U' for unassigned, 'P' for player and 'S' for spectator
 	private char userType;
 
-
 	/**
 	 * Disconnect/timeout the player
 	 */
@@ -33,9 +32,7 @@ public class Client implements Runnable {
 		if (this.userType == 'P') {
 			System.out.println(this.player.getPlayerNo() + " has disconnected");
 			this.server.broadcast("! " + this.player.getPlayerNo());
-		}
-		else
-		{
+		} else {
 			System.out.println("Client has disconnected");
 		}
 
@@ -101,7 +98,7 @@ public class Client implements Runnable {
 
 			try {
 				String message = this.input.readLine();
-				
+
 				if (message.equalsIgnoreCase("PLAY")) {
 					if (this.server.gameStarted()) {
 						this.userType = 'S';
@@ -114,7 +111,8 @@ public class Client implements Runnable {
 						this.userType = 'P';
 						this.output.println("% ACCEPTED");
 						this.output.flush();
-						int playerNumber = this.server.returnAndUsePlayerNumber();
+						int playerNumber = this.server
+								.returnAndUsePlayerNumber();
 
 						this.player = new Player(server, playerNumber);
 						this.server.broadcast("@ " + playerNumber + " " + name);
@@ -177,21 +175,27 @@ public class Client implements Runnable {
 	}
 
 	public int getBet() {
-
-		return player.getCurrentBet();
+		if (this.player == null)
+			return -1;
+		return this.player.getCurrentBet();
 	}
 
 	public int getCoins() {
-
-		return player.getCoins();
+		if (this.player == null)
+			return -1;
+		return this.player.getCoins();
 	}
 
 	public void setBet(int betAmount) {
+		if (this.player == null)
+			return;
 		this.player.setCurrentBet(betAmount);
 
 	}
 
 	public void setCoins(int noOfCoins) {
+		if (this.player == null)
+			return;
 		this.player.setCoins(noOfCoins);
 
 	}

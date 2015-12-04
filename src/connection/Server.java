@@ -12,12 +12,12 @@ import java.util.Scanner;
 
 import javax.swing.Timer;
 
-import utilities.PlayerList;
+import utilities.ClientList;
 import utilities.Validator;
 
 public class Server implements ActionListener {
 	private ArrayList<Client> clients;
-	private PlayerList players;
+	private ClientList players;
 	private int playersReady;
 	private boolean gameStarted;
 	private ServerSocket socket;
@@ -60,7 +60,7 @@ public class Server implements ActionListener {
 		// Sets up client list to hold each client
 		// Sets up the socket and the number of ready players to zero
 		this.clients = new ArrayList<Client>();
-		this.players = new PlayerList();
+		this.players = new ClientList();
 		this.socket = null;
 		this.playersReady = 0;
 		this.timer = new Timer(MESSAGE_DELAY, this);
@@ -122,7 +122,7 @@ public class Server implements ActionListener {
 	 */
 	protected synchronized void ready(int playerNo) {
 		this.playersReady++;
-		broadcast("% " + playerNo + " READY");
+		this.broadcast("% " + playerNo + " READY");
 		if (playersReady == this.clients.size()) {
 
 			// Do a 15 second timer (otherwise the player times out)
