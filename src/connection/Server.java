@@ -22,24 +22,12 @@ public class Server implements ActionListener {
 	private boolean gameStarted;
 	private ServerSocket socket;
 	private Dealer dealer;
-	private static final String START_MESSAGE = "START";
-	private static final int START_COINS = 1000, MESSAGE_DELAY = 500;
+	public static final String START_MESSAGE = "START";
+	public static final int START_COINS = 1000, MESSAGE_DELAY = 500;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
 	public boolean[] playerNumbers = { true, false, false, false, false, false,
 			false };
-
-	public String getStartMessage() {
-		return START_MESSAGE;
-	}
-
-	public int getStartCoins() {
-		return START_COINS;
-	}
-
-	public int getMessageDelay() {
-		return MESSAGE_DELAY;
-	}
 
 	/**
 	 * Change a player number to unused as a player disconnects from the lobby
@@ -72,6 +60,7 @@ public class Server implements ActionListener {
 		// Sets up client list to hold each client
 		// Sets up the socket and the number of ready players to zero
 		this.clients = new ArrayList<Client>();
+		this.players = new PlayerList();
 		this.socket = null;
 		this.playersReady = 0;
 		this.timer = new Timer(MESSAGE_DELAY, this);

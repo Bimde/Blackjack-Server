@@ -21,7 +21,7 @@ public class Player {
 	 */
 	public Player(Server server, int playerNo) {
 		this.server = server;
-		this.coins = this.server.getStartCoins();
+		this.coins = Server.START_COINS;
 		this.playerNo = playerNo;
 	}
 
