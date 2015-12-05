@@ -1,18 +1,17 @@
 package connection;
 
-import gameplay.Dealer;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Queue;
 import java.util.Scanner;
 
 import javax.swing.Timer;
 
+import gameplay.Dealer;
 import utilities.ClientList;
 import utilities.Validator;
 
@@ -27,11 +26,10 @@ public class Server implements ActionListener {
 	public static final int START_COINS = 1000, MESSAGE_DELAY = 500;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
-	public boolean[] playerNumbers = { true, false, false, false, false, false,
-			false };
+	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
 
 	private Timer timer;
-	private Queue<Message> messages;
+	private ArrayDeque<Message> messages;
 
 	/**
 	 * Constructor
@@ -47,6 +45,8 @@ public class Server implements ActionListener {
 		this.socket = null;
 		this.playersReady = 0;
 		this.timer = new Timer(MESSAGE_DELAY, this);
+		this.messages = new ArrayDeque<Message>();
+		this.timer.start();
 
 		// Try to start the server
 		try {
@@ -65,8 +65,7 @@ public class Server implements ActionListener {
 				new Thread(temp).start();
 				this.clients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client "
-						+ this.clients.size());
+				System.err.println("Error connecting to client " + this.clients.size());
 				e.printStackTrace();
 			}
 			System.err.println("Client " + this.clients.size() + " connected.");
@@ -105,8 +104,7 @@ public class Server implements ActionListener {
 	 */
 	protected synchronized void ready(int playerNo) {
 		this.playersReady++;
-		this.queueMessage(new Message(Message.ALL_CLIENTS, "% " + playerNo
-				+ " READY"));
+		this.queueMessage(new Message(Message.ALL_CLIENTS, "% " + playerNo + " READY"));
 		if (this.playersReady == this.clients.size()) {
 
 			// TODO Do a 15 second timer (otherwise the player times out)
@@ -115,6 +113,10 @@ public class Server implements ActionListener {
 		}
 	}
 
+	/**
+	 * 
+	 * @param source
+	 */
 	public void playerDisconnected(Client source) {
 		this.players.remove(source);
 	}
@@ -125,7 +127,7 @@ public class Server implements ActionListener {
 	 */
 	private void startGame() {
 		this.queueMessage(new Message(Message.ALL_CLIENTS, "% START"));
-		this.dealer = new Dealer(this, this.clients);
+		this.dealer = new Dealer(this, this.players);
 	}
 
 	/**
@@ -142,19 +144,26 @@ public class Server implements ActionListener {
 		}
 	}
 
-	public void newPlayer(Client source) {
-		source.setPlayer(new Player(this, this.returnAndUsePlayerNumber()));
-		this.players.add(source);
-	}
-
 	/**
 	 * Queue a message to broadcast
 	 * 
 	 * @param message
 	 *            the message to queue
 	 */
-	public void broadcast(String message) {
+	public void queueMessage(String message) {
 		this.queueMessage(new Message(Message.ALL_CLIENTS, message));
+	}
+
+	/**
+	 * Indicates to the server that a client wants to be a player
+	 * 
+	 * @param source
+	 *            Thread which is communicating with client who wants to be a
+	 *            player
+	 */
+	public void newPlayer(Client source) {
+		source.setPlayer(new Player(this, this.returnAndUsePlayerNumber()));
+		this.players.add(source);
 	}
 
 	/**
@@ -211,7 +220,6 @@ public class Server implements ActionListener {
 				port = Integer.parseInt(portStr);
 			}
 		}
-
 		new Server(port);
 	}
 

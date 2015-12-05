@@ -34,8 +34,7 @@ public class Client implements Runnable {
 	public void disconnect() {
 		if (this.userType == 'P') {
 			System.out.println(this.player.getPlayerNo() + " has disconnected");
-			// CHANGE THIS
-			this.server.broadcast("! " + this.player.getPlayerNo());
+			this.server.queueMessage("! " + this.player.getPlayerNo());
 		} else {
 			System.out.println("Client has disconnected");
 		}
@@ -50,7 +49,6 @@ public class Client implements Runnable {
 		}
 		this.output.close();
 		this.server.disconnectClient(this);
-
 	}
 
 	public Client(Socket client, Server server) {
@@ -69,8 +67,7 @@ public class Client implements Runnable {
 			this.connected = false;
 		}
 		try {
-			this.input = new BufferedReader(new InputStreamReader(
-					this.socket.getInputStream()));
+			this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 		} catch (IOException e) {
 			System.out.println("Error getting client's input stream");
 			e.printStackTrace();
@@ -110,7 +107,7 @@ public class Client implements Runnable {
 					this.message("% ACCEPTED");
 				}
 			} catch (IOException e) {
-				disconnect();
+				this.disconnect();
 			}
 		}
 
@@ -125,7 +122,7 @@ public class Client implements Runnable {
 					this.message("% FORMATERROR");
 				}
 			} catch (IOException e) {
-				disconnect();
+				this.disconnect();
 			}
 
 		}
@@ -138,13 +135,12 @@ public class Client implements Runnable {
 				int currentBet = Integer.parseInt(this.input.readLine());
 				if (currentBet >= 10 && currentBet <= this.getCoins()) {
 					this.setBet(currentBet);
-					this.server.broadcast("$ " + this.getPlayerNo() + " bets "
-							+ currentBet);
+					this.server.queueMessage("$ " + this.getPlayerNo() + " bets " + currentBet);
 				} else {
 					this.message("% FORMATERROR");
 				}
 			} catch (IOException e) {
-				this.server.broadcast("! " + this.getPlayerNo());
+				this.server.queueMessage("! " + this.getPlayerNo());
 				this.disconnect();
 			}
 		}
@@ -160,11 +156,11 @@ public class Client implements Runnable {
 		this.output.println(message);
 		this.output.flush();
 	}
-	
+
 	public BufferedReader getIn() {
 		return this.input;
 	}
-	
+
 	public PrintWriter getOut() {
 		return this.output;
 	}

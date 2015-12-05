@@ -1,10 +1,7 @@
 package gameplay;
 
 import java.util.ArrayList;
-import java.io.*;
 
-import connection.Client;
-import connection.Player;
 import connection.Server;
 import utilities.ClientList;
 
@@ -14,12 +11,11 @@ import utilities.ClientList;
  */
 public class Dealer {
 	public static final char[] SUITS = { 'S', 'C', 'H', 'D' };
-	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7',
-			'8', '9', 'T', 'J', 'Q', 'K' };
+	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K' };
 	public static final int NUMBER_OF_DECKS = 6;
 	private Server server;
 	private Deck deck;
-	private ArrayList<Client> clients;
+	private ClientList clients;
 	private boolean[] isStand;
 	private int totalActive;
 	private ArrayList<Card> dealerCards;
@@ -34,7 +30,7 @@ public class Dealer {
 	 * @param clients
 	 *            a list of all of the clients.
 	 */
-	public Dealer(Server server, ArrayList<Client> clients) {
+	public Dealer(Server server, ClientList clients) {
 		this.deck = new Deck(NUMBER_OF_DECKS);
 		this.server = server;
 		// TODO Shouldn't the clients be only the players?
@@ -52,23 +48,22 @@ public class Dealer {
 
 		while (this.totalActive > 0) {
 			// Broadcast that a new round has started
-			this.server.broadcast("% NEWROUND");
+			this.server.queueMessage("% NEWROUND");
 
 			// Broadcast the dealer's cards and add them to the dealer's hand
 			Card cardDrawn = this.deck.getCard();
 			this.dealerDeal(cardDrawn);
-			this.server.broadcast("# 0 X X");
+			this.server.queueMessage("# 0 X X");
 			cardDrawn = this.deck.getCard();
 			this.dealerDeal(cardDrawn);
-			this.server.broadcast("# 0 " + cardDrawn.toString());
+			this.server.queueMessage("# 0 " + cardDrawn.toString());
 
 			// Go through each player and deal them two cards each
 			for (int player = 0; player <= clients.size(); player++) {
 				for (int card = 0; card < 1; card++) {
 					cardDrawn = this.deck.getCard();
 					clients.get(player).getPlayer().addCard(cardDrawn);
-					this.server.broadcast("# " + (player + 1) + " "
-							+ cardDrawn.toString());
+					this.server.queueMessage("# " + (player + 1) + " " + cardDrawn.toString());
 				}
 			}
 
@@ -80,24 +75,19 @@ public class Dealer {
 			// Goes through each client
 			for (int client = 0; client < this.isStand.length; client++) {
 				if (this.clients.get(client).getIsStanding() != true) {
-					this.server.broadcast("% " + (client + 1) + " turn");
+					this.server.queueMessage("% " + (client + 1) + " turn");
 					Card card = this.deck.getCard();
 					if (this.clients.get(client).getIn().equals("hit")) {
-						this.clients.get(client).message(
-								"# " + (client + 1) + " " + card.toString());
+						this.clients.get(client).message("# " + (client + 1) + " " + card.toString());
 						this.clients.get(client).getPlayer().addCard(card);
 					} else if (this.clients.get(client).getIn().equals("stand")) {
 						this.clients.get(client).setIsStanding(true);
 						this.totalActive--;
-					} else if (this.clients.get(client).getIn()
-							.equals("doubledown")) {
+					} else if (this.clients.get(client).getIn().equals("doubledown")) {
 
 						// If the client double downs, double their bet
-						this.clients.get(client).setBet(
-								this.clients.get(client).getBet() * 2);
-						this.clients.get(client).message(
-								"# " + (client + 1) + " "
-										+ this.deck.getCard().toString());
+						this.clients.get(client).setBet(this.clients.get(client).getBet() * 2);
+						this.clients.get(client).message("# " + (client + 1) + " " + this.deck.getCard().toString());
 						this.clients.get(client).getPlayer().addCard(card);
 						this.clients.get(client).setIsStanding(true);
 						this.totalActive--;
@@ -116,9 +106,9 @@ public class Dealer {
 			while (this.dealerHand <= 17) {
 				cardDrawn = this.deck.getCard();
 				this.dealerDeal(cardDrawn);
-				this.server.broadcast("# 0 " + cardDrawn.toString());
+				this.server.queueMessage("# 0 " + cardDrawn.toString());
 			}
-			
+
 			this.findWinner();
 
 			// Clear the cards of each player including the dealer
@@ -129,7 +119,7 @@ public class Dealer {
 
 			// Shuffle deck and broadcast the message
 			this.deck.reloadDeck(); // Requirements for when to shuffle?
-			this.server.broadcast("% SHUFFLE");
+			this.server.queueMessage("% SHUFFLE");
 		}
 	}
 
