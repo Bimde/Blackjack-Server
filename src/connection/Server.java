@@ -109,7 +109,7 @@ public class Server implements ActionListener {
 				+ " READY"));
 		if (this.playersReady == this.clients.size()) {
 
-			// Do a 15 second timer (otherwise the player times out)
+			// TODO Do a 15 second timer (otherwise the player times out)
 			this.gameStarted = true;
 			this.startGame();
 		}

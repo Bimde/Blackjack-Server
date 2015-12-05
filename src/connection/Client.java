@@ -7,14 +7,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client implements Runnable {
+	private Server server;
 	private Socket socket;
 	private BufferedReader input;
 	private PrintWriter output;
 	private String name;
 	private boolean connected;
 	private boolean isStanding;
-
-	private Server server;
 
 	// Whether or not the player is ready to start the game
 	private boolean isReady = false;
@@ -25,7 +24,7 @@ public class Client implements Runnable {
 	// 'U' for unassigned, 'P' for player and 'S' for spectator
 	private char userType;
 
-	Client() {
+	public Client() {
 		isStanding = false;
 	}
 
@@ -33,7 +32,6 @@ public class Client implements Runnable {
 	 * Disconnect/timeout the player
 	 */
 	public void disconnect() {
-
 		if (this.userType == 'P') {
 			System.out.println(this.player.getPlayerNo() + " has disconnected");
 			// CHANGE THIS
@@ -53,14 +51,6 @@ public class Client implements Runnable {
 		this.output.close();
 		this.server.disconnectClient(this);
 
-	}
-
-	public Player getPlayer() {
-		return this.player;
-	}
-
-	public void setPlayer(Player player) {
-		this.player = player;
 	}
 
 	public Client(Socket client, Server server) {
@@ -101,33 +91,27 @@ public class Client implements Runnable {
 		// assign as a spectator
 
 		while (this.userType == 'U' && this.connected) {
-
 			try {
 				String message = this.input.readLine();
 
 				if (message.equalsIgnoreCase("PLAY")) {
 					if (this.server.gameStarted()) {
 						this.userType = 'S';
-						this.output.println("% LATE");
-						this.output.flush();
+						this.message("% LATE");
 					} else if (server.isFull()) {
-						this.output.println("% FULL");
-						this.output.flush();
+						this.message("% FULL");
 					} else {
 						this.userType = 'P';
-						this.output.println("% ACCEPTED");
-						this.output.flush();
+						this.message("% ACCEPTED");
 						this.server.newPlayer(this);
 					}
 				} else if (message.equalsIgnoreCase("SPECTATE")) {
 					this.userType = 'S';
-					this.output.println("% ACCEPTED");
-					this.output.flush();
+					this.message("% ACCEPTED");
 				}
 			} catch (IOException e) {
 				disconnect();
 			}
-
 		}
 
 		while (this.connected && !this.isReady) {
@@ -137,6 +121,8 @@ public class Client implements Runnable {
 				if (message.equalsIgnoreCase("READY")) {
 					this.server.ready(this.player.getPlayerNo());
 					this.isReady = true;
+				} else {
+					this.message("% FORMATERROR");
 				}
 			} catch (IOException e) {
 				disconnect();
@@ -146,8 +132,21 @@ public class Client implements Runnable {
 
 		// Game
 		while (this.connected) {
-
-			
+			// Get the player's bet
+			// TODO Add a 60s timer
+			try {
+				int currentBet = Integer.parseInt(this.input.readLine());
+				if (currentBet >= 10 && currentBet <= this.getCoins()) {
+					this.setBet(currentBet);
+					this.server.broadcast("$ " + this.getPlayerNo() + " bets "
+							+ currentBet);
+				} else {
+					this.message("% FORMATERROR");
+				}
+			} catch (IOException e) {
+				this.server.broadcast("! " + this.getPlayerNo());
+				this.disconnect();
+			}
 		}
 	}
 
@@ -160,6 +159,14 @@ public class Client implements Runnable {
 	public void message(String message) {
 		this.output.println(message);
 		this.output.flush();
+	}
+	
+	public BufferedReader getIn() {
+		return this.input;
+	}
+	
+	public PrintWriter getOut() {
+		return this.output;
 	}
 
 	protected Socket getSocket() {
@@ -178,12 +185,10 @@ public class Client implements Runnable {
 		return name;
 	}
 
-	public BufferedReader getIn() {
-		return this.input;
-	}
-
-	public PrintWriter getOut() {
-		return this.output;
+	public int getPlayerNo() {
+		if (this.player == null)
+			return -1;
+		return this.player.getPlayerNo();
 	}
 
 	public int getBet() {
@@ -198,26 +203,31 @@ public class Client implements Runnable {
 		return this.player.getCoins();
 	}
 
+	public Player getPlayer() {
+		return this.player;
+	}
+
 	public void setBet(int betAmount) {
 		if (this.player == null)
 			return;
 		this.player.setCurrentBet(betAmount);
-
 	}
 
 	public void setCoins(int noOfCoins) {
 		if (this.player == null)
 			return;
 		this.player.setCoins(noOfCoins);
+	}
 
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 
 	public boolean isReady() {
-		return isReady;
+		return this.isReady;
 	}
 
 	public void setReady(boolean isReady) {
 		this.isReady = isReady;
 	}
-
 }
