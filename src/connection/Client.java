@@ -27,7 +27,6 @@ public class Client implements Runnable {
 	public Client() {
 		isStanding = false;
 	}
-
 	/**
 	 * Disconnect/timeout the player
 	 */

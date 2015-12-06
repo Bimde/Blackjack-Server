@@ -81,6 +81,7 @@ public class Dealer {
 				}
 			}
 
+			// Handle the betting
 			boolean allBet = false;
 
 			while (!allBet) {
