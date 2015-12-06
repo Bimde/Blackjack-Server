@@ -12,11 +12,12 @@ import java.util.Scanner;
 import javax.swing.Timer;
 
 import gameplay.Dealer;
+import utilities.ClientList;
 import utilities.Validator;
 
 public class Server implements ActionListener {
 	private ArrayList<Client> allClients;
-	private ArrayList<Client> players;
+	private ClientList players;
 	private int playersReady;
 	private boolean gameStarted;
 	private ServerSocket socket;
@@ -40,7 +41,7 @@ public class Server implements ActionListener {
 		// Sets up client list to hold each client
 		// Sets up the socket and the number of ready players to zero
 		this.allClients = new ArrayList<Client>();
-		this.players = new ArrayList();
+		this.players = new ClientList();
 		this.socket = null;
 		this.playersReady = 0;
 		this.timer = new Timer(MESSAGE_DELAY, this);
@@ -146,9 +147,7 @@ public class Server implements ActionListener {
 	 */
 	private void queueMessage(Message message) {
 		synchronized (this.messages) {
-			for (int no = 0; no < allClients.size(); no++) {
-				this.messages.add(message);
-			}
+			this.messages.add(message);
 		}
 	}
 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import connection.Client;
 import connection.Player;
 import connection.Server;
+import utilities.ClientList;
 
 /**
  * Handles the actual gameplay, i.e. which player's turn is it, giving the
@@ -30,7 +31,7 @@ public class Dealer implements Runnable {
 	public static final int SHUFFLE_CHANCE = 20;
 	private Server server;
 	private Deck deck;
-	private ArrayList<Client> players;
+	private ClientList players;
 	private int totalActive;
 	private ArrayList<Card> dealerCards;
 	private int dealerHand;
@@ -72,7 +73,7 @@ public class Dealer implements Runnable {
 	 *            a list of all of the clients.
 	 * @throws InterruptedException
 	 */
-	public Dealer(Server server, ArrayList<Client> players) {
+	public Dealer(Server server, ClientList players) {
 		this.deck = new Deck(NUMBER_OF_DECKS);
 		this.server = server;
 		this.players = players;
@@ -103,10 +104,11 @@ public class Dealer implements Runnable {
 			// Give players 60 seconds to place their bets, and reset all their
 			// previous bets
 			this.bettingIsActive = true;
+			this.betTimerThread = new Thread(new BettingTimer());
 			this.betTimerThread.start();
-			for (int playerNo = 0; playerNo < this.players.size(); playerNo++) {
-				if (this.players.get(playerNo).isPlayer()) {
-					this.players.get(playerNo).setBet(0);
+			for (Client player : this.players) {
+				if (player.isPlayer()) {
+					player.setBet(0);
 				}
 			}
 
@@ -114,8 +116,7 @@ public class Dealer implements Runnable {
 			// seconds
 			while (this.bettingIsActive) {
 				boolean allBet = true;
-				for (int playerNo = 0; playerNo < this.players.size(); playerNo++) {
-					Client currentPlayer = this.players.get(playerNo);
+				for (Client currentPlayer : this.players) {
 					if (currentPlayer.isPlayer() && currentPlayer.getBet() == 0) {
 						allBet = false;
 					}
@@ -138,8 +139,7 @@ public class Dealer implements Runnable {
 			}
 
 			// Disconnect all players who haven't bet
-			for (int playerNo = 0; playerNo < this.players.size(); playerNo++) {
-				Client currentPlayer = this.players.get(playerNo);
+			for (Client currentPlayer : this.players) {
 				if (currentPlayer.isPlayer() && currentPlayer.getBet() == 0) {
 					currentPlayer.disconnect();
 					// for now
@@ -156,11 +156,11 @@ public class Dealer implements Runnable {
 			this.server.queueMessage("# 0 " + cardDrawn.toString());
 
 			// Go through each player and deal them two cards each
-			for (int player = 0; player < this.players.size(); player++) {
+			for (Client player : this.players) {
 				for (int card = 0; card <= 1; card++) {
 					cardDrawn = this.deck.getCard();
-					this.players.get(player).getPlayer().addCard(cardDrawn);
-					this.server.queueMessage("# " + (player + 1) + " " + cardDrawn.toString());
+					player.getPlayer().addCard(cardDrawn);
+					this.server.queueMessage("# " + (player.getPlayerNo()) + " " + cardDrawn.toString());
 				}
 			}
 
@@ -364,6 +364,8 @@ public class Dealer implements Runnable {
 
 		// If the player gets anything closer to the blackjack than the
 		// dealer they win
+		Client temp = this.players.get(playerNo);
+		System.out.println(temp);
 		Player player = this.players.get(playerNo).getPlayer();
 		if (player.getHandValue() > this.dealerHand) {
 

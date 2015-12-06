@@ -78,8 +78,7 @@ public class Client implements Runnable, Comparable<Client> {
 			this.connected = false;
 		}
 		try {
-			this.input = new BufferedReader(new InputStreamReader(
-					this.socket.getInputStream()));
+			this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 		} catch (IOException e) {
 			System.out.println("Error getting client's input stream");
 			e.printStackTrace();
@@ -87,7 +86,7 @@ public class Client implements Runnable, Comparable<Client> {
 		}
 		try {
 			this.name = input.readLine();
-			System.out.println("New user registered as "+name);
+			System.out.println("New user registered as " + name);
 		} catch (IOException e) {
 			this.disconnect();
 			this.connected = false;
@@ -112,7 +111,7 @@ public class Client implements Runnable, Comparable<Client> {
 						this.userType = 'P';
 						this.sendMessage("% ACCEPTED");
 						this.server.newPlayer(this);
-						player = new Player (server,server.returnAndUsePlayerNumber());
+						player = new Player(server, server.returnAndUsePlayerNumber());
 					}
 				} else if (message.equalsIgnoreCase("SPECTATE")) {
 					this.userType = 'S';
@@ -127,7 +126,7 @@ public class Client implements Runnable, Comparable<Client> {
 		while (this.isPlayer() && this.connected && !this.isReady) {
 			try {
 				String message = this.input.readLine();
-				
+
 				if (message.equalsIgnoreCase("READY")) {
 					this.server.ready(this.player.getPlayerNo());
 					this.isReady = true;
@@ -146,42 +145,36 @@ public class Client implements Runnable, Comparable<Client> {
 			System.out.println("TEST2");
 			try {
 				String message = this.input.readLine();
-				
+
 				// If the player is betting then set the bet
 				int betPlaced;
 				System.out.println(this.player.getCoins());
 				System.out.println("TEST3");
-				
-				if (dealer.bettingIsActive() && player.getCurrentBet()==0 && (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET && betPlaced <= this.player.getCoins()) {
+
+				if (dealer.bettingIsActive() && player.getCurrentBet() == 0
+						&& (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET
+						&& betPlaced <= this.player.getCoins()) {
 
 					System.out.println("TEST4");
-						this.server.queueMessage("$ " + this.getPlayerNo()
-								+ " bets " + betPlaced);
-						player.setCurrentBet(betPlaced);
-				}
-				else if(dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("hit"))
-				{
+					this.server.queueMessage("$ " + this.getPlayerNo() + " bets " + betPlaced);
+					player.setCurrentBet(betPlaced);
+				} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("hit")) {
 					player.setCurrentMove('H');
-				}
-				else if(dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("stand"))
-				{
+				} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("stand")) {
 					player.setCurrentMove('S');
-				}
-				else if(dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("doubledown"))
-				{
+				} else
+					if (dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("doubledown")) {
 					player.setCurrentMove('D');
-				}
-				else
-				{
+				} else {
 					this.sendMessage("% FORMATERROR");
-					
+
 				}
-				
+
 			} catch (IOException e) {
 				this.server.queueMessage("! " + this.getPlayerNo());
 				this.disconnect();
 			}
-			
+
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -277,6 +270,6 @@ public class Client implements Runnable, Comparable<Client> {
 
 	@Override
 	public int compareTo(Client object) {
-		return this.getPlayerNo()-object.getPlayerNo();
+		return this.getPlayerNo() - object.getPlayerNo();
 	}
 }
