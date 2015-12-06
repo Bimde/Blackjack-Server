@@ -177,7 +177,7 @@ public class Dealer implements Runnable{
 				while (!endTurn) {
 					currentPlayer.getPlayer().setCurrentMove('N');
 					this.server.queueMessage("% "
-							+ (currentPlayer.getPlayerNo() + 1) + " turn");
+							+ (currentPlayer.getPlayerNo()) + " turn");
 
 					char currentMove;
 
@@ -261,7 +261,7 @@ public class Dealer implements Runnable{
 			}
 
 			// Show the dealer's hidden card
-			server.queueMessage("# 0" + dealerCards.get(0));
+			server.queueMessage("# 0 " + dealerCards.get(0));
 
 			// Keep drawing cards for the dealer until the dealer hits 17 or
 			// higher

@@ -54,7 +54,8 @@ public class Player {
 		}
 
 		// Update the player's total value
-		handValue = handTotal;
+		handValue = calculateHand(currentCards);
+		System.out.println("Hand: " + handValue);
 	}
 	
 	/**
@@ -63,7 +64,7 @@ public class Player {
 	private int calculateHand(ArrayList<Card> cards) {
 		int total = 0;
 		for (int cardNo = 0; cardNo < cards.size(); cardNo++) {
-			total = cards.get(cardNo).getValue();
+			total += cards.get(cardNo).getValue();
 		}
 		return total;
 	}

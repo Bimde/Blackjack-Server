@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
 
 import javax.swing.*;
 
-public class BetterServerTester implements ActionListener, KeyListener {
+public class BetterClient implements ActionListener, KeyListener {
 	JFrame frame = new JFrame();
 	JPanel panel = new JPanel();
 	static boolean running = true;
@@ -27,7 +27,7 @@ public class BetterServerTester implements ActionListener, KeyListener {
 
 	public static void main(String[] args) throws UnknownHostException,
 			IOException {
-		BetterServerTester client = new BetterServerTester();
+		BetterClient client = new BetterClient();
 
 	}
 
@@ -49,7 +49,7 @@ public class BetterServerTester implements ActionListener, KeyListener {
 
 	}
 
-	public BetterServerTester() throws UnknownHostException, IOException {
+	public BetterClient() throws UnknownHostException, IOException {
 
 		chatBox.setSize(300, 300);
 		chatBox.setLocation(0, 0);
