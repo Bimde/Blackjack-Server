@@ -23,7 +23,8 @@ public class Server implements ActionListener {
 	private ServerSocket socket;
 	private Dealer dealer;
 	public static final String START_MESSAGE = "START";
-	public static final int START_COINS = 1000, MESSAGE_DELAY = 500, MIN_BET = 2;
+	public static final int START_COINS = 1000, MESSAGE_DELAY = 500,
+			MIN_BET = 2;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
 	public boolean[] playerNumbers = { true, false, false, false, false, false,
@@ -66,10 +67,12 @@ public class Server implements ActionListener {
 				new Thread(temp).start();
 				this.allClients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client " + this.allClients.size());
+				System.err.println("Error connecting to client "
+						+ this.allClients.size());
 				e.printStackTrace();
 			}
-			System.err.println("Client " + this.allClients.size() + " connected.");
+			System.err.println("Client " + this.allClients.size()
+					+ " connected.");
 		}
 	}
 
@@ -97,9 +100,10 @@ public class Server implements ActionListener {
 		return -1;
 	}
 
-	////////////////////////////
-	// THIS CANNOT BE SYNCHRONIZED OTHERWISE ALL OTHER THREADS STOP since startgame takes so long
-	////////////////////////////
+	// //////////////////////////
+	// THIS CANNOT BE SYNCHRONIZED OTHERWISE ALL OTHER THREADS STOP since
+	// startgame takes so long
+	// //////////////////////////
 	/**
 	 * Waits for the player to be ready. Once the player is ready start the
 	 * game.
@@ -110,14 +114,20 @@ public class Server implements ActionListener {
 		this.playersReady++;
 		this.queueMessage("% " + playerNo + " READY");
 		if (this.playersReady == this.allClients.size()) {
-		this.queueMessage(new Message(Message.ALL_CLIENTS, "% " + playerNo
-				+ " READY"));
-		if (this.playersReady == this.allClients.size()) {
+			this.queueMessage(new Message(Message.ALL_CLIENTS, "% " + playerNo
+					+ " READY"));
+			if (this.playersReady == this.allClients.size()) {
+				this.queueMessage(new Message(Message.ALL_CLIENTS, "% "
+						+ playerNo + " READY"));
+				if (this.playersReady == this.allClients.size()) {
 
-			// TODO Do a 15 second timer (otherwise the player times out)
-			this.gameStarted = true;
-			this.startGame();
-		}}
+					// TODO Do a 15 second timer (otherwise the player times
+					// out)
+					this.gameStarted = true;
+					this.startGame();
+				}
+			}
+		}
 	}
 
 	/**
@@ -135,9 +145,9 @@ public class Server implements ActionListener {
 	private void startGame() {
 		this.queueMessage("% START");
 		this.dealer = new Dealer(this, this.players);
-		
-		//Start the dealer thread
-		Thread dealerThread = new Thread (dealer);
+
+		// Start the dealer thread
+		Thread dealerThread = new Thread(dealer);
 		dealerThread.start();
 	}
 
@@ -231,7 +241,7 @@ public class Server implements ActionListener {
 				port = Integer.parseInt(portStr);
 			}
 		}
-		
+
 		new Server(port);
 	}
 
@@ -247,6 +257,8 @@ public class Server implements ActionListener {
 
 			// Messages are either to the entire server or to individual clients
 			if (msg.getPlayerNo() == Message.ALL_CLIENTS) {
+
+				// Send the messages at the same time
 
 				// Send the messages at the same time
 				synchronized (this.allClients) {

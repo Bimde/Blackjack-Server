@@ -1,24 +1,13 @@
 package connection;
 
 /**
- * Object to hold destination and content of message
+ * Object to hold the destination and content of message
  *
  */
 class Message {
 
-	/**
-	 * Used to flag a message which is to be sent to all players
-	 */
 	public static final int ALL_CLIENTS = -1;
-
-	/**
-	 * Content of the message
-	 */
 	private String message;
-
-	/**
-	 * Player to send the message to
-	 */
 	private int playerNo;
 
 	/**
@@ -33,22 +22,42 @@ class Message {
 		this.message = message;
 	}
 
+	/**
+	 * Get the message to be sent
+	 * 
+	 * @return The message to be sent
+	 */
 	public String getMessage() {
 		return message;
 	}
 
+	/**
+	 * Set the message to be sent
+	 * 
+	 * @param message
+	 *            The message to be sent
+	 */
 	public void setMessage(String message) {
 		this.message = message;
 	}
 
+	/**
+	 * Get the destination of the message (player number)
+	 * 
+	 * @return The number of the player receiving the message
+	 */
 	public int getPlayerNo() {
 		return playerNo;
 	}
 
+	/**
+	 * Set the destination of the message (player number)
+	 * 
+	 * @param playerNo
+	 *            The destination of the message in the form of player number
+	 */
 	public void setPlayerNo(int playerNo) {
 		this.playerNo = playerNo;
 	}
-	
-	
-	
+
 }

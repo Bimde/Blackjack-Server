@@ -371,7 +371,13 @@ public class Dealer implements Runnable{
 		return this.deck;
 	}
 
+
+	/**
+	 * Checks for the winner
+	 * @param playerNo The number of the player to check
+	 */
 	public void checkResult(int playerNo) {
+
 
 		// If the player gets anything closer to the blackjack than the
 		// dealer they win

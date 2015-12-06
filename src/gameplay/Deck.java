@@ -3,10 +3,23 @@ package gameplay;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Deck object, contains all the decks of cards to be used.
+ * 
+ * @author
+ *
+ */
 public class Deck {
 	private int numOfDecks;
 	private ArrayList<Card> cards;
 
+	/**
+	 * Sets the number of decks to the class variable number of decks. Loads up
+	 * the deck.
+	 * 
+	 * @param numOfDecks
+	 *            Number of decks to be used in the game.
+	 */
 	public Deck(int numOfDecks) {
 		this.numOfDecks = numOfDecks;
 		cards = new ArrayList<Card>();
