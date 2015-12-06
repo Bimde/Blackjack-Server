@@ -24,12 +24,12 @@ public class Card {
 	 */
 	public boolean derankAce()
 	{
-		boolean isAce = (rank=='A');
-		if (isAce)
+		boolean canDerank = (rank=='A' && value==11);
+		if (canDerank)
 		{
 			this.value = 1;
 		}
-		return isAce;
+		return canDerank;
 	}
 	
 	/**

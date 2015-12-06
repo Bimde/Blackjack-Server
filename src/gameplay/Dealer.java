@@ -155,7 +155,7 @@ public class Dealer {
 	}
 
 	/**
-	 * Handles dealing to the dealer
+	 * Handles dealing to the dealer and updates the current hand's value
 	 */
 	public void dealerDeal(Card newCard) {
 		if (Character.isLetter(newCard.getRank())) {
