@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 import javax.swing.Timer;
 
-import gameplay.Dealer;
+import gameplay.Game;
 import utilities.ClientList;
 import utilities.Validator;
 
@@ -21,7 +21,7 @@ public class Server implements ActionListener {
 	private int playersReady;
 	private boolean gameStarted;
 	private ServerSocket socket;
-	private Dealer dealer;
+	private Game dealer;
 	public static final String START_MESSAGE = "START";
 	public static final int START_COINS = 1000, MESSAGE_DELAY = 500;
 
@@ -127,7 +127,7 @@ public class Server implements ActionListener {
 	 */
 	private void startGame() {
 		this.queueMessage(new Message(Message.ALL_CLIENTS, "% START"));
-		this.dealer = new Dealer(this, this.players);
+		this.dealer = new Game(this, this.players);
 	}
 
 	/**
@@ -232,15 +232,13 @@ public class Server implements ActionListener {
 			if (this.messages.size() == 0)
 				return;
 			Message msg = this.messages.remove();
-			if (msg.getPlayerNo() == Message.ALL_CLIENTS)
-
+			if (msg.getPlayerNo() == Message.ALL_CLIENTS) {
 				synchronized (this.clients) {
-
 					for (int i = 0; i < this.clients.size(); i++) {
 						this.clients.get(i).message(msg.getMessage());
 					}
 				}
-			else {
+			} else {
 				Client temp = this.clients.get(msg.getPlayerNo());
 				if (temp != null)
 					temp.message(msg.getMessage());

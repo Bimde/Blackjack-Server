@@ -9,7 +9,7 @@ import utilities.ClientList;
  * Handles the actual gameplay, i.e. which player's turn is it, giving the
  * dealer cards, etc.
  */
-public class Dealer {
+public class Game {
 	public static final char[] SUITS = { 'S', 'C', 'H', 'D' };
 	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K' };
 	public static final int NUMBER_OF_DECKS = 6;
@@ -30,7 +30,7 @@ public class Dealer {
 	 * @param clients
 	 *            a list of all of the clients.
 	 */
-	public Dealer(Server server, ClientList clients) {
+	public Game(Server server, ClientList clients) {
 		this.deck = new Deck(NUMBER_OF_DECKS);
 		this.server = server;
 		// TODO Shouldn't the clients be only the players?
