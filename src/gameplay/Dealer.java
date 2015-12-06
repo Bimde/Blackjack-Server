@@ -219,6 +219,21 @@ public class Dealer implements Runnable {
 						this.server.queueMessage("# " + (currentPlayer.getPlayerNo()) + " " + cardDrawn.toString());
 						currentPlayer.getPlayer().addCard(cardDrawn);
 
+						if (currentPlayer.getPlayer().getHandValue() > 21) {
+							int newCoins = currentPlayer.getCoins() - currentPlayer.getBet();
+							currentPlayer.setCoins(newCoins);
+							this.server.queueMessage("& " + currentPlayer.getPlayerNo() + " bust " + newCoins);
+							if (currentPlayer.getPlayer().getCoins() < Server.MIN_BET) {
+								System.out.println("Entered die");
+								this.totalActive--;
+								this.server.disconnectPlayer(currentPlayer);
+							}
+						} else if (currentPlayer.getPlayer().getHandValue() == 21) {
+							int newCoins = currentPlayer.getCoins() + currentPlayer.getBet();
+							currentPlayer.setCoins(newCoins);
+							this.server.queueMessage("& " + currentPlayer.getPlayerNo() + " blackjack " + newCoins);
+						}
+
 						// Change to stand
 						endTurn = true;
 						currentPlayer.getPlayer().setCurrentMove('S');
