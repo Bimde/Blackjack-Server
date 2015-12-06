@@ -15,8 +15,7 @@ import utilities.ClientList;
  */
 public class Dealer {
 	public static final char[] SUITS = { 'S', 'C', 'H', 'D' };
-	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7',
-			'8', '9', 'T', 'J', 'Q', 'K' };
+	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K' };
 	public static final int NUMBER_OF_DECKS = 6;
 
 	/**
@@ -33,7 +32,7 @@ public class Dealer {
 	public static final int SHUFFLE_CHANCE = 20;
 	private Server server;
 	private Deck deck;
-	private ClientList clients;
+	private ClientList players;
 	private int totalActive;
 	private ArrayList<Card> dealerCards;
 	private int dealerHand;
@@ -44,19 +43,19 @@ public class Dealer {
 	 * 
 	 * @param server
 	 *            the server that the game is in.
-	 * @param clients
+	 * @param players
 	 *            a list of all of the clients.
 	 */
-	public Dealer(Server server, ClientList clients) {
+	public Dealer(Server server, ClientList players) {
 		this.deck = new Deck(NUMBER_OF_DECKS);
 		this.server = server;
-		this.clients = clients;
+		this.players = players;
 		this.dealerHand = 0;
-		this.totalActive = clients.size() - 1;
+		this.totalActive = players.size() - 1;
 
 		// Gives each player 1000 coins to start
-		for (int player = 0; player < clients.size(); player++) {
-			this.clients.get(player).setCoins(1000);
+		for (int player = 0; player < players.size(); player++) {
+			this.players.get(player).setCoins(1000);
 		}
 
 		while (this.totalActive > 0) {
@@ -72,12 +71,11 @@ public class Dealer {
 			this.server.queueMessage("# 0 " + cardDrawn.toString());
 
 			// Go through each player and deal them two cards each
-			for (int player = 0; player <= clients.size(); player++) {
+			for (int player = 0; player <= players.size(); player++) {
 				for (int card = 0; card < 1; card++) {
 					cardDrawn = this.deck.getCard();
-					clients.get(player).getPlayer().addCard(cardDrawn);
-					this.server.queueMessage("# " + (player + 1) + " "
-							+ cardDrawn.toString());
+					players.get(player).getPlayer().addCard(cardDrawn);
+					this.server.queueMessage("# " + (player + 1) + " " + cardDrawn.toString());
 				}
 			}
 
@@ -88,12 +86,11 @@ public class Dealer {
 			}
 
 			// Goes through each client
-			for (Client client : this.clients) {
+			for (Client client : this.players) {
 				boolean stand = false;
 
 				while (!stand) {
-					this.server.queueMessage("% " + (client.getPlayerNo() + 1)
-							+ " turn");
+					this.server.queueMessage("% " + (client.getPlayerNo() + 1) + " turn");
 
 					BufferedReader currentIn = client.getIn();
 
@@ -101,9 +98,7 @@ public class Dealer {
 
 						Card card = this.deck.getCard();
 						if (client.getIn().equals("hit")) {
-							client.message("# " + (client) + " "
-									+ card.toString());
-							client.getPlayer().addCard(card);
+							client.message("# " + (client) + " " + card.toString());
 							client.getPlayer().addCard(card);
 
 							// Check if the client has busted
@@ -116,18 +111,15 @@ public class Dealer {
 								this.totalActive--;
 
 								// Broadcasts stand
-								this.server.queueMessage("& "
-										+ client.getPlayer().getPlayerNo()
-										+ "stand " + client.getCoins());
+								this.server.queueMessage(
+										"& " + client.getPlayer().getPlayerNo() + "stand " + client.getCoins());
 
-							} else if (currentIn.readLine()
-									.equals("doubledown")) {
+							} else if (currentIn.readLine().equals("doubledown")) {
 								// If the client double downs, double their bet
 								// and
 								// then set their isStand to true
 								client.setBet(client.getBet() * 2);
-								client.message("# " + (client) + " "
-										+ this.deck.getCard().toString());
+								client.message("# " + (client) + " " + this.deck.getCard().toString());
 								client.getPlayer().addCard(card);
 								client.getPlayer().checkBust();
 
@@ -158,13 +150,12 @@ public class Dealer {
 
 			// Broadcast the cards in the dealer's hand
 			for (int i = 0; i < this.dealerCards.size(); i++) {
-				this.server.queueMessage("# 0 "
-						+ this.deck.getCard().toString());
+				this.server.queueMessage("# 0 " + this.deck.getCard().toString());
 			}
 
 			// Check for winners amongst all the clients
-			for (int i = 1; i < clients.size(); i++) {
-				this.checkWinner(clients.get(i).getPlayer().getPlayerNo());
+			for (int i = 1; i < players.size(); i++) {
+				this.checkWinner(players.get(i).getPlayer().getPlayerNo());
 			}
 
 			// Loop through each player who has not buster (including the
@@ -173,24 +164,21 @@ public class Dealer {
 			// the
 			// string at the end.
 			String standings = "+ ";
-			for (int i = 0; i < this.clients.size(); i++) {
-				if (!clients.get(i).getPlayer().checkBust()) {
-					standings += (i + " " + clients.get(i).getPlayer()
-							.getCoins())
-							+ " ";
+			for (int i = 0; i < this.players.size(); i++) {
+				if (!players.get(i).getPlayer().checkBust()) {
+					standings += (i + " " + players.get(i).getPlayer().getCoins()) + " ";
 				}
 			}
 			this.server.queueMessage(standings);
 
 			// Clear the cards of each player including the dealer
 			this.dealerCards.clear();
-			for (int i = 0; i < this.clients.size(); i++) {
-				this.clients.get(i).getPlayer().clearHand();
+			for (int i = 0; i < this.players.size(); i++) {
+				this.players.get(i).getPlayer().clearHand();
 			}
 
 			// Shuffle deck and broadcast the message
-			if (this.deck.size() < MINIMUM_CARDS_PER_PLAYER
-					* this.clients.size()
+			if (this.deck.size() < MINIMUM_CARDS_PER_PLAYER * this.players.size()
 					|| Math.random() * 100 < SHUFFLE_CHANCE) {
 				this.deck.reloadDeck();
 				this.server.queueMessage("% SHUFFLE");
@@ -250,21 +238,19 @@ public class Dealer {
 
 			// Cycles through each client and sets their coins to their initial
 			// amount minus the amount they bet
-			for (int i = 0; i < clients.size(); i++) {
-				Player temp = clients.get(i).getPlayer();
-				clients.get(i).setCoins(temp.getCoins() - temp.getCurrentBet());
+			for (int i = 0; i < players.size(); i++) {
+				Player temp = players.get(i).getPlayer();
+				players.get(i).setCoins(temp.getCoins() - temp.getCurrentBet());
 			}
 		} else {
 
 			// If the player gets anything closer to the blackjack than the
 			// dealer they win
-			Player player = clients.get(playerNo).getPlayer();
-			if (player.getHandValue() > dealerHand && (!player.checkBust())
-					|| player.getHandValue() == 21) {
+			Player player = players.get(playerNo).getPlayer();
+			if (player.getHandValue() > dealerHand && (!player.checkBust()) || player.getHandValue() == 21) {
 
 				player.setCoins(player.getCurrentBet() * 2);
-				this.server.queueMessage("& " + playerNo + "blackjack "
-						+ player.getCoins());
+				this.server.queueMessage("& " + playerNo + "blackjack " + player.getCoins());
 			}
 
 		}
