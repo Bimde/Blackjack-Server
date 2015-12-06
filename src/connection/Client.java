@@ -1,20 +1,27 @@
 package connection;
 
+import gameplay.Dealer;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class Client implements Runnable {
+public class Client implements Runnable, Comparable<Client> {
 	private Server server;
 	private Socket socket;
 	private BufferedReader input;
 	private PrintWriter output;
 	private String name;
 	private boolean connected;
-	
-	
+
+	private Dealer dealer;
+
+	public void setDealer(Dealer dealer) {
+		this.dealer = dealer;
+	}
+
 	// Whether or not the player is ready to start the game
 	private boolean isReady = false;
 
@@ -34,6 +41,7 @@ public class Client implements Runnable {
 		} else {
 			System.out.println("Client has disconnected");
 		}
+		userType = 'U';
 
 		this.connected = false;
 		try {
@@ -44,11 +52,15 @@ public class Client implements Runnable {
 			e.printStackTrace();
 		}
 		this.output.close();
+
+		if (this.isPlayer()) {
+			this.server.disconnectPlayer(this);
+		}
 		this.server.disconnectClient(this);
 	}
 
 	/**
-	 *  Constructor for the client
+	 * Constructor for the client
 	 */
 	public Client(Socket client, Server server) {
 		this.socket = client;
@@ -66,7 +78,8 @@ public class Client implements Runnable {
 			this.connected = false;
 		}
 		try {
-			this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+			this.input = new BufferedReader(new InputStreamReader(
+					this.socket.getInputStream()));
 		} catch (IOException e) {
 			System.out.println("Error getting client's input stream");
 			e.printStackTrace();
@@ -74,9 +87,9 @@ public class Client implements Runnable {
 		}
 		try {
 			this.name = input.readLine();
+			System.out.println("New user registered as "+name);
 		} catch (IOException e) {
-			System.out.println("Error getting client's name");
-			e.printStackTrace();
+			this.disconnect();
 			this.connected = false;
 		}
 
@@ -85,7 +98,6 @@ public class Client implements Runnable {
 
 		// Set the user's account type, either enter the user into the game or
 		// assign as a spectator
-
 		while (this.userType == 'U' && this.connected) {
 			try {
 				String message = this.input.readLine();
@@ -93,54 +105,87 @@ public class Client implements Runnable {
 				if (message.equalsIgnoreCase("PLAY")) {
 					if (this.server.gameStarted()) {
 						this.userType = 'S';
-						this.message("% LATE");
+						this.sendMessage("% LATE");
 					} else if (server.isFull()) {
-						this.message("% FULL");
+						this.sendMessage("% FULL");
 					} else {
 						this.userType = 'P';
-						this.message("% ACCEPTED");
+						this.sendMessage("% ACCEPTED");
 						this.server.newPlayer(this);
+						player = new Player (server,server.returnAndUsePlayerNumber());
 					}
 				} else if (message.equalsIgnoreCase("SPECTATE")) {
 					this.userType = 'S';
-					this.message("% ACCEPTED");
+					this.sendMessage("% ACCEPTED");
 				}
 			} catch (IOException e) {
 				this.disconnect();
 			}
 		}
 
-		while (this.userType == 'U' && this.connected && !this.isReady) {
+		// Check if the player is ready to start
+		while (this.isPlayer() && this.connected && !this.isReady) {
 			try {
 				String message = this.input.readLine();
-
+				
 				if (message.equalsIgnoreCase("READY")) {
 					this.server.ready(this.player.getPlayerNo());
 					this.isReady = true;
+					System.out.println(name + " is ready");
 				} else {
-					this.message("% FORMATERROR");
+					this.sendMessage("% FORMATERROR");
 				}
 			} catch (IOException e) {
 				this.disconnect();
 			}
 
 		}
-
+		System.out.println("TEST1");
 		// Game
-		while (this.userType == 'U' && this.connected) {
-			// Get the player's bet
-			// TODO Add a 60s timer
+		while (this.isPlayer() && this.connected) {
+			System.out.println("TEST2");
 			try {
-				int currentBet = Integer.parseInt(this.input.readLine());
-				if (currentBet >= 10 && currentBet <= this.getCoins()) {
-					this.setBet(currentBet);
-					this.server.queueMessage("$ " + this.getPlayerNo() + " bets " + currentBet);
-				} else {
-					this.message("% FORMATERROR");
+				String message = this.input.readLine();
+				
+				// If the player is betting then set the bet
+				int betPlaced;
+				System.out.println(this.player.getCoins());
+				System.out.println("TEST3");
+				
+				if (dealer.bettingIsActive() && player.getCurrentBet()==0 && (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET && betPlaced <= this.player.getCoins()) {
+
+					System.out.println("TEST4");
+						this.server.queueMessage("$ " + this.getPlayerNo()
+								+ " bets " + betPlaced);
+						player.setCurrentBet(betPlaced);
 				}
+				else if(dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("hit"))
+				{
+					player.setCurrentMove('H');
+				}
+				else if(dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("stand"))
+				{
+					player.setCurrentMove('S');
+				}
+				else if(dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("doubledown"))
+				{
+					player.setCurrentMove('D');
+				}
+				else
+				{
+					this.sendMessage("% FORMATERROR");
+					
+				}
+				
 			} catch (IOException e) {
 				this.server.queueMessage("! " + this.getPlayerNo());
 				this.disconnect();
+			}
+			
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -151,23 +196,22 @@ public class Client implements Runnable {
 	 * @param message
 	 *            the message to send
 	 */
-	public void message(String message) {
+	public void sendMessage(String message) {
 		this.output.println(message);
 		this.output.flush();
 	}
 
-	public BufferedReader getIn() {
+	public BufferedReader getInput() {
 		return this.input;
 	}
 
-	public PrintWriter getOut() {
+	public PrintWriter getOutput() {
 		return this.output;
 	}
 
 	protected Socket getSocket() {
 		return socket;
 	}
-
 
 	public String getName() {
 		return name;
@@ -177,6 +221,18 @@ public class Client implements Runnable {
 		if (this.player == null)
 			return -1;
 		return this.player.getPlayerNo();
+	}
+
+	public char getUserType() {
+		return userType;
+	}
+
+	public boolean isPlayer() {
+		return (userType == 'P');
+	}
+
+	public void setUserType(char userType) {
+		this.userType = userType;
 	}
 
 	public int getBet() {
@@ -217,5 +273,10 @@ public class Client implements Runnable {
 
 	public void setReady(boolean isReady) {
 		this.isReady = isReady;
+	}
+
+	@Override
+	public int compareTo(Client object) {
+		return this.getPlayerNo()-object.getPlayerNo();
 	}
 }

@@ -16,14 +16,14 @@ import utilities.ClientList;
 import utilities.Validator;
 
 public class Server implements ActionListener {
-	private ArrayList<Client> clients;
-	private ClientList players;
+	private ArrayList<Client> allClients;
+	private ArrayList<Client> players;
 	private int playersReady;
 	private boolean gameStarted;
 	private ServerSocket socket;
 	private Dealer dealer;
 	public static final String START_MESSAGE = "START";
-	public static final int START_COINS = 1000, MESSAGE_DELAY = 500;
+	public static final int START_COINS = 1000, MESSAGE_DELAY = 500, MIN_BET = 2;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
 	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
@@ -40,8 +40,8 @@ public class Server implements ActionListener {
 
 		// Sets up client list to hold each client
 		// Sets up the socket and the number of ready players to zero
-		this.clients = new ArrayList<Client>();
-		this.players = new ClientList();
+		this.allClients = new ArrayList<Client>();
+		this.players = new ArrayList();
 		this.socket = null;
 		this.playersReady = 0;
 		this.timer = new Timer(MESSAGE_DELAY, this);
@@ -63,12 +63,12 @@ public class Server implements ActionListener {
 				Socket client = this.socket.accept();
 				Client temp = new Client(client, this);
 				new Thread(temp).start();
-				this.clients.add(temp);
+				this.allClients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client " + this.clients.size());
+				System.err.println("Error connecting to client " + this.allClients.size());
 				e.printStackTrace();
 			}
-			System.err.println("Client " + this.clients.size() + " connected.");
+			System.err.println("Client " + this.allClients.size() + " connected.");
 		}
 	}
 
@@ -86,7 +86,7 @@ public class Server implements ActionListener {
 	 * 
 	 * @return the first unused player number
 	 */
-	private int returnAndUsePlayerNumber() {
+	public int returnAndUsePlayerNumber() {
 		for (int no = 1; no < this.playerNumbers.length; no++) {
 			if (!this.playerNumbers[no]) {
 				this.playerNumbers[no] = true;
@@ -96,16 +96,19 @@ public class Server implements ActionListener {
 		return -1;
 	}
 
+	////////////////////////////
+	// THIS CANNOT BE SYNCHRONIZED OTHERWISE ALL OTHER THREADS STOP since startgame takes so long
+	////////////////////////////
 	/**
 	 * Waits for the player to be ready. Once the player is ready start the
 	 * game.
 	 * 
 	 * @param playerNo
 	 */
-	protected synchronized void ready(int playerNo) {
+	public void ready(int playerNo) {
 		this.playersReady++;
-		this.queueMessage(new Message(Message.ALL_CLIENTS, "% " + playerNo + " READY"));
-		if (this.playersReady == this.clients.size()) {
+		this.queueMessage("% " + playerNo + " READY");
+		if (this.playersReady == this.allClients.size()) {
 
 			// TODO Do a 15 second timer (otherwise the player times out)
 			this.gameStarted = true;
@@ -117,7 +120,7 @@ public class Server implements ActionListener {
 	 * 
 	 * @param source
 	 */
-	public void playerDisconnected(Client source) {
+	public void disconnectPlayer(Client source) {
 		this.players.remove(source);
 	}
 
@@ -126,8 +129,12 @@ public class Server implements ActionListener {
 	 * for the game.
 	 */
 	private void startGame() {
-		this.queueMessage(new Message(Message.ALL_CLIENTS, "% START"));
+		this.queueMessage("% START");
 		this.dealer = new Dealer(this, this.players);
+		
+		//Start the dealer thread
+		Thread dealerThread = new Thread (dealer);
+		dealerThread.start();
 	}
 
 	/**
@@ -138,7 +145,7 @@ public class Server implements ActionListener {
 	 */
 	private void queueMessage(Message message) {
 		synchronized (this.messages) {
-			for (int no = 0; no < clients.size(); no++) {
+			for (int no = 0; no < allClients.size(); no++) {
 				this.messages.add(message);
 			}
 		}
@@ -162,7 +169,6 @@ public class Server implements ActionListener {
 	 *            player
 	 */
 	public void newPlayer(Client source) {
-		source.setPlayer(new Player(this, this.returnAndUsePlayerNumber()));
 		this.players.add(source);
 	}
 
@@ -172,7 +178,7 @@ public class Server implements ActionListener {
 	 * @return Whether or not the lobby is full.
 	 */
 	public synchronized boolean isFull() {
-		return (this.clients.size() == 6);
+		return (this.allClients.size() == 6);
 	}
 
 	/**
@@ -184,7 +190,7 @@ public class Server implements ActionListener {
 		if (client.isReady()) {
 			this.playersReady--;
 		}
-		this.clients.remove(client);
+		this.allClients.remove(client);
 	}
 
 	/**
@@ -233,15 +239,15 @@ public class Server implements ActionListener {
 				return;
 			Message msg = this.messages.remove();
 			if (msg.getPlayerNo() == Message.ALL_CLIENTS) {
-				synchronized (this.clients) {
-					for (int i = 0; i < this.clients.size(); i++) {
-						this.clients.get(i).message(msg.getMessage());
+				synchronized (this.allClients) {
+					for (int i = 0; i < this.allClients.size(); i++) {
+						this.allClients.get(i).sendMessage(msg.getMessage());
 					}
 				}
 			} else {
-				Client temp = this.clients.get(msg.getPlayerNo());
+				Client temp = this.allClients.get(msg.getPlayerNo());
 				if (temp != null)
-					temp.message(msg.getMessage());
+					temp.sendMessage(msg.getMessage());
 			}
 		}
 	}
