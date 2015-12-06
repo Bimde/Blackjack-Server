@@ -98,16 +98,20 @@ public class ClientList implements Iterable<Client> {
 		while (temp != null) {
 			if (temp.getClient() == client)
 				this.remove(temp);
+			temp = temp.getNext();
 		}
 	}
 
 	private void remove(ClientNode client) {
-		if (this.head == client) {
-			this.head = client.getNext();
-			this.head.setPrevious(null);
-		} else {
-			client.getPrevious().setNext(client.getNext());
-			client.getNext().setPrevious(client.getPrevious());
+		if (client != null) {
+			if (this.head == client) {
+				this.head = client.getNext();
+				if (this.head != null)
+					this.head.setPrevious(null);
+			} else {
+				client.getPrevious().setNext(client.getNext());
+				client.getNext().setPrevious(client.getPrevious());
+			}
 		}
 	}
 

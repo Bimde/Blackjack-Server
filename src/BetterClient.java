@@ -9,7 +9,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 public class BetterClient implements ActionListener, KeyListener {
 	JFrame frame = new JFrame();
@@ -25,8 +29,7 @@ public class BetterClient implements ActionListener, KeyListener {
 	static PrintWriter output;
 	Thread inputThread;
 
-	public static void main(String[] args) throws UnknownHostException,
-			IOException {
+	public static void main(String[] args) throws UnknownHostException, IOException {
 		BetterClient client = new BetterClient();
 
 	}
@@ -35,8 +38,8 @@ public class BetterClient implements ActionListener, KeyListener {
 
 		public void run() {
 			while (true) {
-//				output.println("Connected");
-//				output.flush();
+				// output.println("Connected");
+				// output.flush();
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
@@ -61,7 +64,6 @@ public class BetterClient implements ActionListener, KeyListener {
 		// panel.add(pane);
 
 		send.addActionListener(this);
-		send.addKeyListener(this);
 		send.setSize(100, 50);
 		send.setLocation(200, 400);
 		panel.add(send);
@@ -69,6 +71,7 @@ public class BetterClient implements ActionListener, KeyListener {
 		messageBox.setLocation(0, 400);
 		messageBox.setSize(200, 30);
 		messageBox.setText("");
+		messageBox.addKeyListener(this);
 		panel.add(messageBox);
 
 		frame.setSize(300, 500);
@@ -78,7 +81,7 @@ public class BetterClient implements ActionListener, KeyListener {
 		frame.setResizable(false);
 
 		chatBox.append("Waiting for server connection");
-		mySocket = new Socket("192.168.0.11", 5000);
+		mySocket = new Socket("127.0.0.1", 5000);
 		// mySocket= new Socket("127.0.0.1",5001);
 		chatBox.append("\nFound the server.\n");
 
@@ -99,13 +102,14 @@ public class BetterClient implements ActionListener, KeyListener {
 	}
 
 	public void keyPressed(KeyEvent key) {
-		if (key.getKeyCode() == KeyEvent.VK_SPACE) {
+		System.out.println("entered");
+		if (key.getKeyCode() == KeyEvent.VK_ENTER) {
+			System.out.println("entered");
 			String text = messageBox.getText();
 			if (!text.trim().isEmpty()) {
 				output.println(text);
 				output.flush();
 				messageBox.setText("");
-
 			}
 		}
 	}
@@ -122,8 +126,7 @@ public class BetterClient implements ActionListener, KeyListener {
 			// Getting input from the server.
 			BufferedReader myReader = null;
 			try {
-				myReader = new BufferedReader(new InputStreamReader(
-						mySocket.getInputStream()));
+				myReader = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
