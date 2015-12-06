@@ -1,5 +1,7 @@
 package utilities;
 
+import java.util.Iterator;
+
 import connection.Client;
 
 /**
@@ -7,7 +9,7 @@ import connection.Client;
  * their 'playerNo' parameter
  *
  */
-public class ClientList {
+public class ClientList implements Iterable<Client> {
 	private ClientNode head, tail;
 
 	/**
@@ -107,5 +109,30 @@ public class ClientList {
 			client.getPrevious().setNext(client.getNext());
 			client.getNext().setPrevious(client.getPrevious());
 		}
+	}
+
+	/**
+	 * Allows for use with a for-each loop
+	 */
+	@Override
+	public Iterator<Client> iterator() {
+		return new Iterator<Client>() {
+			private ClientNode current = ClientList.this.head;
+
+			@Override
+			public boolean hasNext() {
+				return this.current != null;
+			}
+
+			@Override
+			public Client next() {
+				if (this.hasNext()) {
+					Client temp = this.current.getClient();
+					this.current = this.current.getNext();
+					return temp;
+				}
+				return null;
+			}
+		};
 	}
 }
