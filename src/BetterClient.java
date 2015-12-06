@@ -78,7 +78,7 @@ public class BetterClient implements ActionListener, KeyListener {
 		frame.setResizable(false);
 
 		chatBox.append("Waiting for server connection");
-		mySocket = new Socket("198.200.65.241", 5123);
+		mySocket = new Socket("127.0.0.1", 5000);
 		chatBox.append("\nFound the server.\n");
 
 		inputThread = new Thread(new InputHandler());

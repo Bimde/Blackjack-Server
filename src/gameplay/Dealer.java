@@ -183,7 +183,6 @@ public class Dealer implements Runnable {
 					}
 
 					if (currentMove == 'H') {
-
 						// Draw a new card and give it to the player
 						cardDrawn = this.deck.getCard();
 						this.server.queueMessage("# " + (currentPlayer.getPlayerNo()) + " " + cardDrawn.toString());
@@ -193,10 +192,11 @@ public class Dealer implements Runnable {
 							int newCoins = currentPlayer.getCoins() - currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
 							this.server.queueMessage("& " + currentPlayer.getPlayerNo() + " bust " + newCoins);
-							// ////////////////////////////////////////////////
-							// Insert code here to kick player if coins drops
-							// too low
-							// ////////////////////////////////////////////////
+							if (currentPlayer.getPlayer().getCoins() < Server.MIN_BET) {
+								System.out.println("Entered die");
+								this.totalActive--;
+								this.server.disconnectPlayer(currentPlayer);
+							}
 							endTurn = true;
 						} else if (currentPlayer.getPlayer().getHandValue() == 21) {
 							int newCoins = currentPlayer.getCoins() + currentPlayer.getBet();
@@ -361,14 +361,19 @@ public class Dealer implements Runnable {
 	 *            the player number of the player to check.
 	 */
 	public void checkResult(Client client) {
+		System.out.println("Check result");
 		// If the player gets anything closer to the blackjack than the
 		// dealer they win
 		Player player = client.getPlayer();
 		if (player.getHandValue() > this.dealerHand) {
 			player.setCoins(player.getCoins() + player.getCurrentBet());
 		} else {
+			System.out.println(player.getCoins());
 			player.setCoins(player.getCoins() - player.getCurrentBet());
+			System.out.println("Entered lose coins");
+			System.out.println(player.getCoins());
 			if (player.getCoins() < Server.MIN_BET) {
+				System.out.println("Entered die");
 				this.totalActive--;
 				this.server.disconnectPlayer(client);
 			}
