@@ -23,21 +23,23 @@ public class Server implements ActionListener {
 	private ServerSocket socket;
 	private Dealer dealer;
 	public static final String START_MESSAGE = "START";
-	public static final int START_COINS = 1000, MESSAGE_DELAY = 500, MIN_BET = 2;
+	public static final int START_COINS = 1000, MESSAGE_DELAY = 500,
+			MIN_BET = 2;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
-	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
+	public boolean[] playerNumbers = { true, false, false, false, false, false,
+			false };
 
 	private Timer timer;
 	private ArrayDeque<Message> messages;
 
 	/**
-	 * Constructor
+	 * Constructor for a new Server object.
 	 * 
 	 * @param port
+	 *            the port to start the server on.
 	 */
 	public Server(int port) {
-
 		// Sets up client list to hold each client
 		// Sets up the socket and the number of ready players to zero
 		this.allClients = new ArrayList<Client>();
@@ -65,26 +67,29 @@ public class Server implements ActionListener {
 				new Thread(temp).start();
 				this.allClients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client " + this.allClients.size());
+				System.err.println("Error connecting to client "
+						+ this.allClients.size());
 				e.printStackTrace();
 			}
-			System.err.println("Client " + this.allClients.size() + " connected.");
+			System.err.println("Client " + this.allClients.size()
+					+ " connected.");
 		}
 	}
 
 	/**
-	 * Change a player number to unused as a player disconnects from the lobby
+	 * Change a player number to unused as a player disconnects from the lobby.
 	 * 
 	 * @param playerNumber
+	 *            the player number to clear.
 	 */
 	public void clearPlayerNumber(int playerNumber) {
 		this.playerNumbers[playerNumber] = false;
 	}
 
 	/**
-	 * Return the first unused player number and -1 if everything is used
+	 * Return the first unused player number and -1 if everything is used.
 	 * 
-	 * @return the first unused player number
+	 * @return the first unused player number.
 	 */
 	public int returnAndUsePlayerNumber() {
 		for (int no = 1; no < this.playerNumbers.length; no++) {
@@ -101,10 +106,11 @@ public class Server implements ActionListener {
 	// startgame takes so long
 	// //////////////////////////
 	/**
-	 * Waits for the player to be ready. Once the player is ready start the
+	 * Waits for the player to be ready. Once all players are ready, start the
 	 * game.
 	 * 
 	 * @param playerNo
+	 *            the player to set to be "ready".
 	 */
 	public void ready(int playerNo) {
 		this.playersReady++;
@@ -119,8 +125,10 @@ public class Server implements ActionListener {
 	}
 
 	/**
+	 * Disconnects a player from the server.
 	 * 
 	 * @param source
+	 *            the client to disconnect.
 	 */
 	public void disconnectPlayer(Client source) {
 		this.players.remove(source);
@@ -140,10 +148,10 @@ public class Server implements ActionListener {
 	}
 
 	/**
-	 * Places the message in the queue for message broadcasts
+	 * Queues a private message to be sent.
 	 * 
 	 * @param message
-	 *            the message to send
+	 *            the message to send.
 	 */
 	private void queueMessage(Message message) {
 		synchronized (this.messages) {
@@ -152,21 +160,21 @@ public class Server implements ActionListener {
 	}
 
 	/**
-	 * Queue a message to broadcast
+	 * Queue a message to broadcast.
 	 * 
 	 * @param message
-	 *            the message to queue
+	 *            the message to broadcast.
 	 */
 	public void queueMessage(String message) {
 		this.queueMessage(new Message(Message.ALL_CLIENTS, message));
 	}
 
 	/**
-	 * Indicates to the server that a client wants to be a player
+	 * Indicates to the server that a client wants to become a player.
 	 * 
 	 * @param source
-	 *            Thread which is communicating with client who wants to be a
-	 *            player
+	 *            the thread which is communicating with a client who wants to
+	 *            be a player.
 	 */
 	public void newPlayer(Client source) {
 		this.players.add(source);
@@ -175,16 +183,17 @@ public class Server implements ActionListener {
 	/**
 	 * Determines whether or not the lobby is full.
 	 * 
-	 * @return Whether or not the lobby is full.
+	 * @return whether or not the lobby is full.
 	 */
 	public synchronized boolean isFull() {
 		return (this.allClients.size() == 6);
 	}
 
 	/**
-	 * Disconnect a client from the server
+	 * Disconnect a client from the server.
 	 * 
 	 * @param client
+	 *            the client to disconnect.
 	 */
 	public synchronized void disconnectClient(Client client) {
 		if (client.isReady()) {
@@ -196,7 +205,7 @@ public class Server implements ActionListener {
 	/**
 	 * Determines if the game has started or not.
 	 * 
-	 * @return Whether or not the game has started.
+	 * @return whether or not the game has started.
 	 */
 	public boolean gameStarted() {
 		return this.gameStarted;
@@ -227,6 +236,8 @@ public class Server implements ActionListener {
 				port = Integer.parseInt(portStr);
 			}
 		}
+
+		keyboard.close();
 
 		new Server(port);
 	}
