@@ -26,7 +26,8 @@ public class Server implements ActionListener {
 	public static final int START_COINS = 1000, MESSAGE_DELAY = 500, MIN_BET = 2;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
-	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
+	public boolean[] playerNumbers = { true, false, false, false, false, false,
+			false };
 
 	private Timer timer;
 	private ArrayDeque<Message> messages;
@@ -109,11 +110,14 @@ public class Server implements ActionListener {
 		this.playersReady++;
 		this.queueMessage("% " + playerNo + " READY");
 		if (this.playersReady == this.allClients.size()) {
+		this.queueMessage(new Message(Message.ALL_CLIENTS, "% " + playerNo
+				+ " READY"));
+		if (this.playersReady == this.allClients.size()) {
 
 			// TODO Do a 15 second timer (otherwise the player times out)
 			this.gameStarted = true;
 			this.startGame();
-		}
+		}}
 	}
 
 	/**
@@ -219,6 +223,7 @@ public class Server implements ActionListener {
 			}
 		}
 
+		// While the port entered is invalid, continually ask for another port
 		while (port == -1) {
 			System.out.print("Please enter a valid port: ");
 			portStr = keyboard.nextLine();
@@ -226,6 +231,7 @@ public class Server implements ActionListener {
 				port = Integer.parseInt(portStr);
 			}
 		}
+		
 		new Server(port);
 	}
 
@@ -238,7 +244,11 @@ public class Server implements ActionListener {
 			if (this.messages.size() == 0)
 				return;
 			Message msg = this.messages.remove();
+
+			// Messages are either to the entire server or to individual clients
 			if (msg.getPlayerNo() == Message.ALL_CLIENTS) {
+
+				// Send the messages at the same time
 				synchronized (this.allClients) {
 					for (int i = 0; i < this.allClients.size(); i++) {
 						this.allClients.get(i).sendMessage(msg.getMessage());
