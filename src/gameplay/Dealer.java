@@ -95,42 +95,27 @@ public class Dealer {
 					BufferedReader currentIn = client.getIn();
 
 					try {
-
-						Card card = this.deck.getCard();
-						if (client.getIn().equals("hit")) {
-							client.message("# " + (client) + " " + card.toString());
-							client.getPlayer().addCard(card);
-
-							// Check if the client has busted
-							if (client.getPlayer().checkBust()) {
-								totalActive--;
-
-							} else if (currentIn.readLine().equals("stand")) {
-
-								client.getPlayer().setIsStanding(true);
-								this.totalActive--;
-
-								// Broadcasts stand
-								this.server.queueMessage(
-										"& " + client.getPlayer().getPlayerNo() + "stand " + client.getCoins());
-
-							} else if (currentIn.readLine().equals("doubledown")) {
-								// If the client double downs, double their bet
-								// and
-								// then set their isStand to true
-								client.setBet(client.getBet() * 2);
-								client.message("# " + (client) + " " + this.deck.getCard().toString());
-								client.getPlayer().addCard(card);
-								client.getPlayer().checkBust();
-
-								// Set the player to standing regardless of bust
-								// or
-								// not
-								client.getPlayer().setIsStanding(true);
-								this.totalActive--;
-							} else {
-								client.message("% FORMATERROR");
-							}
+						if (currentIn.readLine().equals("hit")) {
+							// Draw a new card and give it to the player
+							cardDrawn = this.deck.getCard();
+							client.message("# " + (client.getPlayerNo() + 1) + " " + cardDrawn.toString());
+							client.getPlayer().addCard(cardDrawn);
+						} else if (currentIn.readLine().equals("stand")) {
+							stand = true;
+							this.totalActive--;
+						} else if (currentIn.readLine().equals("doubledown")) {
+							// If the client double downs, double their bet
+							client.setBet(client.getBet() * 2);
+														
+							// Draw a new card and give it to the player
+							cardDrawn = this.deck.getCard();
+							client.message("# " + (client.getPlayerNo() + 1) + " " + cardDrawn.toString());
+							client.getPlayer().addCard(cardDrawn);
+													
+							stand = true;
+							this.totalActive--;
+						} else {
+							client.message("% FORMATERROR");
 						}
 					} catch (IOException e) {
 						System.err.println("Error getting player's decision");
