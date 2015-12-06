@@ -271,16 +271,11 @@ public class Dealer implements Runnable {
 				}
 			}
 
-			// Loop through each player who has not busted (including the
-			// dealer)
-			// and get their coins, adding it to the standings string. Broadcast
-			// the
-			// string at the end.
+			// Loop through each player and get their coins, adding it to the
+			// standings string. Broadcasts the string at the end.
 			String standings = "+ ";
 			for (Client player : this.players) {
-				if (!player.getPlayer().checkBust()) {
-					standings += (player.getPlayerNo() + " " + player.getPlayer().getCoins()) + " ";
-				}
+				standings += (player.getPlayerNo() + " " + player.getPlayer().getCoins()) + " ";
 			}
 			this.server.queueMessage(standings);
 
