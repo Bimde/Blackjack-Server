@@ -1,8 +1,8 @@
 package connection;
 
-import gameplay.Card;
-
 import java.util.ArrayList;
+
+import gameplay.Card;
 
 public class Player {
 
@@ -12,7 +12,7 @@ public class Player {
 	private int playerNo;
 	private int currentBet = 0;
 	private boolean isStanding;
-	
+
 	// 'N' for none, 'H' for hit, 'S' for stand, and 'D' for doubledown
 	private char currentMove;
 
@@ -54,10 +54,10 @@ public class Player {
 		}
 
 		// Update the player's total value
-		this.handValue = calculateHand(currentCards);
+		this.handValue = handTotal;
 		System.out.println("Hand: " + this.handValue);
 	}
-	
+
 	/**
 	 * Sums up the current value of a hand
 	 */
@@ -75,11 +75,11 @@ public class Player {
 	public void clearHand() {
 		this.currentCards.clear();
 	}
-	
+
 	public int getHandValue() {
 		return this.handValue;
 	}
-	
+
 	public char getCurrentMove() {
 		return this.currentMove;
 	}
@@ -88,16 +88,14 @@ public class Player {
 		this.currentMove = currentMove;
 	}
 
-	public boolean getIsStanding()
-	{
+	public boolean getIsStanding() {
 		return this.isStanding;
 	}
-	
-	public void setIsStanding(boolean isStanding)
-	{
+
+	public void setIsStanding(boolean isStanding) {
 		this.isStanding = isStanding;
 	}
-	
+
 	public ArrayList<Card> getCurrentCards() {
 		return this.currentCards;
 	}
@@ -130,15 +128,11 @@ public class Player {
 		this.currentBet = currentBet;
 	}
 
-	public boolean checkBust()
-	{
-		if(this.getHandValue() > 21)
-		{
+	public boolean checkBust() {
+		if (this.getHandValue() > 21) {
 			this.setIsStanding(true);
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}

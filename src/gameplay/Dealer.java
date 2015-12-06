@@ -19,6 +19,8 @@ public class Dealer implements Runnable {
 	 * Minimum cards required in the deck before the start of the round
 	 */
 	public static final int MINIMUM_CARDS_PER_PLAYER = 40;
+
+	public static final int BETTING_TIME = 60;
 	/**
 	 * Chance that the deck will be shuffled at the end of a round (in
 	 * percentage)
@@ -32,7 +34,7 @@ public class Dealer implements Runnable {
 	private int totalActive;
 	private ArrayList<Card> dealerCards;
 	private int dealerHand;
-	private boolean bettingIsActive;
+	private Boolean bettingIsActive;
 	private int currentPlayerTurn;
 	private BettingTimer betTimer;
 	private Thread betTimerThread;
@@ -43,7 +45,7 @@ public class Dealer implements Runnable {
 		public void run() {
 			// Wait 30 seconds and end the betting time
 			int bettingElapsedTime = 0;
-			while (bettingIsActive) {
+			while (Dealer.this.bettingIsActive) {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -51,8 +53,10 @@ public class Dealer implements Runnable {
 				}
 				bettingElapsedTime += 1000;
 
-				if (bettingElapsedTime >= 60000) {
-					bettingIsActive = false;
+				if (bettingElapsedTime >= BETTING_TIME * 1000) {
+					synchronized (Dealer.this.bettingIsActive) {
+						Dealer.this.bettingIsActive = false;
+					}
 				}
 			}
 		}
@@ -83,7 +87,7 @@ public class Dealer implements Runnable {
 
 		// Place the betting timer in the thread
 		this.betTimer = new BettingTimer();
-		this.betTimerThread = new Thread(betTimer);
+		this.betTimerThread = new Thread(this.betTimer);
 	}
 
 	/**
@@ -100,9 +104,9 @@ public class Dealer implements Runnable {
 			// previous bets
 			this.bettingIsActive = true;
 			this.betTimerThread.start();
-			for (int playerNo = 0; playerNo < players.size(); playerNo++) {
-				if (players.get(playerNo).isPlayer()) {
-					players.get(playerNo).setBet(0);
+			for (int playerNo = 0; playerNo < this.players.size(); playerNo++) {
+				if (this.players.get(playerNo).isPlayer()) {
+					this.players.get(playerNo).setBet(0);
 				}
 			}
 
@@ -117,7 +121,9 @@ public class Dealer implements Runnable {
 					}
 				}
 				if (allBet) {
-					this.bettingIsActive = false;
+					synchronized (Dealer.this.bettingIsActive) {
+						this.bettingIsActive = false;
+					}
 				}
 				try {
 					Thread.sleep(100);
@@ -125,6 +131,10 @@ public class Dealer implements Runnable {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}
+			try {
+				this.betTimerThread.join();
+			} catch (InterruptedException e1) {
 			}
 
 			// Disconnect all players who haven't bet
@@ -169,7 +179,6 @@ public class Dealer implements Runnable {
 						try {
 							Thread.sleep(50);
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -256,9 +265,9 @@ public class Dealer implements Runnable {
 			}
 
 			// Check for winners amongst all the players who said to stand
-			for (int i = 0; i < players.size(); i++) {
-				if (this.players.get(i).isPlayer() && this.players.get(i).getPlayer().getCurrentMove() == 'S') {
-					this.checkResult(i);
+			for (Client player : this.players) {
+				if (player.isPlayer() && player.getPlayer().getCurrentMove() == 'S') {
+					this.checkResult(player.getPlayerNo());
 				}
 			}
 
@@ -268,18 +277,18 @@ public class Dealer implements Runnable {
 			// the
 			// string at the end.
 			String standings = "+ ";
-			for (int i = 0; i < this.players.size(); i++) {
-				if (!this.players.get(i).getPlayer().checkBust()) {
-					standings += (i + " " + this.players.get(i).getPlayer().getCoins()) + " ";
+			for (Client player : this.players) {
+				if (!player.getPlayer().checkBust()) {
+					standings += (player.getPlayerNo() + " " + player.getPlayer().getCoins()) + " ";
 				}
 			}
 			this.server.queueMessage(standings);
 
 			// Clear the cards of each player including the dealer
 			this.dealerCards.clear();
-			for (int i = 0; i < this.players.size(); i++) {
-				if (this.players.get(i).isPlayer()) {
-					this.players.get(i).getPlayer().clearHand();
+			for (Client player : this.players) {
+				if (player.isPlayer()) {
+					player.getPlayer().clearHand();
 				}
 			}
 
