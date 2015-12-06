@@ -22,7 +22,6 @@ public class Dealer {
 	 * Minimum cards required in the deck before the start of the round
 	 */
 	public static final int MINIMUM_CARDS_PER_PLAYER = 40;
-
 	/**
 	 * Chance that the deck will be shuffled at the end of a round (in
 	 * percentage)
