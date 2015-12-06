@@ -1,21 +1,20 @@
 package connection;
 
 /**
- * Object to hold the destination and content of message
- *
+ * Object to hold the destination and content of message.
  */
 class Message {
-
 	public static final int ALL_CLIENTS = -1;
 	private String message;
 	private int playerNo;
 
 	/**
+	 * Constructs a new Message object.
 	 * 
 	 * @param playerNo
-	 *            Destination of message
+	 *            the player number of the receiver of the message.
 	 * @param message
-	 *            Message to send
+	 *            the message to be sent.
 	 */
 	public Message(int playerNo, String message) {
 		this.playerNo = playerNo;
@@ -23,41 +22,40 @@ class Message {
 	}
 
 	/**
-	 * Get the message to be sent
+	 * Get the message to be sent.
 	 * 
-	 * @return The message to be sent
+	 * @return the message to be sent.
 	 */
 	public String getMessage() {
 		return message;
 	}
 
 	/**
-	 * Set the message to be sent
+	 * Set the message to be sent.
 	 * 
 	 * @param message
-	 *            The message to be sent
+	 *            the new message to be sent.
 	 */
 	public void setMessage(String message) {
 		this.message = message;
 	}
 
 	/**
-	 * Get the destination of the message (player number)
+	 * Get the destination of the message (player number).
 	 * 
-	 * @return The number of the player receiving the message
+	 * @return the player number of the receiver of the message.
 	 */
 	public int getPlayerNo() {
 		return playerNo;
 	}
 
 	/**
-	 * Set the destination of the message (player number)
+	 * Set the destination of the message (player number).
 	 * 
 	 * @param playerNo
-	 *            The destination of the message in the form of player number
+	 *            the new player number of the receiver of the message.
 	 */
 	public void setPlayerNo(int playerNo) {
 		this.playerNo = playerNo;
 	}
-
 }

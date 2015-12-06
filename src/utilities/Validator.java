@@ -6,31 +6,13 @@ public class Validator {
 
 	// Name checker here or let the user handle it
 	/**
-	 * Check if a string is a valid port number.
+	 * Checks if a string is a valid port number.
 	 *
 	 * @param str
 	 *            the string to check.
 	 * @return whether or not the string is a valid port number.
 	 */
-	@SuppressWarnings("unused")
 	public static boolean isValidPort(String str) {
-		// // Store the length of the string in order to check its validity
-		// int length = str.length();
-		//
-		// // Make sure the length is between 1 and 5
-		// if (length > 5 || length == 0) {
-		// return false;
-		// }
-		//
-		// // Make sure each character is a digit
-		// for (int ch = 0; ch < length; ch++) {
-		// if (!Character.isDigit(str.charAt(ch))) {
-		// return false;
-		// }
-		// }
-		//
-		// // If the string passed all of the tests, it is valid
-		// return true;
 		if (str.matches("(\\d{1,5})")) {
 			return true;
 		} else {
@@ -39,12 +21,14 @@ public class Validator {
 	}
 
 	/**
+	 * Checks if a bet is valid.
 	 * 
 	 * @param bet
-	 *            The string containing the bet from the client
+	 *            the string containing the bet from the client.
 	 * @param maxBet
-	 *            The maximum bet value (usually the player's current balance)
-	 * @return The player's bet in integer form or -1 if not valid
+	 *            the maximum bet value (usually the player's current balance).
+	 * @return the player's bet in integer form. If the bet is not valid,
+	 *         returns -1.
 	 */
 	public static int isValidBet(String bet, int maxBet) {
 		if (bet.matches("([0-9])+")) {

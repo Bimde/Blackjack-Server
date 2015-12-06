@@ -13,16 +13,16 @@ public class ClientList implements Iterable<Client> {
 	private ClientNode head, tail;
 
 	/**
-	 * Creates a new linked list containing Client objects
+	 * Constructs a new ClientList object containing Client objects.
 	 */
 	public ClientList() {
 	}
 
 	/**
-	 * Adds specified client to list
+	 * Adds a specified client to the list.
 	 * 
 	 * @param temp
-	 *            Client to add to list
+	 *            the client to add to the list.
 	 */
 	public void add(Client temp) {
 		ClientNode add = new ClientNode(temp);
@@ -36,9 +36,9 @@ public class ClientList implements Iterable<Client> {
 	}
 
 	/**
-	 * Finds the next available player number
+	 * Finds the next available player number.
 	 * 
-	 * @return Next available player number
+	 * @return the next available player number.
 	 */
 	private int findEmptyPlayerNo() {
 		ClientNode temp = this.head;
@@ -61,9 +61,9 @@ public class ClientList implements Iterable<Client> {
 	}
 
 	/**
-	 * Counts number of Client objects in list
+	 * Counts the number of Client objects in the list.
 	 * 
-	 * @return Number of clients in list
+	 * @return the number of Clients in the list.
 	 */
 	public int size() {
 		ClientNode temp = this.head;
@@ -76,11 +76,12 @@ public class ClientList implements Iterable<Client> {
 	}
 
 	/**
+	 * Gets a Client object from the list given its player number.
 	 * 
 	 * @param playerNo
-	 *            The number associated with the desired client
-	 * @return Client associated with specified player number, or null or not
-	 *         found
+	 *            the number associated with the desired client
+	 * @return the client associated with specified player number. If the player
+	 *         is not found, returns null.
 	 */
 	public Client get(int playerNo) {
 		ClientNode temp = this.head;
@@ -93,6 +94,12 @@ public class ClientList implements Iterable<Client> {
 		return null;
 	}
 
+	/**
+	 * Removes a Client object from the list.
+	 * 
+	 * @param client
+	 *            the client to remove.
+	 */
 	public void remove(Client client) {
 		ClientNode temp = this.head;
 		while (temp != null) {
@@ -102,6 +109,12 @@ public class ClientList implements Iterable<Client> {
 		}
 	}
 
+	/**
+	 * Removes a Client object from the list.
+	 * 
+	 * @param client
+	 *            the client to remove.
+	 */
 	private void remove(ClientNode client) {
 		if (client != null) {
 			if (this.head == client) {

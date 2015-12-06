@@ -64,14 +64,13 @@ public class Dealer implements Runnable {
 	}
 
 	/**
-	 * Initializes a new Dealer object. Starts up the actual main game of
+	 * Constructs a new Dealer object. Starts up the actual main game of
 	 * Blackjack.
 	 * 
 	 * @param server
 	 *            the server that the game is in.
 	 * @param players
-	 *            a list of all of the clients.
-	 * @throws InterruptedException
+	 *            a list of all of the player.
 	 */
 	public Dealer(Server server, ClientList players) {
 		this.deck = new Deck(NUMBER_OF_DECKS);
@@ -92,7 +91,7 @@ public class Dealer implements Runnable {
 	}
 
 	/**
-	 * Dealer begins the game
+	 * Begins the game.
 	 */
 	public void run() {
 		while (this.totalActive > 0) {
@@ -297,7 +296,10 @@ public class Dealer implements Runnable {
 	}
 
 	/**
-	 * Handles dealing to the dealer and updates the current hand's value
+	 * Handles dealing to the dealer and updates the current hand's value.
+	 * 
+	 * @param card
+	 *            the card to deal to the dealer.
 	 */
 	public void dealTheDealer(Card card) {
 		this.dealerCards.add(card);
@@ -322,7 +324,10 @@ public class Dealer implements Runnable {
 	}
 
 	/**
-	 * Sums up the current value of a hand
+	 * Sums up the current value of a hand.
+	 * 
+	 * @param cards
+	 *            a list of cards.
 	 */
 	private int calculateHand(ArrayList<Card> cards) {
 		int total = 0;
@@ -333,9 +338,9 @@ public class Dealer implements Runnable {
 	}
 
 	/**
-	 * Gets the deck of cards
+	 * Gets the deck of cards.
 	 * 
-	 * @return The Deck of cards
+	 * @return the deck of cards.
 	 */
 	public Deck getDeck() {
 		return this.deck;
@@ -350,13 +355,12 @@ public class Dealer implements Runnable {
 	}
 
 	/**
-	 * Checks for the winner
+	 * Checks for the winner.
 	 * 
 	 * @param playerNo
-	 *            The number of the player to check
+	 *            the player number of the player to check.
 	 */
 	public void checkResult(int playerNo) {
-
 		// If the player gets anything closer to the blackjack than the
 		// dealer they win
 		Client temp = this.players.get(playerNo);

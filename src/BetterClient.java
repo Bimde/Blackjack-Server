@@ -32,7 +32,7 @@ public class BetterClient implements ActionListener, KeyListener {
 	Thread inputThread;
 
 	public static void main(String[] args) throws UnknownHostException, IOException {
-		BetterClient client = new BetterClient();
+		new BetterClient();
 	}
 
 	public static class IdleTimer implements Runnable {

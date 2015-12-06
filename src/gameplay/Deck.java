@@ -5,20 +5,17 @@ import java.util.Collections;
 
 /**
  * Deck object, contains all the decks of cards to be used.
- * 
- * @author
- *
  */
 public class Deck {
 	private int numOfDecks;
 	private ArrayList<Card> cards;
 
 	/**
-	 * Sets the number of decks to the class variable number of decks. Loads up
-	 * the deck.
+	 * Constructs a new Deck object. Sets the number of decks to the class
+	 * variable number of decks. Loads up the deck.
 	 * 
 	 * @param numOfDecks
-	 *            Number of decks to be used in the game.
+	 *            the number of decks to be used in the game.
 	 */
 	public Deck(int numOfDecks) {
 		this.numOfDecks = numOfDecks;
@@ -28,10 +25,9 @@ public class Deck {
 
 	/**
 	 * Loops through the number of decks and adds the according number of cards
-	 * to the deck
+	 * to the deck.
 	 */
 	public void reloadDeck() {
-
 		// Clear the deck first to make things easier
 		cards.clear();
 
@@ -50,7 +46,7 @@ public class Deck {
 	}
 
 	/**
-	 * Shuffles the deck
+	 * Shuffles the deck.
 	 */
 	public void shuffle() {
 		Collections.shuffle(cards);
@@ -61,9 +57,9 @@ public class Deck {
 	}
 
 	/**
-	 * Removes a card from the deck and returns that card
+	 * Removes the top card from the deck.
 	 * 
-	 * @return The card removed from the deck
+	 * @return the card removed from the deck.
 	 */
 	public Card getCard() {
 		Card card = cards.get(0);

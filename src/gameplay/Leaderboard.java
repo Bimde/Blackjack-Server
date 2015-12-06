@@ -9,12 +9,8 @@ import java.util.Scanner;
 /**
  * Leader board for the top ten players. Keeps track of said players and their
  * respective scores,
- * 
- * @author
- *
  */
 public class Leaderboard {
-
 	private static PrintWriter fileOut;
 	private static Scanner inFile;
 	private static int[] highScores;
@@ -23,16 +19,16 @@ public class Leaderboard {
 	private static int score;
 
 	/**
-	 * Sets up the printwriter, filewriter, and scanner to be used to reading in
-	 * and writing out to a text file (topScores.txt)
+	 * Sets up the PrintWriter and Scanner to be used to reading in
+	 * and writing out to a text file (topScores.txt).
 	 * 
 	 * @param name
-	 *            Name of the winner
+	 *            the name of the winner.
 	 * @param score
-	 *            Score of the winner
+	 *            the score of the winner.
 	 * @throws IOException
 	 */
-	Leaderboard(String name, int score) throws IOException {
+	public Leaderboard(String name, int score) throws IOException {
 		fileOut = new PrintWriter(new FileWriter("topScores.txt"));
 		inFile = new Scanner(new File("topScores.txt"));
 		highScores = new int[10];
@@ -45,7 +41,7 @@ public class Leaderboard {
 	}
 
 	/**
-	 * Read in the scores from the text file
+	 * Read in the scores from the text file.
 	 */
 	public static void readIn() {
 		int line = 0;
@@ -81,7 +77,7 @@ public class Leaderboard {
 	}
 
 	/**
-	 * Write out the sorted data back into the text file
+	 * Write the sorted data into the text file.
 	 */
 	public static void writeOut() {
 		for (int player = 0; player < topPlayers.length; player++) {
@@ -89,5 +85,4 @@ public class Leaderboard {
 		}
 		fileOut.close();
 	}
-
 }

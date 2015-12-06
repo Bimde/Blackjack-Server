@@ -32,7 +32,7 @@ public class Client implements Runnable, Comparable<Client> {
 	private char userType;
 
 	/**
-	 * Disconnect/timeout the player
+	 * Disconnect/timeout the client.
 	 */
 	public void disconnect() {
 		if (this.userType == 'P') {
@@ -60,7 +60,12 @@ public class Client implements Runnable, Comparable<Client> {
 	}
 
 	/**
-	 * Constructor for the client
+	 * Constructor for a new Client object.
+	 * 
+	 * @param client
+	 *            the socket of the client.
+	 * @param server
+	 *            the server to put the client on.
 	 */
 	public Client(Socket client, Server server) {
 		this.socket = client;
@@ -140,6 +145,7 @@ public class Client implements Runnable, Comparable<Client> {
 
 		}
 		System.out.println("TEST1");
+		
 		// Game
 		while (this.isPlayer() && this.connected) {
 			System.out.println("TEST2");
@@ -167,7 +173,6 @@ public class Client implements Runnable, Comparable<Client> {
 					player.setCurrentMove('D');
 				} else {
 					this.sendMessage("% FORMATERROR");
-
 				}
 
 			} catch (IOException e) {
@@ -184,22 +189,14 @@ public class Client implements Runnable, Comparable<Client> {
 	}
 
 	/**
-	 * Send a message to the client
+	 * Sends a private message to the client.
 	 * 
 	 * @param message
-	 *            the message to send
+	 *            the message to send.
 	 */
 	public void sendMessage(String message) {
 		this.output.println(message);
 		this.output.flush();
-	}
-
-	public BufferedReader getInput() {
-		return this.input;
-	}
-
-	public PrintWriter getOutput() {
-		return this.output;
 	}
 
 	protected Socket getSocket() {
