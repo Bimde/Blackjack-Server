@@ -33,11 +33,9 @@ public class BetterClient implements ActionListener, KeyListener {
 
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		BetterClient client = new BetterClient();
-
 	}
 
 	public static class IdleTimer implements Runnable {
-
 		public void run() {
 			while (true) {
 				// output.println("Connected");
@@ -49,13 +47,10 @@ public class BetterClient implements ActionListener, KeyListener {
 					e.printStackTrace();
 				}
 			}
-
 		}
-
 	}
 
 	public BetterClient() throws UnknownHostException, IOException {
-
 		pane.setSize(300, 300);
 		pane.setLocation(0, 0);
 		panel.setSize(300, 500);
@@ -84,7 +79,6 @@ public class BetterClient implements ActionListener, KeyListener {
 
 		chatBox.append("Waiting for server connection");
 		mySocket = new Socket("127.0.0.1", 5000);
-		// mySocket= new Socket("127.0.0.1",5001);
 		chatBox.append("\nFound the server.\n");
 
 		inputThread = new Thread(new InputHandler());
@@ -100,7 +94,6 @@ public class BetterClient implements ActionListener, KeyListener {
 			output.flush();
 			messageBox.setText("");
 		}
-
 	}
 
 	public void keyPressed(KeyEvent key) {
@@ -121,14 +114,12 @@ public class BetterClient implements ActionListener, KeyListener {
 	}
 
 	private static class InputHandler implements Runnable {
-
 		public void run() {
 			// Getting input from the server.
 			BufferedReader myReader = null;
 			try {
 				myReader = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
@@ -139,7 +130,6 @@ public class BetterClient implements ActionListener, KeyListener {
 			String msg = "";
 
 			while (running) {
-
 				try {
 					if (myReader.ready()) {
 						try {
@@ -151,14 +141,9 @@ public class BetterClient implements ActionListener, KeyListener {
 						chatBox.append(msg + "\n");
 					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 			}
-
 		}
-
 	}
-
 }
