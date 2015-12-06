@@ -66,10 +66,10 @@ public class Dealer {
 
 			// Broadcast the dealer's cards and add them to the dealer's hand
 			Card cardDrawn = this.deck.getCard();
-			this.dealerDeal(cardDrawn);
+			this.dealTheDealer(cardDrawn);
 			this.server.queueMessage("# 0 X X");
 			cardDrawn = this.deck.getCard();
-			this.dealerDeal(cardDrawn);
+			this.dealTheDealer(cardDrawn);
 			this.server.queueMessage("# 0 " + cardDrawn.toString());
 
 			// Go through each player and deal them two cards each
@@ -114,7 +114,7 @@ public class Dealer {
 			// Broadcast each card as the dealer draws
 			while (this.dealerHand <= 17) {
 				cardDrawn = this.deck.getCard();
-				this.dealerDeal(cardDrawn);
+				this.dealTheDealer(cardDrawn);
 				this.server.queueMessage("# 0 " + cardDrawn.toString());
 			}
 
@@ -138,17 +138,33 @@ public class Dealer {
 	/**
 	 * Handles dealing to the dealer and updates the current hand's value
 	 */
-	public void dealerDeal(Card card) {
+	public void dealTheDealer(Card card) {
 		this.dealerCards.add(card);
 		int handTotal = 0;
-		for ()
 		
+		// If the cards in the hand busts, try to keep deranking aces until it stops busting
+		boolean tryDeranking = true;
+		while ((handTotal = calculateHand(dealerCards))>21 && tryDeranking)
+		{
+			tryDeranking = false;
+			for (int cardNo = 0; cardNo < dealerCards.size(); cardNo++)
+			{
+				if (dealerCards.get(cardNo).derankAce())
+				{
+					tryDeranking = true;
+					break;
+				}
+			}
+		}
+		
+		// Update the dealer's total value
+		dealerHand = handTotal;
 	}
-	
+
 	/**
-	 * 
+	 * Sums up the current value of a hand
 	 */
-	public int calculateHand (Arraylist<Card>cards)
+	public int calculateHand (ArrayList<Card>cards)
 	{
 		int total = 0;
 		for (int cardNo = 0; cardNo < cards.size(); cardNo++)
@@ -157,7 +173,8 @@ public class Dealer {
 		}
 		return total;
 	}
-
+	
+	
 	/**
 	 * Gets the deck of cards
 	 * 
