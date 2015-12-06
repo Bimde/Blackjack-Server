@@ -23,12 +23,10 @@ public class Server implements ActionListener {
 	private ServerSocket socket;
 	private Dealer dealer;
 	public static final String START_MESSAGE = "START";
-	public static final int START_COINS = 1000, MESSAGE_DELAY = 500,
-			MIN_BET = 2;
+	public static final int START_COINS = 1000, MESSAGE_DELAY = 500, MIN_BET = 10;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
-	public boolean[] playerNumbers = { true, false, false, false, false, false,
-			false };
+	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
 
 	private Timer timer;
 	private ArrayDeque<Message> messages;
@@ -67,12 +65,10 @@ public class Server implements ActionListener {
 				new Thread(temp).start();
 				this.allClients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client "
-						+ this.allClients.size());
+				System.err.println("Error connecting to client " + this.allClients.size());
 				e.printStackTrace();
 			}
-			System.err.println("Client " + this.allClients.size()
-					+ " connected.");
+			System.err.println("Client " + this.allClients.size() + " connected.");
 		}
 	}
 
@@ -115,7 +111,7 @@ public class Server implements ActionListener {
 	public void ready(int playerNo) {
 		this.playersReady++;
 		this.queueMessage("% " + playerNo + " READY");
-		if (this.playersReady == this.allClients.size()) {
+		if (this.playersReady == this.players.size()) {
 
 			// TODO Do a 15 second timer (otherwise the player times
 			// out)
@@ -131,7 +127,10 @@ public class Server implements ActionListener {
 	 *            the client to disconnect.
 	 */
 	public void disconnectPlayer(Client source) {
+		System.out.println(this.players);
+		source.setUserType('S');
 		this.players.remove(source);
+		System.out.println(this.players);
 	}
 
 	/**
@@ -259,12 +258,12 @@ public class Server implements ActionListener {
 
 				// Send the messages at the same time
 				synchronized (this.allClients) {
-					for (int i = 0; i < this.allClients.size(); i++) {
-						this.allClients.get(i).sendMessage(msg.getMessage());
+					for (Client client : this.allClients) {
+						client.sendMessage(msg.getMessage());
 					}
 				}
 			} else {
-				Client temp = this.allClients.get(msg.getPlayerNo());
+				Client temp = this.players.get(msg.getPlayerNo());
 				if (temp != null)
 					temp.sendMessage(msg.getMessage());
 			}

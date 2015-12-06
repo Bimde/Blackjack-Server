@@ -266,7 +266,7 @@ public class Dealer implements Runnable {
 			// Check for winners amongst all the players who said to stand
 			for (Client player : this.players) {
 				if (player.isPlayer() && player.getPlayer().getCurrentMove() == 'S') {
-					this.checkResult(player.getPlayerNo());
+					this.checkResult(player);
 				}
 			}
 
@@ -360,19 +360,17 @@ public class Dealer implements Runnable {
 	 * @param playerNo
 	 *            the player number of the player to check.
 	 */
-	public void checkResult(int playerNo) {
+	public void checkResult(Client client) {
 		// If the player gets anything closer to the blackjack than the
 		// dealer they win
-		Client temp = this.players.get(playerNo);
-		System.out.println(temp);
-		Player player = this.players.get(playerNo).getPlayer();
+		Player player = client.getPlayer();
 		if (player.getHandValue() > this.dealerHand) {
 			player.setCoins(player.getCoins() + player.getCurrentBet());
 		} else {
 			player.setCoins(player.getCoins() - player.getCurrentBet());
-			if (player.getCoins() < 10) {
-				totalActive--;
-				this.players.remove(playerNo);
+			if (player.getCoins() < Server.MIN_BET) {
+				this.totalActive--;
+				this.server.disconnectPlayer(client);
 			}
 		}
 	}

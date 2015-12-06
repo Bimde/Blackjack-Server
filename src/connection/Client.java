@@ -42,7 +42,7 @@ public class Client implements Runnable, Comparable<Client> {
 		} else {
 			System.out.println("Client has disconnected");
 		}
-		userType = 'U';
+		this.userType = 'U';
 
 		this.connected = false;
 		try {
@@ -165,20 +165,21 @@ public class Client implements Runnable, Comparable<Client> {
 				System.out.println(this.player.getCoins());
 				System.out.println("TEST3");
 
-				if (dealer.bettingIsActive() && player.getCurrentBet() == 0
+				if (this.dealer.bettingIsActive() && this.player.getCurrentBet() == 0
 						&& (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET
 						&& betPlaced <= this.player.getCoins()) {
 
 					System.out.println("TEST4");
 					this.server.queueMessage("$ " + this.getPlayerNo() + " bets " + betPlaced);
-					player.setCurrentBet(betPlaced);
-				} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("hit")) {
-					player.setCurrentMove('H');
-				} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("stand")) {
-					player.setCurrentMove('S');
+					this.player.setCurrentBet(betPlaced);
 				} else
-					if (dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("doubledown")) {
-					player.setCurrentMove('D');
+					if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("hit")) {
+					this.player.setCurrentMove('H');
+				} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("stand")) {
+					this.player.setCurrentMove('S');
+				} else if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo()
+						&& message.equalsIgnoreCase("doubledown")) {
+					this.player.setCurrentMove('D');
 				} else {
 					this.sendMessage("% FORMATERROR");
 				}
@@ -208,11 +209,11 @@ public class Client implements Runnable, Comparable<Client> {
 	}
 
 	protected Socket getSocket() {
-		return socket;
+		return this.socket;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public int getPlayerNo() {
@@ -222,11 +223,11 @@ public class Client implements Runnable, Comparable<Client> {
 	}
 
 	public char getUserType() {
-		return userType;
+		return this.userType;
 	}
 
 	public boolean isPlayer() {
-		return (userType == 'P');
+		return (this.userType == 'P');
 	}
 
 	public void setUserType(char userType) {
@@ -276,5 +277,10 @@ public class Client implements Runnable, Comparable<Client> {
 	@Override
 	public int compareTo(Client object) {
 		return this.getPlayerNo() - object.getPlayerNo();
+	}
+
+	@Override
+	public String toString() {
+		return this.name + " : " + this.player.getCoins();
 	}
 }

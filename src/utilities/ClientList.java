@@ -152,4 +152,14 @@ public class ClientList implements Iterable<Client> {
 			}
 		};
 	}
+
+	public String toString() {
+		String rep = "[";
+		ClientNode temp = this.head;
+		while (temp != null) {
+			rep += temp.getClient().toString() + ", ";
+			temp = temp.getNext();
+		}
+		return rep.length() == 2 ? "[]" : rep.substring(0, rep.length() - 2) + "]";
+	}
 }
