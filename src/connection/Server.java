@@ -23,12 +23,10 @@ public class Server implements ActionListener {
 	private ServerSocket socket;
 	private Dealer dealer;
 	public static final String START_MESSAGE = "START";
-	public static final int START_COINS = 1000, MESSAGE_DELAY = 500,
-			MIN_BET = 2;
+	public static final int START_COINS = 1000, MESSAGE_DELAY = 500, MIN_BET = 2;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
-	public boolean[] playerNumbers = { true, false, false, false, false, false,
-			false };
+	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
 
 	private Timer timer;
 	private ArrayDeque<Message> messages;
@@ -67,12 +65,10 @@ public class Server implements ActionListener {
 				new Thread(temp).start();
 				this.allClients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client "
-						+ this.allClients.size());
+				System.err.println("Error connecting to client " + this.allClients.size());
 				e.printStackTrace();
 			}
-			System.err.println("Client " + this.allClients.size()
-					+ " connected.");
+			System.err.println("Client " + this.allClients.size() + " connected.");
 		}
 	}
 
@@ -114,19 +110,11 @@ public class Server implements ActionListener {
 		this.playersReady++;
 		this.queueMessage("% " + playerNo + " READY");
 		if (this.playersReady == this.allClients.size()) {
-			this.queueMessage(new Message(Message.ALL_CLIENTS, "% " + playerNo
-					+ " READY"));
-			if (this.playersReady == this.allClients.size()) {
-				this.queueMessage(new Message(Message.ALL_CLIENTS, "% "
-						+ playerNo + " READY"));
-				if (this.playersReady == this.allClients.size()) {
 
-					// TODO Do a 15 second timer (otherwise the player times
-					// out)
-					this.gameStarted = true;
-					this.startGame();
-				}
-			}
+			// TODO Do a 15 second timer (otherwise the player times
+			// out)
+			this.gameStarted = true;
+			this.startGame();
 		}
 	}
 
