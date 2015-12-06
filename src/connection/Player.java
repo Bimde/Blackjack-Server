@@ -35,7 +35,9 @@ public class Player {
 	 *            the new card to add to the player's hand
 	 */
 	public void addCard(Card newCard) {
+		
 		if (Character.isLetter(newCard.getRank())) {
+			
 			// If the rank is an ace, determine whether the value should be
 			// 11 or 1
 			if (newCard.getRank() == 'A') {
@@ -55,6 +57,7 @@ public class Player {
 			this.handValue += (int) newCard.getRank();
 		}
 
+		//Add the card to the player's hand
 		this.currentCards.add(newCard);
 	}
 
@@ -179,8 +182,16 @@ public class Player {
 
 		// Getting over a 21 hand value means an automatic bust for the player
 		if (this.getHandValue() > 21) {
+
+			// Players who bust cannot participate in the round any longer and
+			// thus are like players who have chosen stand
 			this.setIsStanding(true);
+
+			// Set the player's number of coins to what they had prior bet minus
+			// their bet
+			this.setCoins(this.getCoins() - this.getCurrentBet());
 			return true;
+			
 		} else {
 			return false;
 		}
