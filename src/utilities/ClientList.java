@@ -36,31 +36,6 @@ public class ClientList implements Iterable<Client> {
 	}
 
 	/**
-	 * Finds the next available player number.
-	 * 
-	 * @return the next available player number.
-	 */
-	private int findEmptyPlayerNo() {
-		ClientNode temp = this.head;
-		int lastNo = 0;
-		while (temp != null) {
-			int nextNo = temp.getClient().getPlayer().getPlayerNo();
-
-			// If the difference between the player numbers of clients that are
-			// next to each other is greater than 1, then there is a
-			// gap in the player numbers
-			if (nextNo > lastNo + 1)
-				return lastNo + 1;
-			lastNo = nextNo;
-			temp = temp.getNext();
-		}
-
-		// If no gaps are found, returns one more than the last client in the
-		// list's player number
-		return lastNo + 1;
-	}
-
-	/**
 	 * Counts the number of Client objects in the list.
 	 * 
 	 * @return the number of Clients in the list.
