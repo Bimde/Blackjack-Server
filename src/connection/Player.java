@@ -27,7 +27,7 @@ public class Player {
 		this.coins = Server.START_COINS;
 		this.playerNo = playerNo;
 		this.isStanding = false;
-		currentMove = 'N';
+		this.currentMove = 'N';
 	}
 
 	/**
@@ -43,10 +43,10 @@ public class Player {
 		// If the cards in the hand busts, try to keep deranking aces until it
 		// stops busting
 		boolean tryDeranking = true;
-		while ((handTotal = calculateHand(currentCards)) > 21 && tryDeranking) {
+		while ((handTotal = calculateHand(this.currentCards)) > 21 && tryDeranking) {
 			tryDeranking = false;
-			for (int cardNo = 0; cardNo < currentCards.size(); cardNo++) {
-				if (currentCards.get(cardNo).derankAce()) {
+			for (int cardNo = 0; cardNo < this.currentCards.size(); cardNo++) {
+				if (this.currentCards.get(cardNo).derankAce()) {
 					tryDeranking = true;
 					break;
 				}
@@ -54,8 +54,8 @@ public class Player {
 		}
 
 		// Update the player's total value
-		handValue = calculateHand(currentCards);
-		System.out.println("Hand: " + handValue);
+		this.handValue = calculateHand(currentCards);
+		System.out.println("Hand: " + this.handValue);
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public class Player {
 	}
 	
 	public char getCurrentMove() {
-		return currentMove;
+		return this.currentMove;
 	}
 
 	public void setCurrentMove(char currentMove) {

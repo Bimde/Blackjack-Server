@@ -11,10 +11,9 @@ import connection.Server;
  * Handles the actual gameplay, i.e. which player's turn is it, giving the
  * dealer cards, etc.
  */
-public class Dealer implements Runnable{
+public class Dealer implements Runnable {
 	public static final char[] SUITS = { 'S', 'C', 'H', 'D' };
-	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7',
-			'8', '9', 'T', 'J', 'Q', 'K' };
+	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K' };
 	public static final int NUMBER_OF_DECKS = 6;
 
 	/**
@@ -34,19 +33,8 @@ public class Dealer implements Runnable{
 	private int totalActive;
 	private ArrayList<Card> dealerCards;
 	private int dealerHand;
-
 	private boolean bettingIsActive;
-
-	public boolean bettingIsActive() {
-		return bettingIsActive;
-	}
-
 	private int currentPlayerTurn;
-
-	public int getCurrentPlayerTurn() {
-		return currentPlayerTurn;
-	}
-
 	private BettingTimer betTimer;
 	private Thread betTimerThread;
 
@@ -79,7 +67,7 @@ public class Dealer implements Runnable{
 	 *            the server that the game is in.
 	 * @param players
 	 *            a list of all of the clients.
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	public Dealer(Server server, ArrayList<Client> players) {
 		this.deck = new Deck(NUMBER_OF_DECKS);
@@ -95,25 +83,24 @@ public class Dealer implements Runnable{
 		}
 
 		// Place the betting timer in the thread
-		betTimer = new BettingTimer();
-		betTimerThread = new Thread(betTimer);
+		this.betTimer = new BettingTimer();
+		this.betTimerThread = new Thread(betTimer);
 	}
 
 	/**
 	 * Dealer begins the game
 	 */
-	public void run(){
+	public void run() {
 		while (this.totalActive > 0) {
 			// Broadcast that a new round has started
 			this.server.queueMessage("% NEWROUND");
 			System.out.println("Starting new round...");
-			
 
 			System.out.println("Betting starts now...");
 			// Give players 60 seconds to place their bets, and reset all their
 			// previous bets
-			bettingIsActive = true;
-			betTimerThread.start();
+			this.bettingIsActive = true;
+			this.betTimerThread.start();
 			for (int playerNo = 0; playerNo < players.size(); playerNo++) {
 				if (players.get(playerNo).isPlayer()) {
 					players.get(playerNo).setBet(0);
@@ -122,16 +109,16 @@ public class Dealer implements Runnable{
 
 			// Continually check if everyone has placed a bet, and stop after 30
 			// seconds
-			while (bettingIsActive) {
+			while (this.bettingIsActive) {
 				boolean allBet = true;
-				for (int playerNo = 0; playerNo < players.size(); playerNo++) {
-					Client currentPlayer = players.get(playerNo);
+				for (int playerNo = 0; playerNo < this.players.size(); playerNo++) {
+					Client currentPlayer = this.players.get(playerNo);
 					if (currentPlayer.isPlayer() && currentPlayer.getBet() == 0) {
 						allBet = false;
 					}
 				}
 				if (allBet) {
-					bettingIsActive = false;
+					this.bettingIsActive = false;
 				}
 				try {
 					Thread.sleep(100);
@@ -142,16 +129,15 @@ public class Dealer implements Runnable{
 			}
 
 			// Disconnect all players who haven't bet
-			for (int playerNo = 0; playerNo < players.size(); playerNo++) {
-				Client currentPlayer = players.get(playerNo);
+			for (int playerNo = 0; playerNo < this.players.size(); playerNo++) {
+				Client currentPlayer = this.players.get(playerNo);
 				if (currentPlayer.isPlayer() && currentPlayer.getBet() == 0) {
 					currentPlayer.disconnect();
-					//for now
-				//	players.remove(currentPlayer);
+					// for now
+					// players.remove(currentPlayer);
 				}
 			}
 
-			
 			// Broadcast the dealer's cards and add them to the dealer's hand
 			Card cardDrawn = this.deck.getCard();
 			this.dealTheDealer(cardDrawn);
@@ -161,29 +147,26 @@ public class Dealer implements Runnable{
 			this.server.queueMessage("# 0 " + cardDrawn.toString());
 
 			// Go through each player and deal them two cards each
-			for (int player = 0; player < players.size(); player++) {
+			for (int player = 0; player < this.players.size(); player++) {
 				for (int card = 0; card <= 1; card++) {
 					cardDrawn = this.deck.getCard();
-					players.get(player).getPlayer().addCard(cardDrawn);
-					this.server.queueMessage("# " + (player+1) + " "
-							+ cardDrawn.toString());
+					this.players.get(player).getPlayer().addCard(cardDrawn);
+					this.server.queueMessage("# " + (player + 1) + " " + cardDrawn.toString());
 				}
 			}
-			
+
 			// Goes through each client
 			for (Client currentPlayer : this.players) {
-				currentPlayerTurn = currentPlayer.getPlayerNo();
+				this.currentPlayerTurn = currentPlayer.getPlayerNo();
 				boolean endTurn = false;
 				while (!endTurn) {
 					currentPlayer.getPlayer().setCurrentMove('N');
-					this.server.queueMessage("% "
-							+ (currentPlayer.getPlayerNo()) + " turn");
+					this.server.queueMessage("% " + (currentPlayer.getPlayerNo()) + " turn");
 
 					char currentMove;
 
 					// Wait for a response from the player
-					while ((currentMove = currentPlayer.getPlayer()
-							.getCurrentMove()) == 'N') {
+					while ((currentMove = currentPlayer.getPlayer().getCurrentMove()) == 'N') {
 						try {
 							Thread.sleep(50);
 						} catch (InterruptedException e) {
@@ -196,50 +179,37 @@ public class Dealer implements Runnable{
 
 						// Draw a new card and give it to the player
 						cardDrawn = this.deck.getCard();
-						this.server.queueMessage("# "
-								+ (currentPlayer.getPlayerNo()) + " "
-								+ cardDrawn.toString());
+						this.server.queueMessage("# " + (currentPlayer.getPlayerNo()) + " " + cardDrawn.toString());
 						currentPlayer.getPlayer().addCard(cardDrawn);
 
 						if (currentPlayer.getPlayer().getHandValue() > 21) {
-							int newCoins = currentPlayer.getCoins()
-									- currentPlayer.getBet();
+							int newCoins = currentPlayer.getCoins() - currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
-							this.server.queueMessage("& "
-									+ currentPlayer.getPlayerNo() + " bust "
-									+ newCoins);
+							this.server.queueMessage("& " + currentPlayer.getPlayerNo() + " bust " + newCoins);
 							// ////////////////////////////////////////////////
 							// Insert code here to kick player if coins drops
 							// too low
 							// ////////////////////////////////////////////////
 							endTurn = true;
 						} else if (currentPlayer.getPlayer().getHandValue() == 21) {
-							int newCoins = currentPlayer.getCoins()
-									+ currentPlayer.getBet();
+							int newCoins = currentPlayer.getCoins() + currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
-							this.server.queueMessage("& "
-									+ currentPlayer.getPlayerNo()
-									+ " blackjack " + newCoins);
+							this.server.queueMessage("& " + currentPlayer.getPlayerNo() + " blackjack " + newCoins);
 							endTurn = true;
 						}
 
 					} else if (currentMove == 'S') {
 						endTurn = true;
-						this.server.queueMessage("& "
-								+ currentPlayer.getPlayerNo() + " stand "
-								+ currentPlayer.getCoins());
-					} else if (currentMove == 'D'
-							&& currentPlayer.getCoins() >= currentPlayer
-									.getBet() * 2) {
+						this.server.queueMessage(
+								"& " + currentPlayer.getPlayerNo() + " stand " + currentPlayer.getCoins());
+					} else if (currentMove == 'D' && currentPlayer.getCoins() >= currentPlayer.getBet() * 2) {
 
 						// If the client double downs, double their bet
 						currentPlayer.setBet(currentPlayer.getBet() * 2);
 
 						// Draw a new card and give it to the player
 						cardDrawn = this.deck.getCard();
-						server.queueMessage("# "
-								+ (currentPlayer.getPlayerNo()) + " "
-								+ cardDrawn.toString());
+						this.server.queueMessage("# " + (currentPlayer.getPlayerNo()) + " " + cardDrawn.toString());
 						currentPlayer.getPlayer().addCard(cardDrawn);
 
 						// Change to stand
@@ -261,7 +231,7 @@ public class Dealer implements Runnable{
 			}
 
 			// Show the dealer's hidden card
-			server.queueMessage("# 0 " + dealerCards.get(0));
+			this.server.queueMessage("# 0 " + this.dealerCards.get(0));
 
 			// Keep drawing cards for the dealer until the dealer hits 17 or
 			// higher
@@ -288,8 +258,7 @@ public class Dealer implements Runnable{
 
 			// Check for winners amongst all the players who said to stand
 			for (int i = 0; i < players.size(); i++) {
-				if (players.get(i).isPlayer()
-						&& players.get(i).getPlayer().getCurrentMove() == 'S') {
+				if (this.players.get(i).isPlayer() && this.players.get(i).getPlayer().getCurrentMove() == 'S') {
 					this.checkResult(i);
 				}
 			}
@@ -301,10 +270,8 @@ public class Dealer implements Runnable{
 			// string at the end.
 			String standings = "+ ";
 			for (int i = 0; i < this.players.size(); i++) {
-				if (!players.get(i).getPlayer().checkBust()) {
-					standings += (i + " " + players.get(i).getPlayer()
-							.getCoins())
-							+ " ";
+				if (!this.players.get(i).getPlayer().checkBust()) {
+					standings += (i + " " + this.players.get(i).getPlayer().getCoins()) + " ";
 				}
 			}
 			this.server.queueMessage(standings);
@@ -318,8 +285,7 @@ public class Dealer implements Runnable{
 			}
 
 			// Shuffle deck and broadcast the message
-			if (this.deck.size() < MINIMUM_CARDS_PER_PLAYER
-					* this.players.size()
+			if (this.deck.size() < MINIMUM_CARDS_PER_PLAYER * this.players.size()
 					|| Math.random() * 100 < SHUFFLE_CHANCE) {
 				this.deck.reloadDeck();
 				this.server.queueMessage("% SHUFFLE");
@@ -337,10 +303,10 @@ public class Dealer implements Runnable{
 		// If the cards in the hand busts, try to keep deranking aces until it
 		// stops busting
 		boolean tryDeranking = true;
-		while ((handTotal = calculateHand(dealerCards)) > 21 && tryDeranking) {
+		while ((handTotal = calculateHand(this.dealerCards)) > 21 && tryDeranking) {
 			tryDeranking = false;
-			for (int cardNo = 0; cardNo < dealerCards.size(); cardNo++) {
-				if (dealerCards.get(cardNo).derankAce()) {
+			for (int cardNo = 0; cardNo < this.dealerCards.size(); cardNo++) {
+				if (this.dealerCards.get(cardNo).derankAce()) {
 					tryDeranking = true;
 					break;
 				}
@@ -348,7 +314,7 @@ public class Dealer implements Runnable{
 		}
 
 		// Update the dealer's total value
-		dealerHand = handTotal;
+		this.dealerHand = handTotal;
 	}
 
 	/**
@@ -371,18 +337,26 @@ public class Dealer implements Runnable{
 		return this.deck;
 	}
 
+	public boolean bettingIsActive() {
+		return this.bettingIsActive;
+	}
+
+	public int getCurrentPlayerTurn() {
+		return this.currentPlayerTurn;
+	}
 
 	/**
 	 * Checks for the winner
-	 * @param playerNo The number of the player to check
+	 * 
+	 * @param playerNo
+	 *            The number of the player to check
 	 */
 	public void checkResult(int playerNo) {
 
-
 		// If the player gets anything closer to the blackjack than the
 		// dealer they win
-		Player player = players.get(playerNo).getPlayer();
-		if (player.getHandValue() > dealerHand) {
+		Player player = this.players.get(playerNo).getPlayer();
+		if (player.getHandValue() > this.dealerHand) {
 
 			player.setCoins(player.getCoins() + player.getCurrentBet());
 		} else {

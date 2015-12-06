@@ -64,7 +64,6 @@ public class BetterClient implements ActionListener, KeyListener {
 		// panel.add(pane);
 
 		send.addActionListener(this);
-		send.addKeyListener(this);
 		send.setSize(100, 50);
 		send.setLocation(200, 400);
 		panel.add(send);
@@ -72,6 +71,7 @@ public class BetterClient implements ActionListener, KeyListener {
 		messageBox.setLocation(0, 400);
 		messageBox.setSize(200, 30);
 		messageBox.setText("");
+		messageBox.addKeyListener(this);
 		panel.add(messageBox);
 
 		frame.setSize(300, 500);
@@ -102,13 +102,14 @@ public class BetterClient implements ActionListener, KeyListener {
 	}
 
 	public void keyPressed(KeyEvent key) {
-		if (key.getKeyCode() == KeyEvent.VK_SPACE) {
+		System.out.println("entered");
+		if (key.getKeyCode() == KeyEvent.VK_ENTER) {
+			System.out.println("entered");
 			String text = messageBox.getText();
 			if (!text.trim().isEmpty()) {
 				output.println(text);
 				output.flush();
 				messageBox.setText("");
-
 			}
 		}
 	}

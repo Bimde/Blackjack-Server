@@ -12,7 +12,6 @@ import java.util.Scanner;
 import javax.swing.Timer;
 
 import gameplay.Dealer;
-import utilities.ClientList;
 import utilities.Validator;
 
 public class Server implements ActionListener {
