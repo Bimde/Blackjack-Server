@@ -2,6 +2,7 @@ package gameplay;
 
 import java.util.ArrayList;
 
+import connection.Client;
 import connection.Server;
 import utilities.ClientList;
 
@@ -15,7 +16,7 @@ public class Game {
 	public static final int NUMBER_OF_DECKS = 6;
 	private Server server;
 	private Deck deck;
-	private ClientList clients;
+	private ClientList players;
 	private boolean[] isStand;
 	private int totalActive;
 	private ArrayList<Card> dealerCards;
@@ -36,14 +37,14 @@ public class Game {
 		// TODO Shouldn't the clients be only the players?
 		// The clients getting passed in from the server is the list of actual
 		// clients rather than player
-		this.clients = clients;
+		this.players = clients;
 		this.dealerHand = 0;
 		this.isStand = new boolean[clients.size()];
 		this.totalActive = clients.size();
 
 		// Gives each player 1000 coins to start
 		for (int player = 0; player < clients.size(); player++) {
-			this.clients.get(player).setCoins(1000);
+			this.players.get(player).setCoins(1000);
 		}
 
 		while (this.totalActive > 0) {
@@ -73,23 +74,23 @@ public class Game {
 			}
 
 			// Goes through each client
-			for (int client = 0; client < this.isStand.length; client++) {
-				if (this.clients.get(client).getIsStanding() != true) {
-					this.server.queueMessage("% " + (client + 1) + " turn");
+			for (Client client : this.players) {
+				if (client.getIsStanding() != true) {
+					this.server.queueMessage("% " + (client.getPlayerNo() + 1) + " turn");
 					Card card = this.deck.getCard();
-					if (this.clients.get(client).getIn().equals("hit")) {
-						this.clients.get(client).message("# " + (client + 1) + " " + card.toString());
-						this.clients.get(client).getPlayer().addCard(card);
-					} else if (this.clients.get(client).getIn().equals("stand")) {
-						this.clients.get(client).setIsStanding(true);
+					if (client.getIn().equals("hit")) {
+						client.message("# " + (client.getPlayerNo() + 1) + " " + card.toString());
+						client.getPlayer().addCard(card);
+					} else if (client.getIn().equals("stand")) {
+						client.setIsStanding(true);
 						this.totalActive--;
-					} else if (this.clients.get(client).getIn().equals("doubledown")) {
+					} else if (client.getIn().equals("doubledown")) {
 
 						// If the client double downs, double their bet
-						this.clients.get(client).setBet(this.clients.get(client).getBet() * 2);
-						this.clients.get(client).message("# " + (client + 1) + " " + this.deck.getCard().toString());
-						this.clients.get(client).getPlayer().addCard(card);
-						this.clients.get(client).setIsStanding(true);
+						client.setBet(client.getBet() * 2);
+						client.message("# " + (client.getPlayerNo() + 1) + " " + this.deck.getCard().toString());
+						client.getPlayer().addCard(card);
+						client.setIsStanding(true);
 						this.totalActive--;
 					}
 				}
@@ -113,8 +114,8 @@ public class Game {
 
 			// Clear the cards of each player including the dealer
 			this.dealerCards.clear();
-			for (int i = 0; i < this.clients.size(); i++) {
-				this.clients.get(i).getPlayer().clearHand();
+			for (int i = 0; i < this.players.size(); i++) {
+				this.players.get(i).getPlayer().clearHand();
 			}
 
 			// Shuffle deck and broadcast the message
