@@ -278,7 +278,7 @@ public class Dealer implements Runnable {
 
 			// Clear the cards of each player including the dealer
 			this.dealerCards.clear();
-			for (int i = 0; i <= this.players.size(); i++) {
+			for (int i = 0; i < this.players.size(); i++) {
 				if (this.players.get(i).isPlayer()) {
 					this.players.get(i).getPlayer().clearHand();
 				}
@@ -303,7 +303,7 @@ public class Dealer implements Runnable {
 		// If the cards in the hand busts, try to keep deranking aces until it
 		// stops busting
 		boolean tryDeranking = true;
-		while ((handTotal = calculateHand(this.dealerCards)) > 21 && tryDeranking) {
+		while ((handTotal = this.calculateHand(this.dealerCards)) > 21 && tryDeranking) {
 			tryDeranking = false;
 			for (int cardNo = 0; cardNo < this.dealerCards.size(); cardNo++) {
 				if (this.dealerCards.get(cardNo).derankAce()) {
@@ -315,6 +315,7 @@ public class Dealer implements Runnable {
 
 		// Update the dealer's total value
 		this.dealerHand = handTotal;
+		System.out.println(this.dealerHand);
 	}
 
 	/**
@@ -323,7 +324,7 @@ public class Dealer implements Runnable {
 	private int calculateHand(ArrayList<Card> cards) {
 		int total = 0;
 		for (int cardNo = 0; cardNo < cards.size(); cardNo++) {
-			total = cards.get(cardNo).getValue();
+			total += cards.get(cardNo).getValue();
 		}
 		return total;
 	}

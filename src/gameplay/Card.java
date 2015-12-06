@@ -18,29 +18,28 @@ public class Card {
 		}
 	}
 
-	/** 
+	/**
 	 * De-ranks the card from 11 to 1 if it is an ace
+	 * 
 	 * @return Whether or not the card could be deranked
 	 */
-	public boolean derankAce()
-	{
-		boolean canDerank = (rank=='A' && value==11);
-		if (canDerank)
-		{
+	public boolean derankAce() {
+		boolean canDerank = (this.rank == 'A' && this.value == 11);
+		if (canDerank) {
 			this.value = 1;
 		}
 		return canDerank;
 	}
-	
+
 	/**
 	 * Gets the integer value of value
+	 * 
 	 * @return Value variable value
 	 */
-	public int getValue()
-	{
+	public int getValue() {
 		return value;
 	}
-	
+
 	/**
 	 * Gets the suit of a card
 	 * 

@@ -12,6 +12,7 @@ import java.net.UnknownHostException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -22,6 +23,7 @@ public class BetterClient implements ActionListener, KeyListener {
 	String text;
 	JFrame messenger = new JFrame("William");
 	static JTextArea chatBox = new JTextArea();
+	static JScrollPane pane = new JScrollPane(chatBox);
 	// Making a socket to get info from server.
 	static Socket mySocket;
 	JTextField messageBox = new JTextField();
@@ -54,11 +56,11 @@ public class BetterClient implements ActionListener, KeyListener {
 
 	public BetterClient() throws UnknownHostException, IOException {
 
-		chatBox.setSize(300, 300);
-		chatBox.setLocation(0, 0);
+		pane.setSize(300, 300);
+		pane.setLocation(0, 0);
 		panel.setSize(300, 500);
 		panel.setLayout(null);
-		panel.add(chatBox);
+		panel.add(pane);
 		// JScrollPane pane = new JScrollPane();
 		// pane.add(chatBox);
 		// panel.add(pane);
@@ -102,9 +104,7 @@ public class BetterClient implements ActionListener, KeyListener {
 	}
 
 	public void keyPressed(KeyEvent key) {
-		System.out.println("entered");
 		if (key.getKeyCode() == KeyEvent.VK_ENTER) {
-			System.out.println("entered");
 			String text = messageBox.getText();
 			if (!text.trim().isEmpty()) {
 				output.println(text);
