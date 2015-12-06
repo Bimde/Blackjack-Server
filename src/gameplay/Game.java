@@ -107,11 +107,6 @@ public class Game {
 						this.totalActive--;
 					}
 				}
-
-				// Reloads the deck when there aren't enough cards
-				if (this.deck.size() <= 6) {
-					this.deck.reloadDeck();
-				}
 			}
 
 			// Keep drawing cards for the dealer until the dealer hits 17 or
