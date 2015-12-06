@@ -18,9 +18,9 @@ public class Card {
 		}
 	}
 
-	/** De-ranks the card from 11 to 1 if it is an ace
-	 * 
-	 * @return whether or not the card is an ace
+	/** 
+	 * De-ranks the card from 11 to 1 if it is an ace
+	 * @return Whether or not the card could be deranked
 	 */
 	public boolean derankAce()
 	{
@@ -51,7 +51,7 @@ public class Card {
 	}
 
 	/**
-	 * Gets the rank of a card
+	 * Gets the rank of a card for broadcast
 	 * 
 	 * @return The rank of the card
 	 */

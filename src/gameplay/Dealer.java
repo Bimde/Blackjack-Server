@@ -259,6 +259,10 @@ public class Dealer {
 		return this.deck;
 	}
 
+	/**
+	 * Checks for the winner
+	 * @param playerNo The number of the player to check
+	 */
 	public void checkWinner(int playerNo) {
 
 		// If the dealer has a blackjack every player loses

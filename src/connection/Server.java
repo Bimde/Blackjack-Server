@@ -26,7 +26,8 @@ public class Server implements ActionListener {
 	public static final int START_COINS = 1000, MESSAGE_DELAY = 500;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
-	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
+	public boolean[] playerNumbers = { true, false, false, false, false, false,
+			false };
 
 	private Timer timer;
 	private ArrayDeque<Message> messages;
@@ -65,7 +66,8 @@ public class Server implements ActionListener {
 				new Thread(temp).start();
 				this.clients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client " + this.clients.size());
+				System.err.println("Error connecting to client "
+						+ this.clients.size());
 				e.printStackTrace();
 			}
 			System.err.println("Client " + this.clients.size() + " connected.");
@@ -104,7 +106,8 @@ public class Server implements ActionListener {
 	 */
 	protected synchronized void ready(int playerNo) {
 		this.playersReady++;
-		this.queueMessage(new Message(Message.ALL_CLIENTS, "% " + playerNo + " READY"));
+		this.queueMessage(new Message(Message.ALL_CLIENTS, "% " + playerNo
+				+ " READY"));
 		if (this.playersReady == this.clients.size()) {
 
 			// TODO Do a 15 second timer (otherwise the player times out)
@@ -213,6 +216,7 @@ public class Server implements ActionListener {
 			}
 		}
 
+		// While the port entered is invalid, continually ask for another port
 		while (port == -1) {
 			System.out.print("Please enter a valid port: ");
 			portStr = keyboard.nextLine();
@@ -220,6 +224,7 @@ public class Server implements ActionListener {
 				port = Integer.parseInt(portStr);
 			}
 		}
+		
 		new Server(port);
 	}
 
@@ -232,7 +237,11 @@ public class Server implements ActionListener {
 			if (this.messages.size() == 0)
 				return;
 			Message msg = this.messages.remove();
+
+			// Messages are either to the entire server or to individual clients
 			if (msg.getPlayerNo() == Message.ALL_CLIENTS) {
+
+				// Send the messages at the same time
 				synchronized (this.clients) {
 					for (int i = 0; i < this.clients.size(); i++) {
 						this.clients.get(i).message(msg.getMessage());
