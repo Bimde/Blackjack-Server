@@ -1,5 +1,7 @@
 package gameplay;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import connection.Client;
@@ -87,25 +89,42 @@ public class Dealer {
 			while (!allBet) {
 			}
 
-			// Goes through each client
+		// Goes through each client
 			for (Client client : this.players) {
-				if (client.getIsStanding() != true) {
+				boolean stand = false;
+				
+				while (!stand) {
 					this.server.queueMessage("% " + (client.getPlayerNo() + 1) + " turn");
-					Card card = this.deck.getCard();
-					if (client.getIn().equals("hit")) {
-						client.message("# " + (client.getPlayerNo() + 1) + " " + card.toString());
-						client.getPlayer().addCard(card);
-					} else if (client.getIn().equals("stand")) {
-						client.setIsStanding(true);
-						this.totalActive--;
-					} else if (client.getIn().equals("doubledown")) {
-
-						// If the client double downs, double their bet
-						client.setBet(client.getBet() * 2);
-						client.message("# " + (client.getPlayerNo() + 1) + " " + this.deck.getCard().toString());
-						client.getPlayer().addCard(card);
-						client.setIsStanding(true);
-						this.totalActive--;
+					
+					BufferedReader currentIn = client.getIn();
+					
+					try {
+						if (currentIn.readLine().equals("hit")) {
+							// Draw a new card and give it to the player
+							cardDrawn = this.deck.getCard();
+							client.message("# " + (client.getPlayerNo() + 1) + " " + cardDrawn.toString());
+							client.getPlayer().addCard(cardDrawn);
+						} else if (currentIn.readLine().equals("stand")) {
+							
+							stand = true;
+							this.totalActive--;
+						} else if (currentIn.readLine().equals("doubledown")) {
+							// If the client double downs, double their bet
+							client.setBet(client.getBet() * 2);
+							
+							// Draw a new card and give it to the player
+							cardDrawn = this.deck.getCard();
+							client.message("# " + (client.getPlayerNo() + 1) + " " + cardDrawn.toString());
+							client.getPlayer().addCard(cardDrawn);
+							
+							stand = true;
+							this.totalActive--;
+						} else {
+							client.message("% FORMATERROR");
+						}
+					} catch (IOException e) {
+						System.err.println("Error getting player's decision");
+						e.printStackTrace();
 					}
 				}
 			}
@@ -113,7 +132,7 @@ public class Dealer {
 			// Keep drawing cards for the dealer until the dealer hits 17 or
 			// higher
 			// Broadcast each card as the dealer draws
-			while (this.dealerHand <= 17) {
+			while (this.dealerHand < 17) {
 				cardDrawn = this.deck.getCard();
 				this.dealTheDealer(cardDrawn);
 				this.server.queueMessage("# 0 " + cardDrawn.toString());
