@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class Player {
 
 	private ArrayList<Card> currentCards = new ArrayList<Card>();
+	private int handValue;
 	private int coins;
 	private int playerNo;
 	private int currentBet;
@@ -32,6 +33,26 @@ public class Player {
 	 *            the new card to add to the player's hand
 	 */
 	public void addCard(Card newCard) {
+		if (Character.isLetter(newCard.getRank())) {
+			// If the rank is an ace, determine whether the value should be
+			// 11 or 1
+			if (newCard.getRank() == 'A') {
+				if (this.handValue + 11 > 17) {
+					this.handValue++;
+				} else {
+					this.handValue += 11;
+				}
+			}
+
+			// All other character values (T, J, Q, K) are worth ten
+			else {
+				this.handValue += 10;
+			}
+		} else {
+			// If the rank is numeric, add it's value accordingly
+			this.handValue += (int) newCard.getRank();
+		}
+
 		this.currentCards.add(newCard);
 	}
 
@@ -40,6 +61,10 @@ public class Player {
 	 */
 	public void clearHand() {
 		this.currentCards.clear();
+	}
+	
+	public int getHandValue() {
+		return this.handValue;
 	}
 
 	public ArrayList<Card> getCurrentCards() {
