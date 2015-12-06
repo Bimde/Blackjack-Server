@@ -84,11 +84,26 @@ public class ClientList implements Iterable<Client> {
 	 *         is not found, returns null.
 	 */
 	public Client get(int playerNo) {
+		ClientNode temp = this.getNode(playerNo);
+		if (temp != null)
+			return temp.getClient();
+		return null;
+	}
+
+	/**
+	 * Gets a Client object from the list given its player number.
+	 * 
+	 * @param playerNo
+	 *            the number associated with the desired client
+	 * @return the client associated with specified player number. If the player
+	 *         is not found, returns null.
+	 */
+	private ClientNode getNode(int playerNo) {
 		ClientNode temp = this.head;
 		while (temp != null) {
 
 			if ((temp.getClient().getPlayer().getPlayerNo() == playerNo))
-				return temp.getClient();
+				return temp;
 			temp = temp.getNext();
 		}
 		return null;
@@ -107,6 +122,16 @@ public class ClientList implements Iterable<Client> {
 				this.remove(temp);
 			temp = temp.getNext();
 		}
+	}
+
+	/**
+	 * Removes a Client object from the list.
+	 * 
+	 * @param client
+	 *            the player number to remove.
+	 */
+	public void remove(int playerNo) {
+		this.remove(this.getNode(playerNo));
 	}
 
 	/**

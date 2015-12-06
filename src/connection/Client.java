@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import utilities.Validator;
 import gameplay.Dealer;
+import utilities.Validator;
 
 public class Client implements Runnable, Comparable<Client> {
 	private Server server;
@@ -153,7 +153,7 @@ public class Client implements Runnable, Comparable<Client> {
 
 		}
 		System.out.println("TEST1");
-		
+
 		// Game
 		while (this.isPlayer() && this.connected) {
 			System.out.println("TEST2");

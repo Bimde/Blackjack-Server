@@ -367,10 +367,13 @@ public class Dealer implements Runnable {
 		System.out.println(temp);
 		Player player = this.players.get(playerNo).getPlayer();
 		if (player.getHandValue() > this.dealerHand) {
-
 			player.setCoins(player.getCoins() + player.getCurrentBet());
 		} else {
 			player.setCoins(player.getCoins() - player.getCurrentBet());
+			if (player.getCoins() < 10) {
+				totalActive--;
+				this.players.remove(playerNo);
+			}
 		}
 	}
 }
