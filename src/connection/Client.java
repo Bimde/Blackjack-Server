@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import gameplay.Dealer;
+import utilities.ClientList;
 import utilities.Validator;
 
 public class Client implements Runnable, Comparable<Client> {
@@ -124,7 +125,7 @@ public class Client implements Runnable, Comparable<Client> {
 						this.userType = 'P';
 						this.sendMessage("% ACCEPTED");
 						this.server.newPlayer(this);
-						player = new Player(server, server.returnAndUsePlayerNumber());
+						player = new Player(this.server, this.server.returnAndUsePlayerNumber());
 					}
 				} else if (message.equalsIgnoreCase("SPECTATE")) {
 					this.userType = 'S';
@@ -135,22 +136,25 @@ public class Client implements Runnable, Comparable<Client> {
 			}
 		}
 
-		// Check if the player is ready to start
-		while (this.isPlayer() && this.connected && !this.isReady) {
-			try {
-				String message = this.input.readLine();
+		if (this.isPlayer()) {
+			this.sendStartMessage();
+			// Check if the player is ready to start
+			while (this.connected && !this.isReady) {
+				try {
+					String message = this.input.readLine();
 
-				if (message.equalsIgnoreCase("READY")) {
-					this.server.ready(this.player.getPlayerNo());
-					this.isReady = true;
-					System.out.println(name + " is ready");
-				} else {
-					this.sendMessage("% FORMATERROR");
+					if (message.equalsIgnoreCase("READY")) {
+						this.server.ready(this.player.getPlayerNo());
+						this.isReady = true;
+						System.out.println(name + " is ready");
+					} else {
+						this.sendMessage("% FORMATERROR");
+					}
+				} catch (IOException e) {
+					this.disconnect();
 				}
-			} catch (IOException e) {
-				this.disconnect();
-			}
 
+			}
 		}
 		System.out.println("TEST1");
 
@@ -264,6 +268,17 @@ public class Client implements Runnable, Comparable<Client> {
 
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+
+	private void sendStartMessage() {
+		ClientList players = this.server.getCurrentPlayers();
+		String message = "@ " + this.getPlayerNo() + " " + (players.size() - 1);
+		for (Client client : players) {
+			String name = client.getName();
+			if (!name.equals(this.name))
+				message += " " + client.getName() + " //";
+		}
+		this.sendMessage(message);
 	}
 
 	public boolean isReady() {

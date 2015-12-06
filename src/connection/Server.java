@@ -241,6 +241,10 @@ public class Server implements ActionListener {
 		new Server(port);
 	}
 
+	protected ClientList getCurrentPlayers() {
+		return this.players;
+	}
+
 	/**
 	 * Gets called by 'actionPerformed' method to send the latest message to the
 	 * specified clients
