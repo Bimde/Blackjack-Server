@@ -136,30 +136,26 @@ public class Dealer {
 	}
 
 	/**
-	 * Handles dealing to the dealer
+	 * Handles dealing to the dealer and updates the current hand's value
 	 */
 	public void dealerDeal(Card card) {
-		if (Character.isLetter(card.getRank())) {
-			// If the rank is an ace, determine whether the value should be
-			// 11 or 1
-			if (card.getRank() == 'A') {
-				if (this.dealerHand + 11 > 17) {
-					this.dealerHand++;
-				} else {
-					this.dealerHand += 11;
-				}
-			}
-
-			// All other character values (T, J, Q, K) are worth ten
-			else {
-				this.dealerHand += 10;
-			}
-		} else {
-			// If the rank is numeric, add it's value accordingly
-			this.dealerHand += (int) card.getRank();
-		}
-
 		this.dealerCards.add(card);
+		int handTotal = 0;
+		for ()
+		
+	}
+	
+	/**
+	 * 
+	 */
+	public int calculateHand (Arraylist<Card>cards)
+	{
+		int total = 0;
+		for (int cardNo = 0; cardNo < cards.size(); cardNo++)
+		{
+			total = cards.get(cardNo).getValue();
+		}
+		return total;
 	}
 
 	/**

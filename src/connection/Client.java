@@ -51,6 +51,9 @@ public class Client implements Runnable {
 		this.server.disconnectClient(this);
 	}
 
+	/**
+	 *  Constructor for the client
+	 */
 	public Client(Socket client, Server server) {
 		this.socket = client;
 		this.connected = true;
@@ -111,7 +114,7 @@ public class Client implements Runnable {
 			}
 		}
 
-		while (this.connected && !this.isReady) {
+		while (this.userType == 'U' && this.connected && !this.isReady) {
 			try {
 				String message = this.input.readLine();
 
@@ -128,7 +131,7 @@ public class Client implements Runnable {
 		}
 
 		// Game
-		while (this.connected) {
+		while (this.userType == 'U' && this.connected) {
 			// Get the player's bet
 			// TODO Add a 60s timer
 			try {
