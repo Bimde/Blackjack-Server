@@ -11,6 +11,7 @@ public class Player {
 	private int coins;
 	private int playerNo;
 	private int currentBet;
+	private boolean isStanding;
 	private Server server;
 
 	/**
@@ -24,6 +25,7 @@ public class Player {
 		this.server = server;
 		this.coins = Server.START_COINS;
 		this.playerNo = playerNo;
+		this.isStanding = false;
 	}
 
 	/**
@@ -67,6 +69,16 @@ public class Player {
 		return this.handValue;
 	}
 
+	public boolean getIsStanding()
+	{
+		return this.isStanding;
+	}
+	
+	public void setIsStanding(boolean isStanding)
+	{
+		this.isStanding = isStanding;
+	}
+	
 	public ArrayList<Card> getCurrentCards() {
 		return this.currentCards;
 	}
@@ -99,4 +111,17 @@ public class Player {
 		this.currentBet = currentBet;
 	}
 
+	public boolean checkBust()
+	{
+		if(this.getHandValue() > 21)
+		{
+			this.setIsStanding(true);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		
+	}
 }
