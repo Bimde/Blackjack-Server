@@ -14,6 +14,19 @@ public class Game {
 	public static final char[] SUITS = { 'S', 'C', 'H', 'D' };
 	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K' };
 	public static final int NUMBER_OF_DECKS = 6;
+
+	/**
+	 * Minimum cards required in the deck before the start of the round
+	 */
+	public static final int MINIMUM_CARDS_PER_PLAYER = 40;
+
+	/**
+	 * Chance that the deck will be shuffled at the end of a round (in
+	 * percentage)
+	 * 
+	 * Setting this to 100 means the deck will be shuffled after every turn
+	 */
+	public static final int SHUFFLE_CHANCE = 20;
 	private Server server;
 	private Deck deck;
 	private ClientList players;
@@ -119,8 +132,11 @@ public class Game {
 			}
 
 			// Shuffle deck and broadcast the message
-			this.deck.reloadDeck(); // Requirements for when to shuffle?
-			this.server.queueMessage("% SHUFFLE");
+			if (this.deck.size() < MINIMUM_CARDS_PER_PLAYER * this.players.size()
+					|| Math.random() * 100 < SHUFFLE_CHANCE) {
+				this.deck.reloadDeck();
+				this.server.queueMessage("% SHUFFLE");
+			}
 		}
 	}
 
