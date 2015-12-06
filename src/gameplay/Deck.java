@@ -24,9 +24,9 @@ public class Deck extends ArrayList<Card> {
 		// For the number of decks required, go through the number of suits and
 		// add each rank for each suit
 		for (int i = 0; i < this.numOfDecks; i++) {
-			for (int suit = 0; suit < Game.SUITS.length; suit++) {
-				for (int rank = 0; rank < Game.RANKS.length; rank++) {
-					this.add(new Card(Game.SUITS[suit], Game.RANKS[rank]));
+			for (int suit = 0; suit < Dealer.SUITS.length; suit++) {
+				for (int rank = 0; rank < Dealer.RANKS.length; rank++) {
+					this.add(new Card(Dealer.SUITS[suit], Dealer.RANKS[rank]));
 				}
 			}
 		}
