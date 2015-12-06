@@ -6,7 +6,6 @@ import connection.Client;
 import connection.Player;
 import connection.Server;
 
-//lol
 /**
  * Handles the actual gameplay, i.e. which player's turn is it, giving the
  * dealer cards, etc.
