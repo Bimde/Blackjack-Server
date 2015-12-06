@@ -64,64 +64,126 @@ public class Player {
 	public void clearHand() {
 		this.currentCards.clear();
 	}
-	
+
+	/**
+	 * Returns the total value of the player's hand
+	 * 
+	 * @return Numerical value of the player's hand
+	 */
 	public int getHandValue() {
 		return this.handValue;
 	}
 
-	public boolean getIsStanding()
-	{
+	/**
+	 * States whether or not the player has stood
+	 * 
+	 * @return Whether or not the player has stood
+	 */
+	public boolean getIsStanding() {
 		return this.isStanding;
 	}
-	
-	public void setIsStanding(boolean isStanding)
-	{
+
+	/**
+	 * If the player chooses stand during the round, set their status isStanding
+	 * to true. Otherwise isStanding will remain false.
+	 * 
+	 * @param isStanding
+	 *            Dictates if the player has chosen to stand or not
+	 */
+	public void setIsStanding(boolean isStanding) {
 		this.isStanding = isStanding;
 	}
-	
+
+	/**
+	 * Gets the player's hand (all his or her current cards)
+	 * 
+	 * @return An array list containing the player's hand.
+	 */
 	public ArrayList<Card> getCurrentCards() {
 		return this.currentCards;
 	}
 
+	/**
+	 * Sets the players hand to a set of cards
+	 * 
+	 * @param currentCards
+	 *            An array list of cards to be set as the player's new hand
+	 */
 	public void setCurrentCards(ArrayList<Card> currentCards) {
 		this.currentCards = currentCards;
 	}
 
+	/**
+	 * Gets the number of coins the player has
+	 * 
+	 * @return The number of coins the player has
+	 */
 	public int getCoins() {
 		return this.coins;
 	}
 
+	/**
+	 * Sets the number of coins the player will have
+	 * 
+	 * @param coins
+	 *            The number of coins the player will have
+	 */
 	public void setCoins(int coins) {
 		this.coins = coins;
 	}
 
+	/**
+	 * Gets the player's assigned player number
+	 * 
+	 * @return The player's assigned player number
+	 */
 	public int getPlayerNo() {
 		return this.playerNo;
 	}
 
+	/**
+	 * Assigns the player with a player number
+	 * 
+	 * @param playerNo
+	 *            The player number to be assigned
+	 */
 	public void setPlayerNo(int playerNo) {
 		this.playerNo = playerNo;
 	}
 
+	/**
+	 * Gets the player's most recent bet
+	 * 
+	 * @return The player's current bet
+	 */
 	public int getCurrentBet() {
 		return this.currentBet;
 	}
 
+	/**
+	 * Sets the player's bet
+	 * 
+	 * @param currentBet
+	 *            The most recent bet of the player
+	 */
 	public void setCurrentBet(int currentBet) {
 		this.currentBet = currentBet;
 	}
 
-	public boolean checkBust()
-	{
-		if(this.getHandValue() > 21)
-		{
+	/**
+	 * Determines whether or not the player has bust
+	 * 
+	 * @return Whether or not the player has bust
+	 */
+	public boolean checkBust() {
+
+		// Getting over a 21 hand value means an automatic bust for the player
+		if (this.getHandValue() > 21) {
 			this.setIsStanding(true);
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
-		
+
 	}
 }

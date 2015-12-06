@@ -83,6 +83,7 @@ public class Dealer {
 			boolean allBet = false;
 
 			while (!allBet) {
+				
 			}
 
 			// Goes through each client
