@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 /**
  * Leader board for the top ten players. Keeps track of said players and their
- * respective scores,
+ * respective scores.
  */
 public class Leaderboard {
 	private static PrintWriter fileOut;
@@ -33,8 +33,8 @@ public class Leaderboard {
 		inFile = new Scanner(new File("topScores.txt"));
 		highScores = new int[10];
 		topPlayers = new String[10];
-		this.name = name;
-		this.score = score;
+		Leaderboard.name = name;
+		Leaderboard.score = score;
 
 		readIn();
 		writeOut();
