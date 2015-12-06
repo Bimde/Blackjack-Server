@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import utilities.Validator;
 import gameplay.Dealer;
 
 public class Client implements Runnable, Comparable<Client> {
@@ -90,7 +91,14 @@ public class Client implements Runnable, Comparable<Client> {
 			this.connected = false;
 		}
 		try {
-			this.name = input.readLine();
+			while (this.name == null) {
+				String newName = input.readLine();
+				if (Validator.isValidName(newName)) {
+					this.name = newName;
+				} else {
+					this.sendMessage("% FORMATERROR");
+				}
+			}
 			System.out.println("New user registered as " + name);
 		} catch (IOException e) {
 			this.disconnect();

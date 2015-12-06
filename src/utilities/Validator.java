@@ -38,4 +38,19 @@ public class Validator {
 		}
 		return -1;
 	}
+	
+	/**
+	 * Checks if a name is valid.
+	 * 
+	 * @param name
+	 *            the name to check.
+	 * @return whether or not the name is valid.
+	 */
+	public static boolean isValidName(String name) {
+		if (name.matches("([a-zA-Z0-9 ]){1,16}")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
