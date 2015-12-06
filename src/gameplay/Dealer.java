@@ -221,7 +221,7 @@ public class Dealer implements Runnable {
 
 						// Change to stand
 						endTurn = true;
-						currentMove = 'S';
+						currentPlayer.getPlayer().setCurrentMove('S');
 
 					} else {
 						currentPlayer.sendMessage("% FORMATERROR");
@@ -233,7 +233,6 @@ public class Dealer implements Runnable {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

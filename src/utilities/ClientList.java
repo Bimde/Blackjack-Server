@@ -160,6 +160,6 @@ public class ClientList implements Iterable<Client> {
 			rep += temp.getClient().toString() + ", ";
 			temp = temp.getNext();
 		}
-		return rep.length() == 2 ? "[]" : rep.substring(0, rep.length() - 2) + "]";
+		return rep.length() <= 1 ? "[]" : rep.substring(0, rep.length() - 2) + "]";
 	}
 }
