@@ -158,6 +158,7 @@ public class Client implements Runnable, Comparable<Client> {
 					&& (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET
 					&& betPlaced <= this.player.getCoins()) {
 				this.server.queueMessage("$ " + this.getPlayerNo() + " bets " + betPlaced);
+				System.out.println("Bet Placed (not applicable if 0): " + betPlaced);
 				this.player.setCurrentBet(betPlaced);
 			} else if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("hit")) {
 				this.player.setCurrentMove('H');
@@ -167,7 +168,6 @@ public class Client implements Runnable, Comparable<Client> {
 					&& message.equalsIgnoreCase("doubledown")) {
 				this.player.setCurrentMove('D');
 			} else {
-				System.out.println("Bet Placed (not applicable if 0): " + betPlaced);
 				this.sendMessage("% FORMATERROR");
 			}
 

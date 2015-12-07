@@ -162,13 +162,28 @@ public class Dealer implements Runnable {
 					player.getPlayer().addCard(cardDrawn);
 					this.server.queueMessage("# " + (player.getPlayerNo())
 							+ " " + cardDrawn.toString());
+
 				}
 			}
 
 			// Goes through each client
 			for (Client currentPlayer : this.players) {
+
 				this.currentPlayerTurn = currentPlayer.getPlayerNo();
 				boolean endTurn = false;
+
+				// Check if player has blackjack from first two cards
+				if (currentPlayer.getPlayer().getHandValue() == 21) {
+					int newCoins = currentPlayer.getCoins()
+							+ currentPlayer.getBet();
+					currentPlayer.setCoins(newCoins);
+					this.server.queueMessage("& " + currentPlayer.getPlayerNo()
+							+ " blackjack " + newCoins);
+					endTurn = true;
+					currentPlayer.getPlayer().setCurrentMove('N');
+				}
+				
+
 				while (!endTurn) {
 					currentPlayer.getPlayer().setCurrentMove('N');
 					System.out.println("Player: " + currentPlayer);
