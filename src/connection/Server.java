@@ -129,6 +129,9 @@ public class Server implements ActionListener {
 	public void disconnectPlayer(Client source) {
 		System.out.println(this.players);
 		source.setUserType('S');
+		if (!this.gameStarted && source.isReady()) {
+			this.playersReady--;
+		}
 		this.players.remove(source);
 		System.out.println(this.players);
 	}
