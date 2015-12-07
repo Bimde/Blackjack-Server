@@ -97,10 +97,6 @@ public class Server implements ActionListener {
 		return -1;
 	}
 
-	// //////////////////////////
-	// THIS CANNOT BE SYNCHRONIZED OTHERWISE ALL OTHER THREADS STOP since
-	// startgame takes so long
-	// //////////////////////////
 	/**
 	 * Waits for the player to be ready. Once all players are ready, start the
 	 * game.
@@ -156,7 +152,7 @@ public class Server implements ActionListener {
 	}
 
 	/**
-	 * Queues a private message to be sent.
+	 * Queues specified message to be sent.
 	 * 
 	 * @param message
 	 *            the message to send.
@@ -186,7 +182,8 @@ public class Server implements ActionListener {
 	 */
 	public void newPlayer(Client source) {
 		this.players.add(source);
-		this.queueMessage("@ " + source.getPlayerNo() + " " + source.getName());
+		this.queueMessage(new Message(Message.ALL_CLIENTS, source.getPlayerNo(),
+				"@ " + source.getPlayerNo() + " " + source.getName()));
 	}
 
 	/**
@@ -265,11 +262,11 @@ public class Server implements ActionListener {
 
 			// Messages are either to the entire server or to individual clients
 			if (msg.getPlayerNo() == Message.ALL_CLIENTS) {
-
 				// Send the messages at the same time
 				synchronized (this.allClients) {
 					for (Client client : this.allClients) {
-						client.sendMessage(msg.getMessage());
+						if (client.getPlayerNo() != msg.getIgnoredPlayer())
+							client.sendMessage(msg.getMessage());
 					}
 				}
 			} else {

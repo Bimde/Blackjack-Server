@@ -7,55 +7,69 @@ class Message {
 	public static final int ALL_CLIENTS = -1;
 	private String message;
 	private int playerNo;
+	private int ignoredPlayer;
 
 	/**
-	 * Constructs a new Message object.
+	 * Constructs a new Message object
 	 * 
 	 * @param playerNo
-	 *            the player number of the receiver of the message.
+	 *            Player number of the receiver of the message, set to
+	 *            Message.ALL_CLIENTS if all clients should receive message
 	 * @param message
-	 *            the message to be sent.
+	 *            Message to be sent
 	 */
 	public Message(int playerNo, String message) {
 		this.playerNo = playerNo;
 		this.message = message;
+		this.ignoredPlayer = -1;
 	}
 
 	/**
-	 * Get the message to be sent.
+	 * Constructs a new Message object with a 'ALL_CLIENTS' flag and
+	 * instructions to ignore a specific player
 	 * 
-	 * @return the message to be sent.
+	 * @param playerNo
+	 *            Player number of the receiver of the message, set to
+	 *            Message.ALL_CLIENTS if all clients should receive message
+	 * @param ignoredPlayer
+	 *            the player number associated with the player which to ignore
+	 *            <br>
+	 *            This is should only be used if the playerNo is set to
+	 *            'Message.ALL_CLIENTS'
+	 * @param message
+	 *            the message to be sent
+	 */
+	public Message(int playerNo, int ignoredPlayer, String message) {
+		this.playerNo = playerNo;
+		this.message = message;
+		this.ignoredPlayer = ignoredPlayer;
+	}
+
+	/**
+	 * Get message to be sent
+	 * 
+	 * @return Message to be sent
 	 */
 	public String getMessage() {
 		return message;
 	}
 
 	/**
-	 * Set the message to be sent.
+	 * Getter for ignored player
 	 * 
-	 * @param message
-	 *            the new message to be sent.
+	 * @return Player number associated with player which to not send this
+	 *         message to
 	 */
-	public void setMessage(String message) {
-		this.message = message;
+	public int getIgnoredPlayer() {
+		return this.ignoredPlayer;
 	}
 
 	/**
-	 * Get the destination of the message (player number).
+	 * Get the destination of the message (player number)
 	 * 
-	 * @return the player number of the receiver of the message.
+	 * @return the player number of the receiver of the message
 	 */
 	public int getPlayerNo() {
 		return playerNo;
-	}
-
-	/**
-	 * Set the destination of the message (player number).
-	 * 
-	 * @param playerNo
-	 *            the new player number of the receiver of the message.
-	 */
-	public void setPlayerNo(int playerNo) {
-		this.playerNo = playerNo;
 	}
 }
