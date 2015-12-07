@@ -23,7 +23,7 @@ public class Server implements ActionListener {
 	private ServerSocket socket;
 	private Dealer dealer;
 	public static final String START_MESSAGE = "START";
-	public static final int START_COINS = 1000, MESSAGE_DELAY = 500, MIN_BET = 10;
+	public static final int START_COINS = 1000, MESSAGE_DELAY = 50, MIN_BET = 10;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
 	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
@@ -113,7 +113,7 @@ public class Server implements ActionListener {
 		this.queueMessage("% " + playerNo + " READY");
 		System.out.println("Players ready: " + this.playersReady);
 		System.out.println(this.players.size());
-		if (this.playersReady == this.players.size()) {
+		if (this.playersReady != 0 && this.playersReady == this.players.size()) {
 			// TODO Do a 15 second timer (otherwise the player times
 			// out)
 			this.startGame();
@@ -133,7 +133,7 @@ public class Server implements ActionListener {
 		if (!this.gameStarted && source.isReady()) {
 			this.playersReady--;
 		}
-		if (this.playersReady == this.players.size()) {
+		if (this.playersReady != 0 && this.playersReady == this.players.size()) {
 			// TODO Do a 15 second timer (otherwise the player times
 			// out)
 			this.startGame();
@@ -186,6 +186,7 @@ public class Server implements ActionListener {
 	 */
 	public void newPlayer(Client source) {
 		this.players.add(source);
+		this.queueMessage("@ " + source.getPlayerNo() + " " + source.getName());
 	}
 
 	/**

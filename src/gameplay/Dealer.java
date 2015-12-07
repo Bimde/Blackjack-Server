@@ -32,7 +32,6 @@ public class Dealer implements Runnable {
 	private Server server;
 	private Deck deck;
 	private ClientList players;
-	private int totalActive;
 	private ArrayList<Card> dealerCards;
 	private int dealerHand;
 	private Boolean bettingIsActive;
@@ -77,7 +76,6 @@ public class Dealer implements Runnable {
 		this.server = server;
 		this.players = players;
 		this.dealerHand = 0;
-		this.totalActive = players.size();
 		this.dealerCards = new ArrayList<Card>();
 
 		// Send this dealer object to all the players
@@ -195,8 +193,7 @@ public class Dealer implements Runnable {
 							currentPlayer.setCoins(newCoins);
 							this.server.queueMessage("& " + currentPlayer.getPlayerNo() + " bust " + newCoins);
 							if (currentPlayer.getPlayer().getCoins() < Server.MIN_BET) {
-								System.out.println("Entered die");
-								this.totalActive--;
+								System.out.println("Disconnecting player from server");
 								this.server.disconnectPlayer(currentPlayer);
 							}
 							endTurn = true;
@@ -226,8 +223,7 @@ public class Dealer implements Runnable {
 							currentPlayer.setCoins(newCoins);
 							this.server.queueMessage("& " + currentPlayer.getPlayerNo() + " bust " + newCoins);
 							if (currentPlayer.getPlayer().getCoins() < Server.MIN_BET) {
-								System.out.println("Entered die");
-								this.totalActive--;
+								System.out.println("Disconnecting player from server");
 								this.server.disconnectPlayer(currentPlayer);
 							}
 						} else if (currentPlayer.getPlayer().getHandValue() == 21) {
@@ -392,8 +388,7 @@ public class Dealer implements Runnable {
 			System.out.println("Entered lose coins");
 			System.out.println(player.getCoins());
 			if (player.getCoins() < Server.MIN_BET) {
-				System.out.println("Entered die");
-				this.totalActive--;
+				System.out.println("Disconnecting player from server");
 				this.server.disconnectPlayer(client);
 			}
 		}

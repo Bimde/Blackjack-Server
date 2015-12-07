@@ -121,10 +121,10 @@ public class Client implements Runnable, Comparable<Client> {
 				} else if (server.isFull()) {
 					this.sendMessage("% FULL");
 				} else {
-					this.userType = 'P';
 					this.sendMessage("% ACCEPTED");
+					this.player = new Player(this.server, this.server.returnAndUsePlayerNumber());
 					this.server.newPlayer(this);
-					player = new Player(this.server, this.server.returnAndUsePlayerNumber());
+					this.userType = 'P';
 				}
 			} else if (message.equalsIgnoreCase("SPECTATE")) {
 				this.userType = 'S';
@@ -149,11 +149,10 @@ public class Client implements Runnable, Comparable<Client> {
 		// Game
 		while (this.isPlayer() && this.connected) {
 			String message = this.readLine();
-			System.out.println(this.getPlayerNo() + " : " + this.name + "'S MESSAGGE: " + message);
+			System.out.println(this.getPlayerNo() + " : " + this.name + "'S MESSAGE: " + message);
 
 			// If the player is betting then set the bet
 			int betPlaced = 0;
-			System.out.println(this.player.getCoins());
 
 			if (this.dealer.bettingIsActive() && this.player.getCurrentBet() == 0 && message.matches("[0-9]+")
 					&& (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET
