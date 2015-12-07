@@ -39,6 +39,7 @@ public class Player {
 	public void addCard(Card card) {
 		this.currentCards.add(card);
 		int handTotal = 0;
+		System.out.println("Card rank: " + card.getRank());
 
 		// If the cards in the hand busts, try to keep deranking aces until it
 		// stops busting

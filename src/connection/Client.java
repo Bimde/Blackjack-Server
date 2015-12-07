@@ -163,13 +163,14 @@ public class Client implements Runnable, Comparable<Client> {
 			System.out.println("TEST2");
 			try {
 				String message = this.input.readLine();
+				System.out.println(this.getPlayerNo() + " : " + this.name + "'S MESSAGGE: " + message);
 
 				// If the player is betting then set the bet
-				int betPlaced;
+				int betPlaced = 0;
 				System.out.println(this.player.getCoins());
 				System.out.println("TEST3");
 
-				if (this.dealer.bettingIsActive() && this.player.getCurrentBet() == 0
+				if (this.dealer.bettingIsActive() && this.player.getCurrentBet() == 0 && message.matches("[0-9]+")
 						&& (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET
 						&& betPlaced <= this.player.getCoins()) {
 
@@ -185,6 +186,7 @@ public class Client implements Runnable, Comparable<Client> {
 						&& message.equalsIgnoreCase("doubledown")) {
 					this.player.setCurrentMove('D');
 				} else {
+					System.out.println("???: " + betPlaced);
 					this.sendMessage("% FORMATERROR");
 				}
 

@@ -19,7 +19,7 @@ public class Dealer implements Runnable {
 	/**
 	 * Minimum cards required in the deck before the start of the round
 	 */
-	public static final int MINIMUM_CARDS_PER_PLAYER = 40;
+	public static final int MINIMUM_CARDS_PER_PLAYER = 21;
 
 	public static final int BETTING_TIME = 60;
 	/**
@@ -169,14 +169,16 @@ public class Dealer implements Runnable {
 				boolean endTurn = false;
 				while (!endTurn) {
 					currentPlayer.getPlayer().setCurrentMove('N');
-					this.server.queueMessage("% " + (currentPlayer.getPlayerNo()) + " turn");
+					System.out.println("Player: " + currentPlayer);
+					this.server.queueMessage("% " + (this.currentPlayerTurn) + " turn");
+					System.out.println("% " + (this.currentPlayerTurn) + " turn");
 
 					char currentMove;
 
 					// Wait for a response from the player
 					while ((currentMove = currentPlayer.getPlayer().getCurrentMove()) == 'N') {
 						try {
-							Thread.sleep(50);
+							Thread.sleep(500);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}

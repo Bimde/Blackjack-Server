@@ -78,7 +78,7 @@ public class Server implements ActionListener {
 	 * @param playerNumber
 	 *            the player number to clear.
 	 */
-	public void clearPlayerNumber(int playerNumber) {
+	public void clearPlayerNumbers(int playerNumber) {
 		this.playerNumbers[playerNumber] = false;
 	}
 
@@ -254,11 +254,10 @@ public class Server implements ActionListener {
 			if (this.messages.size() == 0)
 				return;
 			Message msg = this.messages.remove();
+			System.out.println("Message: " + msg.getMessage());
 
 			// Messages are either to the entire server or to individual clients
 			if (msg.getPlayerNo() == Message.ALL_CLIENTS) {
-
-				// Send the messages at the same time
 
 				// Send the messages at the same time
 				synchronized (this.allClients) {

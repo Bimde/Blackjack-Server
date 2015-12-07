@@ -71,6 +71,6 @@ public class Card {
 	 * broadcast.
 	 */
 	public String toString() {
-		return suit + " " + rank;
+		return rank + " " + suit;
 	}
 }

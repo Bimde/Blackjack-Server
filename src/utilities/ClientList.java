@@ -153,6 +153,11 @@ public class ClientList implements Iterable<Client> {
 		};
 	}
 
+	/**
+	 * Returns a string representation of the list using the following format:
+	 * '[client1{@link #Client.toString()}, client2#toString, ..., clientn#toString()]'
+	 */
+	@Override
 	public String toString() {
 		String rep = "[";
 		ClientNode temp = this.head;
