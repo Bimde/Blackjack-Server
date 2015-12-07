@@ -97,6 +97,8 @@ public class Client implements Runnable, Comparable<Client> {
 			this.connected = false;
 		}
 
+		
+		
 		while (this.name == null) {
 			String newName = this.readLine();
 			if (Validator.isValidName(newName)) {
@@ -267,7 +269,10 @@ public class Client implements Runnable, Comparable<Client> {
 			this.disconnect();
 		}
 		if (line == null)
+		{
 			this.disconnect();
+			line = "noname";
+		}
 		return line;
 	}
 

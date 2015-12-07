@@ -361,7 +361,7 @@ public class Dealer implements Runnable {
 				this.server.queueMessage("% SHUFFLE");
 			}
 		}
-		System.err.println("All players ran out of money.\nGame over.");
+		System.err.println("All players have left.\nGame over.");
 		System.exit(0);
 	}
 
