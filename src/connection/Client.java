@@ -103,7 +103,6 @@ public class Client implements Runnable, Comparable<Client> {
 			System.out.println("New user registered as " + name);
 		} catch (IOException e) {
 			this.disconnect();
-			this.connected = false;
 		}
 
 		// The user is unassigned at first
@@ -156,11 +155,9 @@ public class Client implements Runnable, Comparable<Client> {
 
 			}
 		}
-		System.out.println("TEST1");
 
 		// Game
 		while (this.isPlayer() && this.connected) {
-			System.out.println("TEST2");
 			try {
 				String message = this.input.readLine();
 				System.out.println(this.getPlayerNo() + " : " + this.name + "'S MESSAGGE: " + message);
@@ -168,13 +165,10 @@ public class Client implements Runnable, Comparable<Client> {
 				// If the player is betting then set the bet
 				int betPlaced = 0;
 				System.out.println(this.player.getCoins());
-				System.out.println("TEST3");
 
 				if (this.dealer.bettingIsActive() && this.player.getCurrentBet() == 0 && message.matches("[0-9]+")
 						&& (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET
 						&& betPlaced <= this.player.getCoins()) {
-
-					System.out.println("TEST4");
 					this.server.queueMessage("$ " + this.getPlayerNo() + " bets " + betPlaced);
 					this.player.setCurrentBet(betPlaced);
 				} else
@@ -186,14 +180,13 @@ public class Client implements Runnable, Comparable<Client> {
 						&& message.equalsIgnoreCase("doubledown")) {
 					this.player.setCurrentMove('D');
 				} else {
-					System.out.println("???: " + betPlaced);
+					System.out.println("Bet Placed (not applicable if 0): " + betPlaced);
 					this.sendMessage("% FORMATERROR");
 				}
 
 			} catch (Exception e) {
 				this.server.queueMessage("! " + this.getPlayerNo());
 				this.disconnect();
-				e.printStackTrace();
 			}
 
 			try {

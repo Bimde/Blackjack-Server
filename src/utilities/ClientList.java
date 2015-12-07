@@ -117,14 +117,16 @@ public class ClientList implements Iterable<Client> {
 	 */
 	private void remove(ClientNode client) {
 		if (client != null) {
-			if (this.head == client) {
+			if (this.head == client)
 				this.head = client.getNext();
-				if (this.head != null)
-					this.head.setPrevious(null);
-			} else {
+			if (client == this.tail)
+				this.tail = client.getPrevious();
+			if (client.getPrevious() != null)
 				client.getPrevious().setNext(client.getNext());
+			if (client.getNext() != null)
 				client.getNext().setPrevious(client.getPrevious());
-			}
+		} else {
+			System.out.println("!!!!!!!!!!!!!!!!!!!!Client was null");
 		}
 	}
 
@@ -155,7 +157,8 @@ public class ClientList implements Iterable<Client> {
 
 	/**
 	 * Returns a string representation of the list using the following format:
-	 * '[client1{@link #Client.toString()}, client2#toString, ..., clientn#toString()]'
+	 * '[client1{@link #Client.toString()}, client2#toString, ...,
+	 * clientn#toString()]'
 	 */
 	@Override
 	public String toString() {

@@ -94,7 +94,7 @@ public class Dealer implements Runnable {
 	 * Begins the game.
 	 */
 	public void run() {
-		while (this.totalActive > 0) {
+		while (this.players.size() > 0) {
 			// Broadcast that a new round has started
 			this.server.queueMessage("% NEWROUND");
 			System.out.println("Starting new round...");
@@ -234,12 +234,14 @@ public class Dealer implements Runnable {
 							int newCoins = currentPlayer.getCoins() + currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
 							this.server.queueMessage("& " + currentPlayer.getPlayerNo() + " blackjack " + newCoins);
+						} else {
+							this.server.queueMessage(
+									"& " + currentPlayer.getPlayerNo() + " stand " + currentPlayer.getCoins());
 						}
 
 						// Change to stand
 						endTurn = true;
 						currentPlayer.getPlayer().setCurrentMove('S');
-
 					} else {
 						currentPlayer.sendMessage("% FORMATERROR");
 					}
@@ -265,7 +267,6 @@ public class Dealer implements Runnable {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				cardDrawn = this.deck.getCard();
@@ -309,6 +310,8 @@ public class Dealer implements Runnable {
 				this.server.queueMessage("% SHUFFLE");
 			}
 		}
+		System.err.println("All players ran out of money.\nGame over.");
+		System.exit(0);
 	}
 
 	/**
