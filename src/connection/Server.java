@@ -251,6 +251,10 @@ public class Server implements ActionListener {
 		new Server(port);
 	}
 
+	/**
+	 * Gets the client list of current players
+	 * @return The list of current players
+	 */
 	protected ClientList getCurrentPlayers() {
 		return this.players;
 	}
