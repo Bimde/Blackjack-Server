@@ -8,6 +8,6 @@ For branching, read [this document regarding branching conventions](https://gist
 
 ### Instructions:
  - Open Windows PowerShell by opening your Start menu and then searching Powershell.
- - Once PowerShell has opened, type cd Downloads to navigate to the Downloads folder.
- - Type java -jar Server.jar to open the server.
+ - Once PowerShell has opened, type `cd Downloads` to navigate to the Downloads folder.
+ - Type `java -jar Server.jar` to open the server.
  - Follow the rest of the instructions in the console.
