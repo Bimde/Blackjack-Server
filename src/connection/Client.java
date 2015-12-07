@@ -190,9 +190,10 @@ public class Client implements Runnable, Comparable<Client> {
 					this.sendMessage("% FORMATERROR");
 				}
 
-			} catch (IOException e) {
+			} catch (Exception e) {
 				this.server.queueMessage("! " + this.getPlayerNo());
 				this.disconnect();
+				e.printStackTrace();
 			}
 
 			try {
