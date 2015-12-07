@@ -267,6 +267,8 @@ public class Client implements Runnable, Comparable<Client> {
 		} catch (IOException e) {
 			this.disconnect();
 		}
+		if (line == null)
+			this.disconnect();
 		return line;
 	}
 
