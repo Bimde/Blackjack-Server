@@ -3,7 +3,7 @@ package connection;
 /**
  * Object to hold the destination and content of message.
  */
-class Message {
+public class Message {
 	public static final int ALL_CLIENTS = -1;
 	private String message;
 	private int playerNo;
@@ -32,8 +32,7 @@ class Message {
 	 *            Player number of the receiver of the message, set to
 	 *            Message.ALL_CLIENTS if all clients should receive message
 	 * @param ignoredPlayer
-	 *            the player number associated with the player which to ignore
-	 *            <br>
+	 *            the player number associated with the player which to ignore <br>
 	 *            This is should only be used if the playerNo is set to
 	 *            'Message.ALL_CLIENTS'
 	 * @param message
