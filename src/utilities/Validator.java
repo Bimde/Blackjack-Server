@@ -30,15 +30,15 @@ public class Validator {
 	 * @return the player's bet in integer form. If the bet is not valid,
 	 *         returns -1.
 	 */
-	public static int isValidBet(String bet, int maxBet) {
+	public static boolean isValidBet(String bet, int maxBet) {
 		if (bet.matches("([0-9])+")) {
 			int amount = Integer.parseInt(bet);
 			if (amount <= maxBet && amount >= MIN_BET)
-				return amount;
+				return true;
 		}
-		return -1;
+		return false;
 	}
-	
+
 	/**
 	 * Checks if a name is valid.
 	 * 

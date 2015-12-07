@@ -111,6 +111,8 @@ public class Server implements ActionListener {
 	public void ready(int playerNo) {
 		this.playersReady++;
 		this.queueMessage("% " + playerNo + " READY");
+		System.out.println("Players ready: " + this.playersReady);
+		System.out.println(this.players.size());
 		if (this.playersReady == this.players.size()) {
 
 			// TODO Do a 15 second timer (otherwise the player times
@@ -127,13 +129,13 @@ public class Server implements ActionListener {
 	 *            the client to disconnect.
 	 */
 	public void disconnectPlayer(Client source) {
-		System.out.println(this.players);
+		System.out.println("---" + this.players);
 		source.setUserType('S');
 		if (!this.gameStarted && source.isReady()) {
 			this.playersReady--;
 		}
 		this.players.remove(source);
-		System.out.println(this.players);
+		System.out.println("---" + this.players);
 	}
 
 	/**
@@ -198,9 +200,6 @@ public class Server implements ActionListener {
 	 *            the client to disconnect.
 	 */
 	public synchronized void disconnectClient(Client client) {
-		if (client.isReady()) {
-			this.playersReady--;
-		}
 		this.allClients.remove(client);
 	}
 

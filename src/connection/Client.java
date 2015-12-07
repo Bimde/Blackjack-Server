@@ -24,42 +24,20 @@ public class Client implements Runnable, Comparable<Client> {
 		this.dealer = dealer;
 	}
 
-	// Whether or not the player is ready to start the game
+	/**
+	 * Whether or not the player is ready to start the game
+	 */
 	private boolean isReady = false;
 
-	// Potential Player or Spectator object
+	/**
+	 * Potential Player or Spectator object
+	 */
 	private Player player;
 
-	// 'U' for unassigned, 'P' for player and 'S' for spectator
-	private char userType;
-
 	/**
-	 * Disconnect/timeout the client.
+	 * 'U' for unassigned, 'P' for player and 'S' for spectator
 	 */
-	public void disconnect() {
-		if (this.userType == 'P') {
-			System.out.println(this.player.getPlayerNo() + " has disconnected");
-			this.server.queueMessage("! " + this.player.getPlayerNo());
-		} else {
-			System.out.println("Client has disconnected");
-		}
-		this.userType = 'U';
-
-		this.connected = false;
-		try {
-			this.input.close();
-			this.socket.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		this.output.close();
-
-		if (this.isPlayer()) {
-			this.server.disconnectPlayer(this);
-		}
-		this.server.disconnectClient(this);
-	}
+	private char userType;
 
 	/**
 	 * Constructor for a new Client object.
@@ -73,6 +51,33 @@ public class Client implements Runnable, Comparable<Client> {
 		this.socket = client;
 		this.connected = true;
 		this.server = server;
+	}
+
+	/**
+	 * Disconnect/timeout the client.
+	 */
+	public void disconnect() {
+		if (this.userType == 'P') {
+			System.out.println(this.player.getPlayerNo() + " has disconnected");
+			this.server.queueMessage("! " + this.player.getPlayerNo());
+		} else {
+			System.out.println("Client has disconnected");
+		}
+		this.connected = false;
+		try {
+			this.input.close();
+			this.output.close();
+			this.socket.close();
+		} catch (IOException e) {
+			System.err.println("Error closing the socket");
+			e.printStackTrace();
+		}
+
+		if (this.isPlayer()) {
+			this.server.disconnectPlayer(this);
+		}
+		this.server.disconnectClient(this);
+		this.userType = 'U';
 	}
 
 	@Override
@@ -91,47 +96,39 @@ public class Client implements Runnable, Comparable<Client> {
 			e.printStackTrace();
 			this.connected = false;
 		}
-		try {
-			while (this.name == null) {
-				String newName = input.readLine();
-				if (Validator.isValidName(newName)) {
-					this.name = newName;
-				} else {
-					this.sendMessage("% FORMATERROR");
-				}
-			}
-			System.out.println("New user registered as " + name);
-		} catch (IOException e) {
-			this.disconnect();
-		}
 
-		// The user is unassigned at first
+		while (this.name == null) {
+			String newName = this.readLine();
+			if (Validator.isValidName(newName)) {
+				this.name = newName;
+			} else {
+				this.sendMessage("% FORMATERROR");
+			}
+		}
+		System.out.println("New user registered as " + name);
+
+		// The user type is unassigned at first
 		this.userType = 'U';
 
 		// Set the user's account type, either enter the user into the game or
 		// assign as a spectator
 		while (this.userType == 'U' && this.connected) {
-			try {
-				String message = this.input.readLine();
-
-				if (message.equalsIgnoreCase("PLAY")) {
-					if (this.server.gameStarted()) {
-						this.userType = 'S';
-						this.sendMessage("% LATE");
-					} else if (server.isFull()) {
-						this.sendMessage("% FULL");
-					} else {
-						this.userType = 'P';
-						this.sendMessage("% ACCEPTED");
-						this.server.newPlayer(this);
-						player = new Player(this.server, this.server.returnAndUsePlayerNumber());
-					}
-				} else if (message.equalsIgnoreCase("SPECTATE")) {
+			String message = this.readLine();
+			if (message.equalsIgnoreCase("PLAY")) {
+				if (this.server.gameStarted()) {
 					this.userType = 'S';
+					this.sendMessage("% LATE");
+				} else if (server.isFull()) {
+					this.sendMessage("% FULL");
+				} else {
+					this.userType = 'P';
 					this.sendMessage("% ACCEPTED");
+					this.server.newPlayer(this);
+					player = new Player(this.server, this.server.returnAndUsePlayerNumber());
 				}
-			} catch (IOException e) {
-				this.disconnect();
+			} else if (message.equalsIgnoreCase("SPECTATE")) {
+				this.userType = 'S';
+				this.sendMessage("% ACCEPTED");
 			}
 		}
 
@@ -139,54 +136,40 @@ public class Client implements Runnable, Comparable<Client> {
 			this.sendStartMessage();
 			// Check if the player is ready to start
 			while (this.connected && !this.isReady) {
-				try {
-					String message = this.input.readLine();
-
-					if (message.equalsIgnoreCase("READY")) {
-						this.server.ready(this.player.getPlayerNo());
-						this.isReady = true;
-						System.out.println(name + " is ready");
-					} else {
-						this.sendMessage("% FORMATERROR");
-					}
-				} catch (IOException e) {
-					this.disconnect();
+				String message = this.readLine();
+				if (message.equalsIgnoreCase("READY")) {
+					this.server.ready(this.player.getPlayerNo());
+					this.isReady = true;
+				} else {
+					this.sendMessage("% FORMATERROR");
 				}
-
 			}
 		}
 
 		// Game
 		while (this.isPlayer() && this.connected) {
-			try {
-				String message = this.input.readLine();
-				System.out.println(this.getPlayerNo() + " : " + this.name + "'S MESSAGGE: " + message);
+			String message = this.readLine();
+			System.out.println(this.getPlayerNo() + " : " + this.name + "'S MESSAGGE: " + message);
 
-				// If the player is betting then set the bet
-				int betPlaced = 0;
-				System.out.println(this.player.getCoins());
+			// If the player is betting then set the bet
+			int betPlaced = 0;
+			System.out.println(this.player.getCoins());
 
-				if (this.dealer.bettingIsActive() && this.player.getCurrentBet() == 0 && message.matches("[0-9]+")
-						&& (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET
-						&& betPlaced <= this.player.getCoins()) {
-					this.server.queueMessage("$ " + this.getPlayerNo() + " bets " + betPlaced);
-					this.player.setCurrentBet(betPlaced);
-				} else
-					if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("hit")) {
-					this.player.setCurrentMove('H');
-				} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("stand")) {
-					this.player.setCurrentMove('S');
-				} else if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo()
-						&& message.equalsIgnoreCase("doubledown")) {
-					this.player.setCurrentMove('D');
-				} else {
-					System.out.println("Bet Placed (not applicable if 0): " + betPlaced);
-					this.sendMessage("% FORMATERROR");
-				}
-
-			} catch (Exception e) {
-				this.server.queueMessage("! " + this.getPlayerNo());
-				this.disconnect();
+			if (this.dealer.bettingIsActive() && this.player.getCurrentBet() == 0 && message.matches("[0-9]+")
+					&& (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET
+					&& betPlaced <= this.player.getCoins()) {
+				this.server.queueMessage("$ " + this.getPlayerNo() + " bets " + betPlaced);
+				this.player.setCurrentBet(betPlaced);
+			} else if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("hit")) {
+				this.player.setCurrentMove('H');
+			} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("stand")) {
+				this.player.setCurrentMove('S');
+			} else if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo()
+					&& message.equalsIgnoreCase("doubledown")) {
+				this.player.setCurrentMove('D');
+			} else {
+				System.out.println("Bet Placed (not applicable if 0): " + betPlaced);
+				this.sendMessage("% FORMATERROR");
 			}
 
 			try {
@@ -275,6 +258,16 @@ public class Client implements Runnable, Comparable<Client> {
 				message += " " + client.getName() + " //";
 		}
 		this.sendMessage(message);
+	}
+
+	private String readLine() {
+		String line = "";
+		try {
+			line = this.input.readLine();
+		} catch (IOException e) {
+			this.disconnect();
+		}
+		return line;
 	}
 
 	public boolean isReady() {
