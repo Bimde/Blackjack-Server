@@ -32,7 +32,8 @@ public class Message {
 	 *            Player number of the receiver of the message, set to
 	 *            Message.ALL_CLIENTS if all clients should receive message
 	 * @param ignoredPlayer
-	 *            the player number associated with the player which to ignore <br>
+	 *            the player number associated with the player which to ignore
+	 *            <br>
 	 *            This is should only be used if the playerNo is set to
 	 *            'Message.ALL_CLIENTS'
 	 * @param message

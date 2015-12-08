@@ -3,7 +3,6 @@ package gameplay;
 import java.util.ArrayList;
 
 import connection.Client;
-import connection.Message;
 import connection.Player;
 import connection.Server;
 import utilities.ClientList;
@@ -218,8 +217,8 @@ public class Dealer implements Runnable {
 
 					} else if (currentMove == 'S') {
 						endTurn = true;
-						this.server.queueMessage(new Message(Message.ALL_CLIENTS, currentPlayer.getPlayerNo(),
-								"& " + currentPlayer.getPlayerNo() + " stand " + currentPlayer.getCoins()));
+						this.server.queueMessage(
+								"& " + currentPlayer.getPlayerNo() + " stand " + currentPlayer.getCoins());
 					} else if (currentMove == 'D' && currentPlayer.getCoins() >= currentPlayer.getBet() * 2) {
 
 						// If the client double downs, double their bet
