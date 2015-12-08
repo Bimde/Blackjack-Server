@@ -1,7 +1,5 @@
 package connection;
 
-import gameplay.Dealer;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -13,6 +11,7 @@ import java.util.Scanner;
 
 import javax.swing.Timer;
 
+import gameplay.Dealer;
 import utilities.ClientList;
 import utilities.Validator;
 
@@ -24,12 +23,10 @@ public class Server implements ActionListener {
 	private ServerSocket socket;
 	private Dealer dealer;
 	public static final String START_MESSAGE = "START";
-	public static final int START_COINS = 1000, MESSAGE_DELAY = 50,
-			MIN_BET = 10;
+	public static final int START_COINS = 1000, MESSAGE_DELAY = 50, MIN_BET = 10;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
-	public boolean[] playerNumbers = { true, false, false, false, false, false,
-			false };
+	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
 
 	private Timer timer;
 	private ArrayDeque<Message> messages;
@@ -68,12 +65,10 @@ public class Server implements ActionListener {
 				new Thread(temp).start();
 				this.allClients.add(temp);
 			} catch (Exception e) {
-				System.err.println("Error connecting to client "
-						+ this.allClients.size());
+				System.err.println("Error connecting to client " + this.allClients.size());
 				e.printStackTrace();
 			}
-			System.err.println("Client " + this.allClients.size()
-					+ " connected.");
+			System.err.println("Client " + this.allClients.size() + " connected.");
 		}
 	}
 
@@ -187,9 +182,8 @@ public class Server implements ActionListener {
 	 */
 	public void newPlayer(Client source) {
 		this.players.add(source);
-		this.queueMessage(new Message(Message.ALL_CLIENTS,
-				source.getPlayerNo(), "@ " + source.getPlayerNo() + " "
-						+ source.getName()));
+		this.queueMessage(new Message(Message.ALL_CLIENTS, source.getPlayerNo(),
+				"@ " + source.getPlayerNo() + " " + source.getName()));
 	}
 
 	/**
@@ -198,7 +192,7 @@ public class Server implements ActionListener {
 	 * @return whether or not the lobby is full.
 	 */
 	public synchronized boolean isFull() {
-		return (this.allClients.size() == 6);
+		return (this.players.size() == 6);
 	}
 
 	/**
@@ -253,6 +247,7 @@ public class Server implements ActionListener {
 
 	/**
 	 * Gets the client list of current players
+	 * 
 	 * @return The list of current players
 	 */
 	protected ClientList getCurrentPlayers() {
