@@ -8,6 +8,7 @@
  - Fixed client disconnection causing server to go on infinite loop.
  - Fixed dealer blackjack on first two cards preventing other player's turns.
  - Fixed the server preventing clients from becoming players if 6 or more clients where connected (even if they weren't players yet).
+ - Fixed kicking players once they run out of coins.
 
 ## [1.02](https://github.com/Bimde/Blackjack-Server/compare/v1.0.1...v1.02) - 2015-12-07
 
