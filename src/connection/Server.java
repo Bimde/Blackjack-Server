@@ -20,8 +20,8 @@ public class Server implements ActionListener {
 	private ClientList players;
 	private int playersReady;
 	private boolean gameStarted;
-	private ServerSocket socket;
 	private Dealer dealer;
+	
 	public static final String START_MESSAGE = "START";
 	public static final int START_COINS = 1000, MESSAGE_DELAY = 500, MIN_BET = 10;
 
@@ -31,46 +31,35 @@ public class Server implements ActionListener {
 	private Timer timer;
 	private ArrayDeque<Message> messages;
 
+	public ArrayList<Client> getAllClients() {
+		return allClients;
+	}
+
+	public void setAllClients(ArrayList<Client> allClients) {
+		this.allClients = allClients;
+	}
+	
+	public void addClient(Client newClient)
+	{
+		this.allClients.add(newClient);
+	}
+
 	/**
 	 * Constructor for a new Server object.
 	 * 
 	 * @param port
 	 *            the port to start the server on.
 	 */
-	public Server(int port) {
+	public Server() {
 		// Sets up client list to hold each client
 		// Sets up the socket and the number of ready players to zero
 		this.allClients = new ArrayList<Client>();
 		this.players = new ClientList();
-		this.socket = null;
 		this.playersReady = 0;
 		this.timer = new Timer(MESSAGE_DELAY, this);
 		this.messages = new ArrayDeque<Message>();
 		this.timer.start();
-
-		// Try to start the server
-		try {
-			this.socket = new ServerSocket(port);
-		} catch (IOException e) {
-			System.err.println("Error starting server.");
-			e.printStackTrace();
 		}
-
-		// Try to connect to a client while the server has been started
-		while (true) {
-			System.err.println("Waiting for client to connect...");
-			try {
-				Socket client = this.socket.accept();
-				Client temp = new Client(client, this);
-				new Thread(temp).start();
-				this.allClients.add(temp);
-			} catch (Exception e) {
-				System.err.println("Error connecting to client " + this.allClients.size());
-				e.printStackTrace();
-			}
-			System.err.println("Client " + this.allClients.size() + " connected.");
-		}
-	}
 
 	/**
 	 * Change a player number to unused as a player disconnects from the lobby.
@@ -229,34 +218,7 @@ public class Server implements ActionListener {
 	}
 
 	public static void main(String[] args) {
-		String portStr;
-		int port = 5000;
-		Scanner keyboard = new Scanner(System.in);
-
-		if (args.length > 0) {
-			if (Validator.isValidPort(args[0])) {
-				port = Integer.parseInt(args[0]);
-			}
-		} else {
-			System.out.print("Please enter a port: ");
-			portStr = keyboard.nextLine();
-			if (Validator.isValidPort(portStr)) {
-				port = Integer.parseInt(portStr);
-			}
-		}
-
-		// While the port entered is invalid, continually ask for another port
-		while (port == -1) {
-			System.out.print("Please enter a valid port: ");
-			portStr = keyboard.nextLine();
-			if (Validator.isValidPort(portStr)) {
-				port = Integer.parseInt(portStr);
-			}
-		}
-
-		keyboard.close();
-
-		new Server(port);
+		
 	}
 
 	/**

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import gameplay.Dealer;
 import utilities.ClientList;
@@ -47,10 +48,9 @@ public class Client implements Runnable, Comparable<Client> {
 	 * @param server
 	 *            the server to put the client on.
 	 */
-	public Client(Socket client, Server server) {
+	public Client(Socket client) {
 		this.socket = client;
 		this.connected = true;
-		this.server = server;
 	}
 
 	/**
@@ -115,19 +115,15 @@ public class Client implements Runnable, Comparable<Client> {
 		while (this.userType == 'U' && this.connected) {
 			String message = this.readLine();
 			if (message.equalsIgnoreCase("PLAY")) {
-				if (this.server.gameStarted()) {
-					this.userType = 'S';
-					this.sendMessage("% LATE");
-				} else if (this.server.isFull()) {
-					this.sendMessage("% FULL");
-				} else {
 					this.sendMessage("% ACCEPTED");
+					this.queuePlayer();
 					this.player = new Player(this.server, this.server.returnAndUsePlayerNumber());
 					this.server.newPlayer(this);
 					this.userType = 'P';
 				}
-			} else if (message.equalsIgnoreCase("SPECTATE")) {
+			 else if (message.equalsIgnoreCase("SPECTATE")) {
 				this.userType = 'S';
+				this.queueSpectator();
 				this.sendMessage("% ACCEPTED");
 			}
 		}
@@ -178,6 +174,67 @@ public class Client implements Runnable, Comparable<Client> {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private void queuePlayer()
+	{
+		ArrayList<Server>listOfServers = CentralServer.getListOfServers();
+		Server availableServer=null;
+		int serverUsed=0;
+		for (int serverNo = 0; serverNo < listOfServers.size(); serverNo++)
+		{
+			Server currentServer = listOfServers.get(serverNo);
+			if (!currentServer.gameStarted() && !currentServer.isFull()) {
+				availableServer = currentServer;
+				serverUsed = serverNo;
+				break;
+			}
+		}
+
+		if (availableServer == null) {
+			availableServer = new Server();
+			serverUsed = listOfServers.size();
+			listOfServers.add(availableServer);
+		}
+
+		
+		availableServer.addClient(this);
+		this.server = availableServer;
+		serverUsed++;
+		
+	System.err.println("Player with Client#" + CentralServer.getUserNo() + " connected to server #"
+			+ serverUsed);
+	}
+
+	
+	private void queueSpectator()
+	{
+		ArrayList<Server>listOfServers = CentralServer.getListOfServers();
+		Server availableServer=null;
+		int serverUsed=0;
+		for (int serverNo = 0; serverNo < listOfServers.size(); serverNo++)
+		{
+			Server currentServer = listOfServers.get(serverNo);
+			if (!currentServer.gameStarted()) {
+				availableServer = currentServer;
+				serverUsed = serverNo;
+				break;
+			}
+		}
+
+		if (availableServer == null) {
+			availableServer = new Server();
+			serverUsed = listOfServers.size();
+			CentralServer.addServer(availableServer);
+		}
+
+		
+		availableServer.addClient(this);
+		this.server = availableServer;
+		serverUsed++;
+		
+	System.err.println("Spectator with Client#" + CentralServer.getUserNo() + " connected to server #"
+			+ serverUsed);
 	}
 
 	/**
