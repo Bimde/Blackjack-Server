@@ -107,11 +107,9 @@ public class Server implements ActionListener {
 	public void ready(int playerNo) {
 		this.playersReady++;
 		this.queueMessage("% " + playerNo + " READY");
-		System.out.println("Players ready: " + this.playersReady);
-		System.out.println(this.players.size());
 		if (this.playersReady != 0 && this.playersReady == this.players.size()) {
 			// Do a 15 second timer to wait for more people to join
-			
+
 			if (this.players.size() < 6) {
 				long startTime = System.nanoTime();
 				while ((System.nanoTime() - startTime) / 1000000000 < 15) {
@@ -174,7 +172,10 @@ public class Server implements ActionListener {
 	 */
 	public void queueMessage(Message message) {
 		this.messages.add(message);
-		System.out.println("BOOMBBOM: " + message.getMessage());
+	}
+
+	public boolean isQueueEmpty() {
+		return this.messages.size() == 0;
 	}
 
 	/**
@@ -276,7 +277,7 @@ public class Server implements ActionListener {
 		if (this.messages.size() == 0)
 			return;
 		Message msg = this.messages.remove();
-		System.out.println("Message: " + msg.getMessage());
+		System.out.println("Our Message: " + msg.getMessage());
 
 		// Messages are either to the entire server or to individual clients
 		if (msg.getPlayerNo() == Message.ALL_CLIENTS) {

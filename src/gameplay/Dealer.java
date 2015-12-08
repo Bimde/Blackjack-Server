@@ -77,6 +77,7 @@ public class Dealer implements Runnable {
 		this.players = players;
 		this.dealerHand = 0;
 		this.dealerCards = new ArrayList<Card>();
+		this.bettingIsActive = false;
 
 		// Send this dealer object to all the players
 		for (Client player : players) {
@@ -175,9 +176,7 @@ public class Dealer implements Runnable {
 
 				while (this.server.gameStarted() && !endTurn) {
 					currentPlayer.getPlayer().setCurrentMove('N');
-					System.out.println("Player: " + currentPlayer);
 					this.server.queueMessage("% " + (this.currentPlayerTurn) + " turn");
-					System.out.println("% " + (this.currentPlayerTurn) + " turn");
 
 					char currentMove = 'N';
 
@@ -190,7 +189,6 @@ public class Dealer implements Runnable {
 							e.printStackTrace();
 						}
 					}
-					System.out.println("CurrentMove: " + currentMove);
 
 					if (currentMove == 'H') {
 						// Draw a new card and give it to the player
@@ -245,7 +243,7 @@ public class Dealer implements Runnable {
 					}
 
 				}
-				
+
 			}
 
 			try {
@@ -314,7 +312,7 @@ public class Dealer implements Runnable {
 				this.deck.reloadDeck();
 				this.server.queueMessage("% SHUFFLE");
 			}
-			
+
 			for (Client currentPlayer : this.players) {
 				if (currentPlayer.getPlayer().getCoins() < Server.MIN_BET) {
 					System.out.println("Disconnecting player from server");
@@ -351,7 +349,7 @@ public class Dealer implements Runnable {
 
 		// Update the dealer's total value
 		this.dealerHand = handTotal;
-		System.out.println(this.dealerHand);
+		System.out.println("Dealer hand value: " + this.dealerHand);
 	}
 
 	/**
@@ -392,21 +390,13 @@ public class Dealer implements Runnable {
 	 *            the player number of the player to check.
 	 */
 	public void checkResult(Client client) {
-		System.out.println("Check result");
 		// If the player gets anything closer to the blackjack than the
 		// dealer they win
 		Player player = client.getPlayer();
 		if (player.getHandValue() > this.dealerHand) {
 			player.setCoins(player.getCoins() + player.getCurrentBet());
 		} else {
-			System.out.println(player.getCoins());
 			player.setCoins(player.getCoins() - player.getCurrentBet());
-			System.out.println("Entered lose coins");
-			System.out.println(player.getCoins());
-			if (player.getCoins() < Server.MIN_BET) {
-				System.out.println("Disconnecting player from server");
-				this.server.disconnectPlayer(client);
-			}
 		}
 	}
 }
