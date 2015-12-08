@@ -2,12 +2,12 @@
 
 ## [1.2](https://github.com/Bimde/Blackjack-Server/compare/v1.1..v1.2) - 2015-12-08
 ### Changes:
- - Added a dialog box for choosing IP address/port for the server tester
+ - Added a dialog box for choosing IP address/port for the server tester.
 
 ### Fixes:
- - Fixed disconnecting players with less coins than the minimum bet
- - Fixed the 15-second lobby timer
- - Hotfix for resetting player numbers in the lobby
+ - Fixed disconnecting players with less coins than the minimum bet.
+ - Fixed the 15-second lobby timer.
+ - Hotfix for resetting player numbers in the lobby.
 
 ## [1.1](https://github.com/Bimde/Blackjack-Server/compare/v1.02...v1.1) - 2015-12-08
 ### Features:
