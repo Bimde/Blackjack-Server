@@ -23,7 +23,7 @@ public class Server implements ActionListener {
 	private ServerSocket socket;
 	private Dealer dealer;
 	public static final String START_MESSAGE = "START";
-	public static final int START_COINS = 1000, MESSAGE_DELAY = 50, MIN_BET = 10;
+	public static final int START_COINS = 1000, MESSAGE_DELAY = 500, MIN_BET = 10;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
 	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
@@ -126,13 +126,19 @@ public class Server implements ActionListener {
 		System.out.println("---" + this.players);
 		source.setUserType('S');
 		this.players.remove(source);
-		if (!this.gameStarted && source.isReady()) {
-			this.playersReady--;
-		}
-		if (this.playersReady != 0 && this.playersReady == this.players.size()) {
-			// TODO Do a 15 second timer (otherwise the player times
-			// out)
-			this.startGame();
+		if (this.gameStarted) {
+			if (this.players.size() == 0) {
+				this.gameStarted = false;
+			}
+		} else {
+			if (source.isReady()) {
+				this.playersReady--;
+			}
+			if (this.playersReady != 0 && this.playersReady == this.players.size()) {
+				// TODO Do a 15 second timer (otherwise the player times
+				// out)
+				this.startGame();
+			}
 		}
 		System.out.println("---" + this.players);
 	}
@@ -158,9 +164,8 @@ public class Server implements ActionListener {
 	 *            the message to send.
 	 */
 	public void queueMessage(Message message) {
-		synchronized (this.messages) {
-			this.messages.add(message);
-		}
+		this.messages.add(message);
+		System.out.println("BOOMBBOM: " + message.getMessage());
 	}
 
 	/**
@@ -259,26 +264,24 @@ public class Server implements ActionListener {
 	 * specified clients
 	 */
 	public void actionPerformed(ActionEvent arg0) {
-		synchronized (this.messages) {
-			if (this.messages.size() == 0)
-				return;
-			Message msg = this.messages.remove();
-			System.out.println("Message: " + msg.getMessage());
+		if (this.messages.size() == 0)
+			return;
+		Message msg = this.messages.remove();
+		System.out.println("Message: " + msg.getMessage());
 
-			// Messages are either to the entire server or to individual clients
-			if (msg.getPlayerNo() == Message.ALL_CLIENTS) {
-				// Send the messages at the same time
-				synchronized (this.allClients) {
-					for (Client client : this.allClients) {
-						if (client.getPlayerNo() != msg.getIgnoredPlayer())
-							client.sendMessage(msg.getMessage());
-					}
+		// Messages are either to the entire server or to individual clients
+		if (msg.getPlayerNo() == Message.ALL_CLIENTS) {
+			// Send the messages at the same time
+			synchronized (this.allClients) {
+				for (Client client : this.allClients) {
+					if (client.getPlayerNo() != msg.getIgnoredPlayer())
+						client.sendMessage(msg.getMessage());
 				}
-			} else {
-				Client temp = this.players.get(msg.getPlayerNo());
-				if (temp != null)
-					temp.sendMessage(msg.getMessage());
 			}
+		} else {
+			Client temp = this.players.get(msg.getPlayerNo());
+			if (temp != null)
+				temp.sendMessage(msg.getMessage());
 		}
 	}
 }
