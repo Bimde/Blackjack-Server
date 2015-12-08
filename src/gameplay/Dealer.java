@@ -161,7 +161,6 @@ public class Dealer implements Runnable {
 
 			// Goes through each client
 			for (Client currentPlayer : this.players) {
-
 				this.currentPlayerTurn = currentPlayer.getPlayerNo();
 				boolean endTurn = false;
 
@@ -203,10 +202,6 @@ public class Dealer implements Runnable {
 							int newCoins = currentPlayer.getCoins() - currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
 							this.server.queueMessage("& " + currentPlayer.getPlayerNo() + " bust " + newCoins);
-							if (currentPlayer.getPlayer().getCoins() < Server.MIN_BET) {
-								System.out.println("Disconnecting player from server");
-								this.server.disconnectPlayer(currentPlayer);
-							}
 							endTurn = true;
 						} else if (currentPlayer.getPlayer().getHandValue() == 21) {
 							int newCoins = currentPlayer.getCoins() + currentPlayer.getBet();
@@ -233,10 +228,6 @@ public class Dealer implements Runnable {
 							int newCoins = currentPlayer.getCoins() - currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
 							this.server.queueMessage("& " + currentPlayer.getPlayerNo() + " bust " + newCoins);
-							if (currentPlayer.getPlayer().getCoins() < Server.MIN_BET) {
-								System.out.println("Disconnecting player from server");
-								this.server.disconnectPlayer(currentPlayer);
-							}
 						} else if (currentPlayer.getPlayer().getHandValue() == 21) {
 							int newCoins = currentPlayer.getCoins() + currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
@@ -254,6 +245,7 @@ public class Dealer implements Runnable {
 					}
 
 				}
+				
 			}
 
 			try {
@@ -321,6 +313,13 @@ public class Dealer implements Runnable {
 					|| Math.random() * 100 < SHUFFLE_CHANCE) {
 				this.deck.reloadDeck();
 				this.server.queueMessage("% SHUFFLE");
+			}
+			
+			for (Client currentPlayer : this.players) {
+				if (currentPlayer.getPlayer().getCoins() < Server.MIN_BET) {
+					System.out.println("Disconnecting player from server");
+					this.server.disconnectPlayer(currentPlayer);
+				}
 			}
 		}
 		System.err.println("All players have left.\nGame over.");

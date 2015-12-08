@@ -110,8 +110,17 @@ public class Server implements ActionListener {
 		System.out.println("Players ready: " + this.playersReady);
 		System.out.println(this.players.size());
 		if (this.playersReady != 0 && this.playersReady == this.players.size()) {
-			// TODO Do a 15 second timer (otherwise the player times
-			// out)
+			// Do a 15 second timer to wait for more people to join
+			
+			if (this.players.size() < 6) {
+				long startTime = System.nanoTime();
+				while ((System.nanoTime() - startTime) / 1000000000 < 15) {
+					if (this.playersReady == 0 || this.playersReady != this.players.size()) {
+						System.out.println("Cancelled");
+						return;
+					}
+				}
+			}
 			this.startGame();
 		}
 	}
