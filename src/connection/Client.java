@@ -97,8 +97,6 @@ public class Client implements Runnable, Comparable<Client> {
 			this.connected = false;
 		}
 
-		
-		
 		while (this.name == null) {
 			String newName = this.readLine();
 			if (Validator.isValidName(newName)) {
@@ -120,7 +118,7 @@ public class Client implements Runnable, Comparable<Client> {
 				if (this.server.gameStarted()) {
 					this.userType = 'S';
 					this.sendMessage("% LATE");
-				} else if (server.isFull()) {
+				} else if (this.server.isFull()) {
 					this.sendMessage("% FULL");
 				} else {
 					this.sendMessage("% ACCEPTED");
@@ -269,10 +267,7 @@ public class Client implements Runnable, Comparable<Client> {
 			this.disconnect();
 		}
 		if (line == null)
-		{
 			this.disconnect();
-			line = "noname";
-		}
 		return line;
 	}
 
