@@ -97,7 +97,7 @@ public class Client implements Runnable, Comparable<Client> {
 			this.connected = false;
 		}
 
-		while (this.name == null) {
+		while (this.connected && this.name == null) {
 			String newName = this.readLine();
 			if (Validator.isValidName(newName)) {
 				this.name = newName;

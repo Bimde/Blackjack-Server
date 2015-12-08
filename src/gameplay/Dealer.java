@@ -279,8 +279,8 @@ public class Dealer implements Runnable {
 					e.printStackTrace();
 				}
 				cardDrawn = this.deck.getCard();
-				this.dealTheDealer(cardDrawn);
 				this.server.queueMessage("# 0 " + cardDrawn.toString());
+				this.dealTheDealer(cardDrawn);
 			}
 
 			// Bust the dealer if the dealer gets over 21 (basically guarantee
