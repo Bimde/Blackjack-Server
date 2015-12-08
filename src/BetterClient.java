@@ -11,21 +11,26 @@ import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import utilities.Validator;
 
 public class BetterClient implements ActionListener, KeyListener {
 	JFrame frame = new JFrame();
 	JPanel panel = new JPanel();
 	static boolean running = true;
 	String text;
-	JFrame messenger = new JFrame("William");
+	JFrame messenger = new JFrame("Server Tester");
 	static JTextArea chatBox = new JTextArea();
 	static JScrollPane pane = new JScrollPane(chatBox);
 	// Making a socket to get info from server.
 	static Socket mySocket;
+	String ipAddress = "127.0.0.1";
+	int port = 5000;
 	JTextField messageBox = new JTextField();
 	JButton send = new JButton("send");
 	static PrintWriter output;
@@ -43,7 +48,6 @@ public class BetterClient implements ActionListener, KeyListener {
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
-
 					e.printStackTrace();
 				}
 			}
@@ -56,9 +60,6 @@ public class BetterClient implements ActionListener, KeyListener {
 		panel.setSize(300, 500);
 		panel.setLayout(null);
 		panel.add(pane);
-		// JScrollPane pane = new JScrollPane();
-		// pane.add(chatBox);
-		// panel.add(pane);
 
 		send.addActionListener(this);
 		send.setSize(100, 50);
@@ -76,10 +77,27 @@ public class BetterClient implements ActionListener, KeyListener {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.setResizable(false);
-
-		chatBox.append("Waiting for server connection");
-		mySocket = new Socket("127.0.0.1", 5000);
-		chatBox.append("\nFound the server.\n");
+		
+		changeServer(false);
+		
+		boolean connected = false;
+		
+		// While the client is not connected to a server, continue trying to connect to a new server
+		while (!connected) {
+			try {
+				// Connect to the server and set up an input and output stream
+				chatBox.append("Attempting to connect to the server...\n");
+				mySocket = new Socket(ipAddress, port);
+				output = new PrintWriter(mySocket.getOutputStream());
+				connected = true;
+			} catch (Exception ex) {
+				chatBox.append("Connection to the server failed.\n");
+				changeServer(false);
+				connected = false;
+			}
+		}
+		
+		chatBox.append("Connected to the server.\n");
 
 		inputThread = new Thread(new InputHandler());
 		inputThread.start();
@@ -143,6 +161,47 @@ public class BetterClient implements ActionListener, KeyListener {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+			}
+		}
+	}
+	
+	/**
+	 * Allows the user to choose a server.
+	 */
+	private void changeServer(boolean alreadyConnected) {
+		// Keep track on whether a valid server has been chosen
+		boolean serverBoolean = false;
+
+		// Create the components of the window
+		JTextField ipAddressField = new JTextField(ipAddress);
+		JTextField portField = new JTextField(Integer.toString(port));
+		Object[] connectObjects = { "IP Address:", ipAddressField, "Port:", portField };
+
+		// Keep creating a window asking for a server
+		// until a valid server is chosen
+		while (!serverBoolean) {
+			if (alreadyConnected) {
+				JOptionPane.showConfirmDialog(frame, connectObjects, "Choose a server", JOptionPane.OK_CANCEL_OPTION);
+			} else {
+				JOptionPane.showConfirmDialog(frame, connectObjects, "Choose a server", JOptionPane.DEFAULT_OPTION);
+			}
+			// Get the information that the user entered
+			String currentIpAddress = ipAddressField.getText();
+			String currentPort = portField.getText();
+
+			// Make sure an IP address was entered
+			if (currentIpAddress.length() != 0) {
+				// Make sure the port was valid
+				if (Validator.isValidPort(currentPort)) {
+					// Store the IP address and port and exit out of the while loop
+					ipAddress = currentIpAddress;
+					port = Integer.parseInt(currentPort);
+					serverBoolean = true;
+				} else {
+					JOptionPane.showMessageDialog(frame, "Please enter a valid port.", "Invalid port", JOptionPane.WARNING_MESSAGE);
+				}
+			} else {
+				JOptionPane.showMessageDialog(frame, "Please enter a valid IP address.", "Invalid IP address", JOptionPane.WARNING_MESSAGE);
 			}
 		}
 	}
