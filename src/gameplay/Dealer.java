@@ -92,7 +92,7 @@ public class Dealer implements Runnable {
 	 * Begins the game.
 	 */
 	public void run() {
-		while (this.players.size() > 0) {
+		while (this.server.gameStarted()) {
 			// Broadcast that a new round has started
 			this.server.queueMessage("% NEWROUND");
 			System.out.println("Starting new round...");
@@ -139,8 +139,6 @@ public class Dealer implements Runnable {
 			for (Client currentPlayer : this.players) {
 				if (currentPlayer.isPlayer() && currentPlayer.getBet() == 0) {
 					currentPlayer.disconnect();
-					// for now
-					// players.remove(currentPlayer);
 				}
 			}
 
@@ -153,7 +151,7 @@ public class Dealer implements Runnable {
 
 			// Go through each player and deal them two cards each
 			for (Client player : this.players) {
-				for (int card = 0; card <= 1; card++) {
+				for (int card = 0; card < 2; card++) {
 					cardDrawn = this.deck.getCard();
 					player.getPlayer().addCard(cardDrawn);
 					this.server.queueMessage("# " + (player.getPlayerNo()) + " " + cardDrawn.toString());
@@ -176,22 +174,24 @@ public class Dealer implements Runnable {
 					currentPlayer.getPlayer().setCurrentMove('N');
 				}
 
-				while (!endTurn) {
+				while (this.server.gameStarted() && !endTurn) {
 					currentPlayer.getPlayer().setCurrentMove('N');
 					System.out.println("Player: " + currentPlayer);
 					this.server.queueMessage("% " + (this.currentPlayerTurn) + " turn");
 					System.out.println("% " + (this.currentPlayerTurn) + " turn");
 
-					char currentMove;
+					char currentMove = 'N';
 
 					// Wait for a response from the player
-					while ((currentMove = currentPlayer.getPlayer().getCurrentMove()) == 'N') {
+					while (currentPlayer.isPlayer()
+							&& (currentMove = currentPlayer.getPlayer().getCurrentMove()) == 'N') {
 						try {
 							Thread.sleep(500);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
 					}
+					System.out.println("CurrentMove: " + currentMove);
 
 					if (currentMove == 'H') {
 						// Draw a new card and give it to the player
