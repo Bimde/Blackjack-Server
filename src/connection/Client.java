@@ -57,14 +57,6 @@ public class Client implements Runnable, Comparable<Client> {
 	 * Disconnect/timeout the client.
 	 */
 	public void disconnect() {
-		// Allow for final messages to be sent
-		while (!this.server.isQueueEmpty()) {
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 		if (this.userType == 'P') {
 			System.out.println(this.player.getPlayerNo() + " has disconnected");
 			this.server.queueMessage("! " + this.player.getPlayerNo());

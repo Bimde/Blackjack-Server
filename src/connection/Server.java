@@ -114,7 +114,7 @@ public class Server implements ActionListener {
 				long startTime = System.nanoTime();
 				while ((System.nanoTime() - startTime) / 1000000000 < 15) {
 					if (this.playersReady == 0 || this.playersReady != this.players.size()) {
-						System.out.println("Cancelled");
+						System.out.println("Cancelled timer");
 						return;
 					}
 				}
@@ -142,8 +142,6 @@ public class Server implements ActionListener {
 				this.playersReady--;
 			}
 			if (this.playersReady != 0 && this.playersReady == this.players.size()) {
-				// TODO Do a 15 second timer (otherwise the player times
-				// out)
 				this.startGame();
 			}
 		}
