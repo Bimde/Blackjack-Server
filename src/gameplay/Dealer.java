@@ -320,8 +320,8 @@ public class Dealer implements Runnable {
 				}
 			}
 		}
+		
 		System.err.println("All players have left.\nGame over.");
-		System.exit(0);
 	}
 
 	/**

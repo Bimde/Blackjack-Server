@@ -57,38 +57,53 @@ public class CentralServer {
 			System.err.println("Waiting for client to connect...");
 			try {
 				Socket client = socket.accept();
-				Server availableServer=null;
 				
-				
-				for (int serverNo = 0; serverNo < listOfServers.size(); serverNo++)
-				{
-					Server currentServer = listOfServers.get(serverNo);
-					if (!currentServer.gameStarted() && !currentServer.isFull())
-					{
-						availableServer = currentServer;
-						serverUsed = serverNo;
-						break;
-					}
-				}
-				
-				if (availableServer==null)
-				{
-					availableServer = new Server();
-					serverUsed = listOfServers.size();
-					listOfServers.add(availableServer);
-				}
-				
-				Client temp = new Client(client, availableServer);
+				Client temp = new Client(client);
 				new Thread(temp).start();
-				availableServer.addClient(temp);
-			} catch (Exception e) {
-				System.err.println("Error connecting to client");
-				e.printStackTrace();
+				userNo++;
+				System.err.println("Client #" + userNo + " has connected");
 			}
-			userNo++;
-			serverUsed++;
-			System.err.println("Client #" + userNo + " connected to server #" + serverUsed);
+		 catch (Exception e) {
+			System.err.println("Error connecting to client");
+			e.printStackTrace();
 		}
+		}
+	}
+
+	public static ServerSocket getSocket() {
+		return socket;
+	}
+
+	public static void setSocket(ServerSocket socket) {
+		CentralServer.socket = socket;
+	}
+
+	public static ArrayList<Server> getListOfServers() {
+		return listOfServers;
+	}
+
+	public static void setListOfServers(ArrayList<Server> listOfServers) {
+		CentralServer.listOfServers = listOfServers;
+	}
+	
+	public static void addServer(Server newServer) {
+		listOfServers.add(newServer);
+	}
+
+	public static int getUserNo() {
+		return userNo;
+	}
+
+	public static void setUserNo(int userNo) {
+		CentralServer.userNo = userNo;
+	}
+
+	public static int getServerUsed() {
+		return serverUsed;
+	}
+
+	public static void setServerUsed(int serverUsed) {
+		CentralServer.serverUsed = serverUsed;
 	}
 
 }
