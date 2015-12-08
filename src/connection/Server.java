@@ -133,6 +133,7 @@ public class Server implements ActionListener {
 		System.out.println("---" + this.players);
 		source.setUserType('S');
 		this.players.remove(source);
+		this.playerNumbers[source.getPlayerNo()] = false;
 		if (this.gameStarted) {
 			if (this.players.size() == 0) {
 				this.gameStarted = false;
