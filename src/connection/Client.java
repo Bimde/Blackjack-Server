@@ -164,8 +164,9 @@ public class Client implements Runnable, Comparable<Client> {
 				this.player.setCurrentMove('H');
 			} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("stand")) {
 				this.player.setCurrentMove('S');
-			} else if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo()
-					&& message.equalsIgnoreCase("doubledown")) {
+			} else
+				if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("doubledown")
+						&& this.player.getCoins() >= this.player.getCurrentBet() * 2) {
 				this.player.setCurrentMove('D');
 			} else {
 				this.sendMessage("% FORMATERROR");
