@@ -28,6 +28,8 @@
  - Fixed messages synchronization errors.
  - Hotfix for client seed guessing (see [#40](https://github.com/Bimde/Blackjack-Server/issues/40)).
  	- Will now shuffle a random number of times whenever the dealer decides to shuffle.
+ - Fixed double down not updating player's coins properly.
+ 	- Previously updated the player's coins twice.
 
 ## [1.2](https://github.com/Bimde/Blackjack-Server/compare/v1.1...v1.2) - 2015-12-08
 ### Changes:
