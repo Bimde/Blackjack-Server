@@ -1,5 +1,34 @@
 # Change Log
 
+## [2.0](https://github.com/Bimde/Blackjack-Server/compare/v1.2...v2.0) - 2015-12-09 (UNRELEASED)
+### Features:
+ - Added multiple servers per IP/port.
+ 	- Run the CentralServer program in order to set up a new server that hosts multiple servers/game rooms.
+
+### Changes:
+ - Added debugging message flag.
+	- Use constant 'DEBUG' in server class to enable / disable debugging messages.
+	- All 'System.out.println' calls transferred to Server#println calls, which allow for significantly less 'if(DEBUG)' statements.
+ - Organized code.
+	- Removed Spectator class as it wasn't being used.
+	- Improved documentation.
+	- Made CentralServer class instantiable and removed static methods / variables.
+	- Moved server assignment from Client to CentralServer.
+	- Removed unused methods.
+
+### Fixes:
+ - Fixed issue where server remains in memory after game ends.
+	- Now the server is removed from the main server list.
+	- The message timer stops.
+	- Server-related threads all close
+ - Fixed bug where server ends game before finishing sending all outstanding messages.
+	- Now the server prevents new messages from being added to the message queue after the game ends.
+	- Guarantees all messages in queue are sent before ending game by preventing timer being stopped until the size of the message queue is 0.
+ - Fixed potential bet overflow.
+ - Fixed messages synchronization errors.
+ - Hotfix for client seed guessing (see [#40](https://github.com/Bimde/Blackjack-Server/issues/40)).
+ 	- Will now shuffle a random number of times whenever the dealer decides to shuffle.
+
 ## [1.2](https://github.com/Bimde/Blackjack-Server/compare/v1.1...v1.2) - 2015-12-08
 ### Changes:
  - Added a dialog box for choosing IP address/port for the server tester.
