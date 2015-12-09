@@ -7,5 +7,5 @@ The protocol of this program is laid out in this [Google Doc](https://docs.googl
 For branching, read [this document regarding branching conventions](https://gist.github.com/digitaljhelms/4287848).
 
 ### Instructions:
- - Run the Server.jar.
+ - Run the `Server.jar`.
  - Enter a CORRECT port number (we didn't add checks).
