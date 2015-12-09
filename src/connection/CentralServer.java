@@ -10,17 +10,16 @@ import utilities.Validator;
 
 public class CentralServer {
 
-	private static ServerSocket socket;
+	private ServerSocket socket;
+	private ArrayList<Server> listOfServers;
+	private int userNo = 0;
+	private int serverUsed;
 
-	private static ArrayList<Server>listOfServers;
-	
-	private static int userNo = 0;
-	private static int serverUsed;
-	
-	public static void main(String[] args) throws IOException 
-	{
+	public static void main(String[] args) {
+		new CentralServer(args);
+	}
 
-
+	public CentralServer(String[] args) {
 		String portStr;
 		int port = 5000;
 		Scanner keyboard = new Scanner(System.in);
@@ -47,63 +46,65 @@ public class CentralServer {
 		}
 
 		keyboard.close();
-		
-		socket = new ServerSocket(port);
-		listOfServers = new ArrayList<Server>();
 
-		listOfServers.add(new Server());
-		
+		try {
+			this.socket = new ServerSocket(port);
+		} catch (IOException e) {
+			System.err.println("Error creating a new server socket on port " + port);
+			e.printStackTrace();
+		}
+		this.listOfServers = new ArrayList<Server>();
+		this.listOfServers.add(new Server());
+
 		while (true) {
 			System.err.println("Waiting for client to connect...");
 			try {
-				Socket client = socket.accept();
-				
-				Client temp = new Client(client);
+				Socket client = this.socket.accept();
+				Client temp = new Client(client, this);
 				new Thread(temp).start();
-				userNo++;
+				this.userNo++;
 				System.err.println("Client #" + userNo + " has connected");
+			} catch (Exception e) {
+				System.err.println("Error connecting to client");
+				e.printStackTrace();
 			}
-		 catch (Exception e) {
-			System.err.println("Error connecting to client");
-			e.printStackTrace();
-		}
 		}
 	}
 
-	public static ServerSocket getSocket() {
-		return socket;
+	public ServerSocket getSocket() {
+		return this.socket;
 	}
 
-	public static void setSocket(ServerSocket socket) {
-		CentralServer.socket = socket;
+	public void setSocket(ServerSocket socket) {
+		this.socket = socket;
 	}
 
-	public static ArrayList<Server> getListOfServers() {
-		return listOfServers;
+	public ArrayList<Server> getListOfServers() {
+		return this.listOfServers;
 	}
 
-	public static void setListOfServers(ArrayList<Server> listOfServers) {
-		CentralServer.listOfServers = listOfServers;
-	}
-	
-	public static void addServer(Server newServer) {
-		listOfServers.add(newServer);
+	public void setListOfServers(ArrayList<Server> listOfServers) {
+		this.listOfServers = listOfServers;
 	}
 
-	public static int getUserNo() {
-		return userNo;
+	public void addServer(Server newServer) {
+		this.listOfServers.add(newServer);
 	}
 
-	public static void setUserNo(int userNo) {
-		CentralServer.userNo = userNo;
+	public int getUserNo() {
+		return this.userNo;
 	}
 
-	public static int getServerUsed() {
-		return serverUsed;
+	public void setUserNo(int userNo) {
+		this.userNo = userNo;
 	}
 
-	public static void setServerUsed(int serverUsed) {
-		CentralServer.serverUsed = serverUsed;
+	public int getServerUsed() {
+		return this.serverUsed;
+	}
+
+	public void setServerUsed(int serverUsed) {
+		this.serverUsed = serverUsed;
 	}
 
 }

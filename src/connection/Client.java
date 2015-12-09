@@ -13,6 +13,7 @@ import utilities.Validator;
 
 public class Client implements Runnable, Comparable<Client> {
 	private Server server;
+	private CentralServer centralServer;
 	private Socket socket;
 	private BufferedReader input;
 	private PrintWriter output;
@@ -44,13 +45,14 @@ public class Client implements Runnable, Comparable<Client> {
 	 * Constructor for a new Client object.
 	 * 
 	 * @param client
-	 *            the socket of the client.
-	 * @param server
-	 *            the server to put the client on.
+	 *            Socket of connected client
+	 * @param centralServer
+	 *            Central server routing players to specific game-server
 	 */
-	public Client(Socket client) {
+	public Client(Socket client, CentralServer centralServer) {
 		this.socket = client;
 		this.connected = true;
+		this.centralServer = centralServer;
 	}
 
 	/**
@@ -115,13 +117,12 @@ public class Client implements Runnable, Comparable<Client> {
 		while (this.userType == 'U' && this.connected) {
 			String message = this.readLine();
 			if (message.equalsIgnoreCase("PLAY")) {
-					this.sendMessage("% ACCEPTED");
-					this.queuePlayer();
-					this.player = new Player(this.server, this.server.returnAndUsePlayerNumber());
-					this.server.newPlayer(this);
-					this.userType = 'P';
-				}
-			 else if (message.equalsIgnoreCase("SPECTATE")) {
+				this.sendMessage("% ACCEPTED");
+				this.queuePlayer();
+				this.player = new Player(this.server, this.server.returnAndUsePlayerNumber());
+				this.server.newPlayer(this);
+				this.userType = 'P';
+			} else if (message.equalsIgnoreCase("SPECTATE")) {
 				this.userType = 'S';
 				this.queueSpectator();
 				this.sendMessage("% ACCEPTED");
@@ -160,9 +161,9 @@ public class Client implements Runnable, Comparable<Client> {
 				this.player.setCurrentMove('H');
 			} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("stand")) {
 				this.player.setCurrentMove('S');
-			} else if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo()
-					&& message.equalsIgnoreCase("doubledown")
-					&& this.player.getCoins() >= this.player.getCurrentBet() * 2) {
+			} else
+				if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("doubledown")
+						&& this.player.getCoins() >= this.player.getCurrentBet() * 2) {
 				this.player.setCurrentMove('D');
 			} else {
 				this.sendMessage("% FORMATERROR");
@@ -175,14 +176,12 @@ public class Client implements Runnable, Comparable<Client> {
 			}
 		}
 	}
-	
-	private void queuePlayer()
-	{
-		ArrayList<Server>listOfServers = CentralServer.getListOfServers();
-		Server availableServer=null;
-		int serverUsed=0;
-		for (int serverNo = 0; serverNo < listOfServers.size(); serverNo++)
-		{
+
+	private void queuePlayer() {
+		ArrayList<Server> listOfServers = this.centralServer.getListOfServers();
+		Server availableServer = null;
+		int serverUsed = 0;
+		for (int serverNo = 0; serverNo < listOfServers.size(); serverNo++) {
 			Server currentServer = listOfServers.get(serverNo);
 			if (!currentServer.gameStarted() && !currentServer.isFull()) {
 				availableServer = currentServer;
@@ -197,23 +196,19 @@ public class Client implements Runnable, Comparable<Client> {
 			listOfServers.add(availableServer);
 		}
 
-		
 		availableServer.addClient(this);
 		this.server = availableServer;
 		serverUsed++;
-		
-	System.err.println("Player with Client#" + CentralServer.getUserNo() + " connected to server #"
-			+ serverUsed);
+
+		System.err.println(
+				"Player with Client#" + this.centralServer.getUserNo() + " connected to server #" + serverUsed);
 	}
 
-	
-	private void queueSpectator()
-	{
-		ArrayList<Server>listOfServers = CentralServer.getListOfServers();
-		Server availableServer=null;
-		int serverUsed=0;
-		for (int serverNo = 0; serverNo < listOfServers.size(); serverNo++)
-		{
+	private void queueSpectator() {
+		ArrayList<Server> listOfServers = this.centralServer.getListOfServers();
+		Server availableServer = null;
+		int serverUsed = 0;
+		for (int serverNo = 0; serverNo < listOfServers.size(); serverNo++) {
 			Server currentServer = listOfServers.get(serverNo);
 			if (!currentServer.gameStarted()) {
 				availableServer = currentServer;
@@ -225,16 +220,15 @@ public class Client implements Runnable, Comparable<Client> {
 		if (availableServer == null) {
 			availableServer = new Server();
 			serverUsed = listOfServers.size();
-			CentralServer.addServer(availableServer);
+			this.centralServer.addServer(availableServer);
 		}
 
-		
 		availableServer.addClient(this);
 		this.server = availableServer;
 		serverUsed++;
-		
-	System.err.println("Spectator with Client#" + CentralServer.getUserNo() + " connected to server #"
-			+ serverUsed);
+
+		System.err.println(
+				"Spectator with Client#" + this.centralServer.getUserNo() + " connected to server #" + serverUsed);
 	}
 
 	/**
@@ -310,8 +304,7 @@ public class Client implements Runnable, Comparable<Client> {
 		ClientList players = this.server.getCurrentPlayers();
 		String message = "@ " + this.getPlayerNo() + " " + (players.size() - 1);
 		for (Client client : players) {
-			String name = client.getName();
-			if (!name.equals(this.name))
+			if (client != this)
 				message += " " + client.getName() + " //";
 		}
 		this.sendMessage(message);
