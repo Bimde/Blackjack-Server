@@ -55,9 +55,12 @@ public class Client implements Runnable, Comparable<Client> {
 	}
 
 	/**
-	 * Disconnect/timeout the client.
+	 * Remove client from all associated lists and close all linked to client
+	 * (input / output streams + socket) by calling appropriate 'Server' methods
 	 */
 	public void disconnect() {
+		// Doesn't use Server#println because the Server may have not been
+		// determined
 		if (this.userType == 'P') {
 			if (Server.DEBUG)
 				System.out.println(this.player.getPlayerNo() + " has disconnected");
@@ -110,7 +113,7 @@ public class Client implements Runnable, Comparable<Client> {
 				this.sendMessage("% FORMATERROR");
 			}
 		}
-		// Not using server me
+		// Not using Server#println because server is not yet determined
 		if (Server.DEBUG)
 			System.out.println("New user registered as " + name);
 
