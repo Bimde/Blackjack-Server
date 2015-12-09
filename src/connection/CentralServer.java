@@ -1,12 +1,16 @@
 package connection;
 
+import java.awt.Dimension;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import utilities.Validator;
 
@@ -16,11 +20,14 @@ public class CentralServer {
 	private ArrayList<Server> listOfServers;
 	private int userNo = 0;
 	private int serverUsed;
+	private JTextArea textArea;
+	private JFrame frame;
+	private JScrollPane pane;
 
 	public static void main(String[] args) {
 		args = new String[1];
 		args[0] = JOptionPane.showInputDialog("Enter a port: ");
-		
+
 		new CentralServer(args);
 	}
 
@@ -28,6 +35,14 @@ public class CentralServer {
 		String portStr;
 		int port = -1;
 		Scanner keyboard = new Scanner(System.in);
+		frame = new JFrame("Server");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		textArea = new JTextArea();
+		pane = new JScrollPane(textArea);
+		pane.setPreferredSize(new Dimension(300, 400));
+		frame.add(pane);
+		frame.setVisible(true);
+		frame.pack();
 
 		if (args.length > 0) {
 			if (Validator.isValidPort(args[0])) {
@@ -55,22 +70,23 @@ public class CentralServer {
 		try {
 			this.socket = new ServerSocket(port);
 		} catch (IOException e) {
-			System.err.println("Error creating a new server socket on port " + port);
+			System.err.println("Error creating a new server socket on port "
+					+ port);
 			e.printStackTrace();
 		}
 		this.listOfServers = new ArrayList<Server>();
 		this.listOfServers.add(new Server(this));
 
 		while (true) {
-			System.err.println("Waiting for client to connect...");
+			this.println("Waiting for client to connect...");
 			try {
 				Socket client = this.socket.accept();
 				Client temp = new Client(client, this);
 				new Thread(temp).start();
 				this.userNo++;
-				System.err.println("Client #" + this.userNo + " has connected");
+				this.println("Client #" + this.userNo + " has connected");
 			} catch (Exception e) {
-				System.err.println("Error connecting to client");
+				this.println("Error connecting to client");
 				e.printStackTrace();
 			}
 		}
@@ -84,9 +100,11 @@ public class CentralServer {
 		// Uses a regular for loop instead of for-each loop to prevent changes
 		// in list of servers during search causing iterator to throw
 		// ConcurrentModificationException
-		for (int serverNo = 0; !serverFound && serverNo < this.listOfServers.size(); serverNo++) {
+		for (int serverNo = 0; !serverFound
+				&& serverNo < this.listOfServers.size(); serverNo++) {
 			Server currentServer = this.listOfServers.get(serverNo);
-			if (!currentServer.gameStarted() && (!isPlayer || !currentServer.isFull())) {
+			if (!currentServer.gameStarted()
+					&& (!isPlayer || !currentServer.isFull())) {
 				availableServer = currentServer;
 				serverUsed = serverNo;
 				serverFound = true;
@@ -102,7 +120,12 @@ public class CentralServer {
 		availableServer.addClient(client);
 		client.setServer(availableServer);
 
-		System.err.println("Player with Client#" + this.getUserNo() + " connected to server #" + (serverUsed + 1));
+		if (isPlayer)
+			this.println("Player connected to server #"
+					+ (serverUsed + 1));
+		else
+			this.println("Client connected to server #"
+					+ (serverUsed + 1));
 	}
 
 	ServerSocket getSocket() {
@@ -111,6 +134,10 @@ public class CentralServer {
 
 	ArrayList<Server> getListOfServers() {
 		return this.listOfServers;
+	}
+
+	public void println(String message) {
+		this.textArea.append(message + "\n");
 	}
 
 	void addServer(Server newServer) {

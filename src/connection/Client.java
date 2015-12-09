@@ -1,12 +1,13 @@
 package connection;
 
+import gameplay.Dealer;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import gameplay.Dealer;
 import utilities.ClientList;
 import utilities.Validator;
 

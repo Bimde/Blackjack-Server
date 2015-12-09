@@ -321,7 +321,7 @@ public class Dealer implements Runnable {
 			}
 		}
 
-		System.err.println("All players have left.\nGame over.");
+		this.server.println("All players have left.\nGame over.");
 		this.server.endGame();
 	}
 
