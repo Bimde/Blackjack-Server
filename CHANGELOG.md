@@ -1,6 +1,6 @@
 # Change Log
 
-## [2.0](https://github.com/Bimde/Blackjack-Server/compare/v1.2...v2.0) - 2015-12-09 (UNRELEASED)
+## [2.0](https://github.com/Bimde/Blackjack-Server/compare/v1.2...v2.0) - 2015-12-09
 ### Features:
  - Added multiple servers per IP/port.
  	- Run the CentralServer program in order to set up a new server that hosts multiple servers/game rooms.
