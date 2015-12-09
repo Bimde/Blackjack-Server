@@ -212,7 +212,8 @@ public class Dealer implements Runnable {
 						endTurn = true;
 						this.server.queueMessage(
 								"& " + currentPlayer.getPlayerNo() + " stand " + currentPlayer.getCoins());
-					} else if (currentMove == 'D' && currentPlayer.getCoins() >= currentPlayer.getBet() * 2) {
+					} else if (currentPlayer.getPlayer().getCurrentCards().size() <= 2 && currentMove == 'D'
+							&& currentPlayer.getCoins() >= currentPlayer.getBet() * 2) {
 
 						// If the client double downs, double their bet
 						currentPlayer.setBet(currentPlayer.getBet() * 2);
@@ -233,11 +234,11 @@ public class Dealer implements Runnable {
 						} else {
 							this.server.queueMessage(
 									"& " + currentPlayer.getPlayerNo() + " stand " + currentPlayer.getCoins());
+							currentPlayer.getPlayer().setCurrentMove('S');
 						}
 
 						// Change to stand
 						endTurn = true;
-						currentPlayer.getPlayer().setCurrentMove('S');
 					} else {
 						currentPlayer.sendMessage("% FORMATERROR");
 					}
