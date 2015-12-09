@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 import utilities.Validator;
 
 public class CentralServer {
@@ -16,6 +18,9 @@ public class CentralServer {
 	private int serverUsed;
 
 	public static void main(String[] args) {
+		args = new String[1];
+		args[0] = JOptionPane.showInputDialog("Enter a port: ");
+		
 		new CentralServer(args);
 	}
 
