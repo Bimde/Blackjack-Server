@@ -64,7 +64,6 @@ public class Client implements Runnable, Comparable<Client> {
 		if (this.userType == 'P') {
 			if (Server.DEBUG)
 				System.out.println(this.player.getPlayerNo() + " has disconnected");
-			this.server.queueMessage("! " + this.player.getPlayerNo());
 		} else {
 			if (Server.DEBUG)
 				System.out.println("Client has disconnected");
