@@ -18,13 +18,11 @@ public class Server implements ActionListener {
 	private Dealer dealer;
 
 	public static final String START_MESSAGE = "START";
-	public static final int START_COINS = 1000, MESSAGE_DELAY = 500,
-			MIN_BET = 10;
+	public static final int START_COINS = 1000, MESSAGE_DELAY = 500, MIN_BET = 10;
 	public static final boolean DEBUG = false;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
-	public boolean[] playerNumbers = { true, false, false, false, false, false,
-			false };
+	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
 
 	private Timer messageTimer;
 	private ArrayDeque<Message> messages;
@@ -103,8 +101,7 @@ public class Server implements ActionListener {
 			if (this.players.size() < 6) {
 				long startTime = System.nanoTime();
 				while ((System.nanoTime() - startTime) / 1000000000 < 15) {
-					if (this.playersReady == 0
-							|| this.playersReady != this.players.size()) {
+					if (this.playersReady == 0 || this.playersReady != this.players.size()) {
 						this.println("Cancelled timer");
 						return;
 					}
@@ -122,6 +119,7 @@ public class Server implements ActionListener {
 	 */
 	public void disconnectPlayer(Client source) {
 		this.println("---" + this.players);
+		this.queueMessage("! " + source.getPlayer().getPlayerNo());
 		source.setUserType('S');
 		this.players.remove(source);
 		this.playerNumbers[source.getPlayerNo()] = false;
@@ -133,8 +131,7 @@ public class Server implements ActionListener {
 			if (source.isReady()) {
 				this.playersReady--;
 			}
-			if (this.playersReady != 0
-					&& this.playersReady == this.players.size()) {
+			if (this.playersReady != 0 && this.playersReady == this.players.size()) {
 				this.startGame();
 			}
 		}
@@ -191,9 +188,8 @@ public class Server implements ActionListener {
 	 */
 	public void newPlayer(Client source) {
 		this.players.add(source);
-		this.queueMessage(new Message(Message.ALL_CLIENTS,
-				source.getPlayerNo(), "@ " + source.getPlayerNo() + " "
-						+ source.getName()));
+		this.queueMessage(new Message(Message.ALL_CLIENTS, source.getPlayerNo(),
+				"@ " + source.getPlayerNo() + " " + source.getName()));
 	}
 
 	/**
