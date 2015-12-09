@@ -18,11 +18,13 @@ public class Server implements ActionListener {
 	private Dealer dealer;
 
 	public static final String START_MESSAGE = "START";
-	public static final int START_COINS = 1000, MESSAGE_DELAY = 500, MIN_BET = 10;
+	public static final int START_COINS = 1000, MESSAGE_DELAY = 500,
+			MIN_BET = 10;
 	public static final boolean DEBUG = false;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
-	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
+	public boolean[] playerNumbers = { true, false, false, false, false, false,
+			false };
 
 	private Timer messageTimer;
 	private ArrayDeque<Message> messages;
@@ -101,7 +103,8 @@ public class Server implements ActionListener {
 			if (this.players.size() < 6) {
 				long startTime = System.nanoTime();
 				while ((System.nanoTime() - startTime) / 1000000000 < 15) {
-					if (this.playersReady == 0 || this.playersReady != this.players.size()) {
+					if (this.playersReady == 0
+							|| this.playersReady != this.players.size()) {
 						this.println("Cancelled timer");
 						return;
 					}
@@ -130,7 +133,8 @@ public class Server implements ActionListener {
 			if (source.isReady()) {
 				this.playersReady--;
 			}
-			if (this.playersReady != 0 && this.playersReady == this.players.size()) {
+			if (this.playersReady != 0
+					&& this.playersReady == this.players.size()) {
 				this.startGame();
 			}
 		}
@@ -158,8 +162,10 @@ public class Server implements ActionListener {
 	 *            the message to send.
 	 */
 	public void queueMessage(Message message) {
-		if (this.sendMessages)
-			this.messages.add(message);
+		synchronized (this.messages) {
+			if (this.sendMessages)
+				this.messages.add(message);
+		}
 	}
 
 	public boolean isQueueEmpty() {
@@ -185,8 +191,9 @@ public class Server implements ActionListener {
 	 */
 	public void newPlayer(Client source) {
 		this.players.add(source);
-		this.queueMessage(new Message(Message.ALL_CLIENTS, source.getPlayerNo(),
-				"@ " + source.getPlayerNo() + " " + source.getName()));
+		this.queueMessage(new Message(Message.ALL_CLIENTS,
+				source.getPlayerNo(), "@ " + source.getPlayerNo() + " "
+						+ source.getName()));
 	}
 
 	/**
@@ -231,27 +238,29 @@ public class Server implements ActionListener {
 	 * specified clients
 	 */
 	public void actionPerformed(ActionEvent arg0) {
-		if (this.messages.size() == 0) {
-			if (!this.sendMessages)
-				this.messageTimer.stop();
-			return;
-		}
-		Message msg = this.messages.remove();
-		this.println("Our Message: " + msg.getMessage());
-
-		// Messages are either to the entire server or to individual clients
-		if (msg.getPlayerNo() == Message.ALL_CLIENTS) {
-			// Send the messages at the same time
-			synchronized (this.allClients) {
-				for (Client client : this.allClients) {
-					if (client.getPlayerNo() != msg.getIgnoredPlayer())
-						client.sendMessage(msg.getMessage());
-				}
+		synchronized (this.messages) {
+			if (this.messages.size() == 0) {
+				if (!this.sendMessages)
+					this.messageTimer.stop();
+				return;
 			}
-		} else {
-			Client temp = this.players.get(msg.getPlayerNo());
-			if (temp != null)
-				temp.sendMessage(msg.getMessage());
+			Message msg = this.messages.remove();
+			this.println("Our Message: " + msg.getMessage());
+
+			// Messages are either to the entire server or to individual clients
+			if (msg.getPlayerNo() == Message.ALL_CLIENTS) {
+				// Send the messages at the same time
+				synchronized (this.allClients) {
+					for (Client client : this.allClients) {
+						if (client.getPlayerNo() != msg.getIgnoredPlayer())
+							client.sendMessage(msg.getMessage());
+					}
+				}
+			} else {
+				Client temp = this.players.get(msg.getPlayerNo());
+				if (temp != null)
+					temp.sendMessage(msg.getMessage());
+			}
 		}
 	}
 
