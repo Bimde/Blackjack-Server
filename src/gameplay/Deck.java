@@ -9,6 +9,7 @@ import java.util.Collections;
 public class Deck {
 	private int numOfDecks;
 	private ArrayList<Card> cards;
+	private static final int SHUFFLE_REPEAT = 10;
 
 	/**
 	 * Constructs a new Deck object. Sets the number of decks to the class
@@ -41,8 +42,11 @@ public class Deck {
 			}
 		}
 
-		// Shuffle the deck
-		this.shuffle();
+		// Shuffle the deck a random number of times to prevent seed
+		// determination from clients
+		int rand = (int) (Math.random() * SHUFFLE_REPEAT + 1);
+		for (int i = 0; i < rand; i++)
+			this.shuffle();
 	}
 
 	/**
