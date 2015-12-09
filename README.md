@@ -7,7 +7,7 @@ The protocol of this program is laid out in this [Google Doc](https://docs.googl
 For branching, read [this document regarding branching conventions](https://gist.github.com/digitaljhelms/4287848).
 
 ### Instructions:
- - Open Windows PowerShell by opening your Start menu and then searching Powershell.
- - Once PowerShell has opened, type `cd Downloads` to navigate to the Downloads folder.
- - Type `java -jar Server.jar` to open the server.
- - Follow the rest of the instructions in the console.
+ - Unzip the Server.zip file
+ - Run the Server.bat file
+ - Connect to local IP address (127.0.0.1) if running on the same computer
+ - Port is 5000
