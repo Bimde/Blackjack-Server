@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.text.DefaultCaret;
 
 import utilities.Validator;
 
@@ -60,6 +61,9 @@ public class BetterClient implements ActionListener, KeyListener {
 		panel.setSize(300, 500);
 		panel.setLayout(null);
 		panel.add(pane);
+		
+		DefaultCaret caret = (DefaultCaret)chatBox.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
 		send.addActionListener(this);
 		send.setSize(100, 50);
@@ -77,6 +81,7 @@ public class BetterClient implements ActionListener, KeyListener {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.setResizable(false);
+		frame.setLocationRelativeTo(null);
 
 		changeServer(false);
 
