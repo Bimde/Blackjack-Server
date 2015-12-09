@@ -96,9 +96,9 @@ public class Dealer implements Runnable {
 		while (this.server.gameStarted()) {
 			// Broadcast that a new round has started
 			this.server.queueMessage("% NEWROUND");
-			System.out.println("Starting new round...");
+			this.server.println("Starting new round...");
 
-			System.out.println("Betting starts now...");
+			this.server.println("Betting starts now...");
 			// Give players 60 seconds to place their bets, and reset all their
 			// previous bets
 			this.bettingIsActive = true;
@@ -315,7 +315,7 @@ public class Dealer implements Runnable {
 
 			for (Client currentPlayer : this.players) {
 				if (currentPlayer.getPlayer().getCoins() < Server.MIN_BET) {
-					System.out.println("Disconnecting player from server");
+					this.server.println("Disconnecting player from server");
 					this.server.disconnectPlayer(currentPlayer);
 				}
 			}
@@ -350,7 +350,7 @@ public class Dealer implements Runnable {
 
 		// Update the dealer's total value
 		this.dealerHand = handTotal;
-		System.out.println("Dealer hand value: " + this.dealerHand);
+		this.server.println("Dealer hand value: " + this.dealerHand);
 	}
 
 	/**

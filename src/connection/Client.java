@@ -59,10 +59,12 @@ public class Client implements Runnable, Comparable<Client> {
 	 */
 	public void disconnect() {
 		if (this.userType == 'P') {
-			System.out.println(this.player.getPlayerNo() + " has disconnected");
+			if (Server.DEBUG)
+				System.out.println(this.player.getPlayerNo() + " has disconnected");
 			this.server.queueMessage("! " + this.player.getPlayerNo());
 		} else {
-			System.out.println("Client has disconnected");
+			if (Server.DEBUG)
+				System.out.println("Client has disconnected");
 		}
 		this.connected = false;
 		try {
@@ -88,14 +90,14 @@ public class Client implements Runnable, Comparable<Client> {
 		try {
 			this.output = new PrintWriter(this.socket.getOutputStream());
 		} catch (IOException e) {
-			System.out.println("Error getting client's output stream");
+			System.err.println("Error getting client's output stream");
 			e.printStackTrace();
 			this.connected = false;
 		}
 		try {
 			this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 		} catch (IOException e) {
-			System.out.println("Error getting client's input stream");
+			System.err.println("Error getting client's input stream");
 			e.printStackTrace();
 			this.connected = false;
 		}
@@ -108,7 +110,9 @@ public class Client implements Runnable, Comparable<Client> {
 				this.sendMessage("% FORMATERROR");
 			}
 		}
-		System.out.println("New user registered as " + name);
+		// Not using server me
+		if (Server.DEBUG)
+			System.out.println("New user registered as " + name);
 
 		// The user type is unassigned at first
 		this.userType = 'U';
@@ -147,7 +151,7 @@ public class Client implements Runnable, Comparable<Client> {
 		// Game
 		while (this.isPlayer() && this.connected) {
 			String message = this.readLine();
-			System.out.println(this.getPlayerNo() + " : " + this.name + "'S MESSAGE: " + message);
+			this.server.println(this.getPlayerNo() + " : " + this.name + "'S MESSAGE: " + message);
 
 			// If the player is betting then set the bet
 			int betPlaced = 0;
@@ -156,7 +160,7 @@ public class Client implements Runnable, Comparable<Client> {
 					&& (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET
 					&& betPlaced <= this.player.getCoins()) {
 				this.server.queueMessage("$ " + this.getPlayerNo() + " bets " + betPlaced);
-				System.out.println("Bet Placed (not applicable if 0): " + betPlaced);
+				this.server.println("Bet Placed (not applicable if 0): " + betPlaced);
 				this.player.setCurrentBet(betPlaced);
 			} else if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("hit")) {
 				this.player.setCurrentMove('H');

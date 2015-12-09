@@ -19,6 +19,7 @@ public class Server implements ActionListener {
 
 	public static final String START_MESSAGE = "START";
 	public static final int START_COINS = 1000, MESSAGE_DELAY = 500, MIN_BET = 10;
+	public static final boolean DEBUG = false;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
 	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
@@ -101,7 +102,7 @@ public class Server implements ActionListener {
 				long startTime = System.nanoTime();
 				while ((System.nanoTime() - startTime) / 1000000000 < 15) {
 					if (this.playersReady == 0 || this.playersReady != this.players.size()) {
-						System.out.println("Cancelled timer");
+						this.println("Cancelled timer");
 						return;
 					}
 				}
@@ -117,7 +118,7 @@ public class Server implements ActionListener {
 	 *            the client to disconnect.
 	 */
 	public void disconnectPlayer(Client source) {
-		System.out.println("---" + this.players);
+		this.println("---" + this.players);
 		source.setUserType('S');
 		this.players.remove(source);
 		this.playerNumbers[source.getPlayerNo()] = false;
@@ -133,7 +134,7 @@ public class Server implements ActionListener {
 				this.startGame();
 			}
 		}
-		System.out.println("---" + this.players);
+		this.println("---" + this.players);
 	}
 
 	/**
@@ -236,7 +237,7 @@ public class Server implements ActionListener {
 			return;
 		}
 		Message msg = this.messages.remove();
-		System.out.println("Our Message: " + msg.getMessage());
+		this.println("Our Message: " + msg.getMessage());
 
 		// Messages are either to the entire server or to individual clients
 		if (msg.getPlayerNo() == Message.ALL_CLIENTS) {
@@ -258,5 +259,17 @@ public class Server implements ActionListener {
 		this.gameStarted = false;
 		this.sendMessages = false;
 		this.centralServer.removeServer(this);
+	}
+
+	/**
+	 * Centralized place to print messages to allow for debugging messages to be
+	 * disabled on release and enabled when needed
+	 * 
+	 * @param message
+	 *            String to print out to standard out
+	 */
+	public void println(String message) {
+		if (DEBUG)
+			System.out.println(message);
 	}
 }

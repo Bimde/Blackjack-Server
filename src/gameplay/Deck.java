@@ -19,7 +19,7 @@ public class Deck {
 	 */
 	public Deck(int numOfDecks) {
 		this.numOfDecks = numOfDecks;
-		cards = new ArrayList<Card>();
+		this.cards = new ArrayList<Card>();
 		this.reloadDeck();
 	}
 
@@ -29,14 +29,14 @@ public class Deck {
 	 */
 	public void reloadDeck() {
 		// Clear the deck first to make things easier
-		cards.clear();
+		this.cards.clear();
 
 		// For the number of decks required, go through the number of suits and
 		// add each rank for each suit
 		for (int i = 0; i < this.numOfDecks; i++) {
 			for (int suit = 0; suit < Dealer.SUITS.length; suit++) {
 				for (int rank = 0; rank < Dealer.RANKS.length; rank++) {
-					cards.add(new Card(Dealer.SUITS[suit], Dealer.RANKS[rank]));
+					this.cards.add(new Card(Dealer.SUITS[suit], Dealer.RANKS[rank]));
 				}
 			}
 		}
@@ -49,11 +49,11 @@ public class Deck {
 	 * Shuffles the deck.
 	 */
 	public void shuffle() {
-		Collections.shuffle(cards);
+		Collections.shuffle(this.cards);
 	}
 
 	public int size() {
-		return cards.size();
+		return this.cards.size();
 	}
 
 	/**
@@ -62,8 +62,8 @@ public class Deck {
 	 * @return the card removed from the deck.
 	 */
 	public Card getCard() {
-		Card card = cards.get(0);
-		cards.remove(0);
+		Card card = this.cards.get(0);
+		this.cards.remove(0);
 		return card;
 	}
 }
