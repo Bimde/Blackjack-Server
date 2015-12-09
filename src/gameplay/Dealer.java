@@ -47,11 +47,11 @@ public class Dealer implements Runnable {
 			int bettingElapsedTime = 0;
 			while (Dealer.this.bettingIsActive) {
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(Server.MESSAGE_DELAY);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				bettingElapsedTime += 1000;
+				bettingElapsedTime += Server.MESSAGE_DELAY;
 
 				if (bettingElapsedTime >= BETTING_TIME * 1000) {
 					synchronized (Dealer.this.bettingIsActive) {
@@ -125,7 +125,7 @@ public class Dealer implements Runnable {
 					}
 				}
 				try {
-					Thread.sleep(100);
+					Thread.sleep(Server.MESSAGE_DELAY);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -184,7 +184,7 @@ public class Dealer implements Runnable {
 					while (currentPlayer.isPlayer()
 							&& (currentMove = currentPlayer.getPlayer().getCurrentMove()) == 'N') {
 						try {
-							Thread.sleep(500);
+							Thread.sleep(Server.MESSAGE_DELAY);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -248,7 +248,7 @@ public class Dealer implements Runnable {
 			}
 
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(Server.MESSAGE_DELAY);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -262,9 +262,8 @@ public class Dealer implements Runnable {
 			// Broadcast each card as the dealer draws
 			while (this.dealerHand < 17) {
 
-				// Should have a pause of at least 1 second between draws
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(Server.MESSAGE_DELAY);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
