@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 
 import gameplay.Dealer;
 import utilities.ClientList;
@@ -118,13 +117,13 @@ public class Client implements Runnable, Comparable<Client> {
 			String message = this.readLine();
 			if (message.equalsIgnoreCase("PLAY")) {
 				this.sendMessage("% ACCEPTED");
-				this.queuePlayer();
+				this.centralServer.addToServer(this, true);
 				this.player = new Player(this.server, this.server.returnAndUsePlayerNumber());
 				this.server.newPlayer(this);
 				this.userType = 'P';
 			} else if (message.equalsIgnoreCase("SPECTATE")) {
 				this.userType = 'S';
-				this.queueSpectator();
+				this.centralServer.addToServer(this, false);
 				this.sendMessage("% ACCEPTED");
 			}
 		}
@@ -177,60 +176,6 @@ public class Client implements Runnable, Comparable<Client> {
 		}
 	}
 
-	private void queuePlayer() {
-		ArrayList<Server> listOfServers = this.centralServer.getListOfServers();
-		Server availableServer = null;
-		int serverUsed = 0;
-		for (int serverNo = 0; serverNo < listOfServers.size(); serverNo++) {
-			Server currentServer = listOfServers.get(serverNo);
-			if (!currentServer.gameStarted() && !currentServer.isFull()) {
-				availableServer = currentServer;
-				serverUsed = serverNo;
-				break;
-			}
-		}
-
-		if (availableServer == null) {
-			availableServer = new Server();
-			serverUsed = listOfServers.size();
-			listOfServers.add(availableServer);
-		}
-
-		availableServer.addClient(this);
-		this.server = availableServer;
-		serverUsed++;
-
-		System.err.println(
-				"Player with Client#" + this.centralServer.getUserNo() + " connected to server #" + serverUsed);
-	}
-
-	private void queueSpectator() {
-		ArrayList<Server> listOfServers = this.centralServer.getListOfServers();
-		Server availableServer = null;
-		int serverUsed = 0;
-		for (int serverNo = 0; serverNo < listOfServers.size(); serverNo++) {
-			Server currentServer = listOfServers.get(serverNo);
-			if (!currentServer.gameStarted()) {
-				availableServer = currentServer;
-				serverUsed = serverNo;
-				break;
-			}
-		}
-
-		if (availableServer == null) {
-			availableServer = new Server();
-			serverUsed = listOfServers.size();
-			this.centralServer.addServer(availableServer);
-		}
-
-		availableServer.addClient(this);
-		this.server = availableServer;
-		serverUsed++;
-
-		System.err.println(
-				"Spectator with Client#" + this.centralServer.getUserNo() + " connected to server #" + serverUsed);
-	}
-
 	/**
 	 * Sends a private message to the client.
 	 * 
@@ -244,6 +189,10 @@ public class Client implements Runnable, Comparable<Client> {
 
 	protected Socket getSocket() {
 		return this.socket;
+	}
+
+	protected void setServer(Server server) {
+		this.server = server;
 	}
 
 	public String getName() {

@@ -77,12 +77,13 @@ public class BetterClient implements ActionListener, KeyListener {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.setResizable(false);
-		
+
 		changeServer(false);
-		
+
 		boolean connected = false;
-		
-		// While the client is not connected to a server, continue trying to connect to a new server
+
+		// While the client is not connected to a server, continue trying to
+		// connect to a new server
 		while (!connected) {
 			try {
 				// Connect to the server and set up an input and output stream
@@ -96,7 +97,7 @@ public class BetterClient implements ActionListener, KeyListener {
 				connected = false;
 			}
 		}
-		
+
 		chatBox.append("Connected to the server.\n");
 
 		inputThread = new Thread(new InputHandler());
@@ -164,7 +165,7 @@ public class BetterClient implements ActionListener, KeyListener {
 			}
 		}
 	}
-	
+
 	/**
 	 * Allows the user to choose a server.
 	 */
@@ -193,15 +194,18 @@ public class BetterClient implements ActionListener, KeyListener {
 			if (currentIpAddress.length() != 0) {
 				// Make sure the port was valid
 				if (Validator.isValidPort(currentPort)) {
-					// Store the IP address and port and exit out of the while loop
+					// Store the IP address and port and exit out of the while
+					// loop
 					ipAddress = currentIpAddress;
 					port = Integer.parseInt(currentPort);
 					serverBoolean = true;
 				} else {
-					JOptionPane.showMessageDialog(frame, "Please enter a valid port.", "Invalid port", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Please enter a valid port.", "Invalid port",
+							JOptionPane.WARNING_MESSAGE);
 				}
 			} else {
-				JOptionPane.showMessageDialog(frame, "Please enter a valid IP address.", "Invalid IP address", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(frame, "Please enter a valid IP address.", "Invalid IP address",
+						JOptionPane.WARNING_MESSAGE);
 			}
 		}
 	}

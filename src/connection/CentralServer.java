@@ -54,7 +54,7 @@ public class CentralServer {
 			e.printStackTrace();
 		}
 		this.listOfServers = new ArrayList<Server>();
-		this.listOfServers.add(new Server());
+		this.listOfServers.add(new Server(this));
 
 		while (true) {
 			System.err.println("Waiting for client to connect...");
@@ -63,7 +63,7 @@ public class CentralServer {
 				Client temp = new Client(client, this);
 				new Thread(temp).start();
 				this.userNo++;
-				System.err.println("Client #" + userNo + " has connected");
+				System.err.println("Client #" + this.userNo + " has connected");
 			} catch (Exception e) {
 				System.err.println("Error connecting to client");
 				e.printStackTrace();
@@ -71,40 +71,56 @@ public class CentralServer {
 		}
 	}
 
-	public ServerSocket getSocket() {
+	void addToServer(Client client, boolean isPlayer) {
+		Server availableServer = null;
+		int serverUsed = 0;
+		boolean serverFound = false;
+
+		// Uses a regular for loop instead of for-each loop to prevent changes
+		// in list of servers during search causing iterator to throw
+		// ConcurrentModificationException
+		for (int serverNo = 0; !serverFound && serverNo < this.listOfServers.size(); serverNo++) {
+			Server currentServer = this.listOfServers.get(serverNo);
+			if (!currentServer.gameStarted() && (!isPlayer || !currentServer.isFull())) {
+				availableServer = currentServer;
+				serverUsed = serverNo;
+				serverFound = true;
+			}
+		}
+
+		if (!serverFound) {
+			availableServer = new Server(this);
+			serverUsed = this.listOfServers.size();
+			this.listOfServers.add(availableServer);
+		}
+
+		availableServer.addClient(client);
+		client.setServer(availableServer);
+
+		System.err.println("Player with Client#" + this.getUserNo() + " connected to server #" + (serverUsed + 1));
+	}
+
+	ServerSocket getSocket() {
 		return this.socket;
 	}
 
-	public void setSocket(ServerSocket socket) {
-		this.socket = socket;
-	}
-
-	public ArrayList<Server> getListOfServers() {
+	ArrayList<Server> getListOfServers() {
 		return this.listOfServers;
 	}
 
-	public void setListOfServers(ArrayList<Server> listOfServers) {
-		this.listOfServers = listOfServers;
-	}
-
-	public void addServer(Server newServer) {
+	void addServer(Server newServer) {
 		this.listOfServers.add(newServer);
 	}
 
-	public int getUserNo() {
+	void removeServer(Server server) {
+		this.listOfServers.remove(server);
+	}
+
+	int getUserNo() {
 		return this.userNo;
 	}
 
-	public void setUserNo(int userNo) {
-		this.userNo = userNo;
-	}
-
-	public int getServerUsed() {
+	int getServerUsed() {
 		return this.serverUsed;
 	}
-
-	public void setServerUsed(int serverUsed) {
-		this.serverUsed = serverUsed;
-	}
-
 }

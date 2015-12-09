@@ -2,18 +2,13 @@ package connection;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import javax.swing.Timer;
 
 import gameplay.Dealer;
 import utilities.ClientList;
-import utilities.Validator;
 
 public class Server implements ActionListener {
 	private ArrayList<Client> allClients;
@@ -21,15 +16,16 @@ public class Server implements ActionListener {
 	private int playersReady;
 	private boolean gameStarted;
 	private Dealer dealer;
-	
+
 	public static final String START_MESSAGE = "START";
 	public static final int START_COINS = 1000, MESSAGE_DELAY = 500, MIN_BET = 10;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
 	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
 
-	private Timer timer;
+	private Timer messageTimer;
 	private ArrayDeque<Message> messages;
+	private CentralServer centralServer;
 
 	public ArrayList<Client> getAllClients() {
 		return allClients;
@@ -38,9 +34,8 @@ public class Server implements ActionListener {
 	public void setAllClients(ArrayList<Client> allClients) {
 		this.allClients = allClients;
 	}
-	
-	public void addClient(Client newClient)
-	{
+
+	public void addClient(Client newClient) {
 		this.allClients.add(newClient);
 	}
 
@@ -50,16 +45,17 @@ public class Server implements ActionListener {
 	 * @param port
 	 *            the port to start the server on.
 	 */
-	public Server() {
+	public Server(CentralServer centralServer) {
 		// Sets up client list to hold each client
 		// Sets up the socket and the number of ready players to zero
 		this.allClients = new ArrayList<Client>();
 		this.players = new ClientList();
+		this.centralServer = centralServer;
 		this.playersReady = 0;
-		this.timer = new Timer(MESSAGE_DELAY, this);
+		this.messageTimer = new Timer(MESSAGE_DELAY, this);
 		this.messages = new ArrayDeque<Message>();
-		this.timer.start();
-		}
+		this.messageTimer.start();
+	}
 
 	/**
 	 * Change a player number to unused as a player disconnects from the lobby.
@@ -217,10 +213,6 @@ public class Server implements ActionListener {
 		return this.gameStarted;
 	}
 
-	public static void main(String[] args) {
-		
-	}
-
 	/**
 	 * Gets the client list of current players
 	 * 
@@ -254,5 +246,10 @@ public class Server implements ActionListener {
 			if (temp != null)
 				temp.sendMessage(msg.getMessage());
 		}
+	}
+
+	public void endGame() {
+		this.messageTimer.stop();
+		this.centralServer.removeServer(this);
 	}
 }
