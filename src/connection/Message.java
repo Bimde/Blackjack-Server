@@ -21,7 +21,7 @@ public class Message {
 	public Message(int playerNo, String message) {
 		this.playerNo = playerNo;
 		this.message = message;
-		this.ignoredPlayer = -1;
+		this.ignoredPlayer = -2;
 	}
 
 	/**
