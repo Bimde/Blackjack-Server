@@ -1,5 +1,14 @@
 # Change Log
 
+## [2.1](https://github.com/Bimde/Blackjack-Server/compare/v2.0.1...v2.1) - 2015-12-09
+### Changes:
+ - All output, including error messages are sent to JFrame.
+ - JScrollPane auto scrolls.
+
+### Fixes:
+ - Prevents user from using invalid port (re-asks if not valid).
+ - Doesn't ask for user input from console.
+
 ## [2.0.1](https://github.com/Bimde/Blackjack-Server/compare/v2.0...v2.0.1) - 2015-12-09
 ### Changes:
  - Changed it so that everything uses the same delay.
