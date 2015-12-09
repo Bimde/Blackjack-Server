@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.2](https://github.com/Bimde/Blackjack-Server/compare/v1.1..v1.2) - 2015-12-08
+## [1.2](https://github.com/Bimde/Blackjack-Server/compare/v1.1...v1.2) - 2015-12-08
 ### Changes:
  - Added a dialog box for choosing IP address/port for the server tester.
 
