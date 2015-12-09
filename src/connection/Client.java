@@ -158,7 +158,7 @@ public class Client implements Runnable, Comparable<Client> {
 			// If the player is betting then set the bet
 			int betPlaced = 0;
 
-			if (this.dealer.bettingIsActive() && this.player.getCurrentBet() == 0 && message.matches("[0-9]+")
+			if (this.dealer.bettingIsActive() && this.player.getCurrentBet() == 0 && message.matches("[0-9]{1,8}")
 					&& (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET
 					&& betPlaced <= this.player.getCoins()) {
 				this.server.queueMessage("$ " + this.getPlayerNo() + " bets " + betPlaced);
@@ -177,7 +177,7 @@ public class Client implements Runnable, Comparable<Client> {
 			}
 
 			try {
-				Thread.sleep(100);
+				Thread.sleep(Server.MESSAGE_DELAY);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
