@@ -2,18 +2,13 @@ package connection;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import javax.swing.Timer;
 
 import gameplay.Dealer;
 import utilities.ClientList;
-import utilities.Validator;
 
 public class Server implements ActionListener {
 	private ArrayList<Client> allClients;
@@ -21,15 +16,18 @@ public class Server implements ActionListener {
 	private int playersReady;
 	private boolean gameStarted;
 	private Dealer dealer;
-	
+
 	public static final String START_MESSAGE = "START";
 	public static final int START_COINS = 1000, MESSAGE_DELAY = 500, MIN_BET = 10;
+	public static final boolean DEBUG = false;
 
 	// Array indicating which player numbers have been taken (index 0 is dealer)
 	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
 
-	private Timer timer;
+	private Timer messageTimer;
 	private ArrayDeque<Message> messages;
+	private CentralServer centralServer;
+	private boolean sendMessages;
 
 	public ArrayList<Client> getAllClients() {
 		return allClients;
@@ -38,9 +36,8 @@ public class Server implements ActionListener {
 	public void setAllClients(ArrayList<Client> allClients) {
 		this.allClients = allClients;
 	}
-	
-	public void addClient(Client newClient)
-	{
+
+	public void addClient(Client newClient) {
 		this.allClients.add(newClient);
 	}
 
@@ -50,16 +47,18 @@ public class Server implements ActionListener {
 	 * @param port
 	 *            the port to start the server on.
 	 */
-	public Server() {
+	public Server(CentralServer centralServer) {
 		// Sets up client list to hold each client
 		// Sets up the socket and the number of ready players to zero
 		this.allClients = new ArrayList<Client>();
 		this.players = new ClientList();
+		this.centralServer = centralServer;
 		this.playersReady = 0;
-		this.timer = new Timer(MESSAGE_DELAY, this);
+		this.messageTimer = new Timer(MESSAGE_DELAY, this);
 		this.messages = new ArrayDeque<Message>();
-		this.timer.start();
-		}
+		this.sendMessages = true;
+		this.messageTimer.start();
+	}
 
 	/**
 	 * Change a player number to unused as a player disconnects from the lobby.
@@ -103,7 +102,7 @@ public class Server implements ActionListener {
 				long startTime = System.nanoTime();
 				while ((System.nanoTime() - startTime) / 1000000000 < 15) {
 					if (this.playersReady == 0 || this.playersReady != this.players.size()) {
-						System.out.println("Cancelled timer");
+						this.println("Cancelled timer");
 						return;
 					}
 				}
@@ -119,7 +118,7 @@ public class Server implements ActionListener {
 	 *            the client to disconnect.
 	 */
 	public void disconnectPlayer(Client source) {
-		System.out.println("---" + this.players);
+		this.println("---" + this.players);
 		source.setUserType('S');
 		this.players.remove(source);
 		this.playerNumbers[source.getPlayerNo()] = false;
@@ -135,7 +134,7 @@ public class Server implements ActionListener {
 				this.startGame();
 			}
 		}
-		System.out.println("---" + this.players);
+		this.println("---" + this.players);
 	}
 
 	/**
@@ -159,7 +158,8 @@ public class Server implements ActionListener {
 	 *            the message to send.
 	 */
 	public void queueMessage(Message message) {
-		this.messages.add(message);
+		if (this.sendMessages)
+			this.messages.add(message);
 	}
 
 	public boolean isQueueEmpty() {
@@ -217,10 +217,6 @@ public class Server implements ActionListener {
 		return this.gameStarted;
 	}
 
-	public static void main(String[] args) {
-		
-	}
-
 	/**
 	 * Gets the client list of current players
 	 * 
@@ -235,10 +231,13 @@ public class Server implements ActionListener {
 	 * specified clients
 	 */
 	public void actionPerformed(ActionEvent arg0) {
-		if (this.messages.size() == 0)
+		if (this.messages.size() == 0) {
+			if (!this.sendMessages)
+				this.messageTimer.stop();
 			return;
+		}
 		Message msg = this.messages.remove();
-		System.out.println("Our Message: " + msg.getMessage());
+		this.println("Our Message: " + msg.getMessage());
 
 		// Messages are either to the entire server or to individual clients
 		if (msg.getPlayerNo() == Message.ALL_CLIENTS) {
@@ -254,5 +253,23 @@ public class Server implements ActionListener {
 			if (temp != null)
 				temp.sendMessage(msg.getMessage());
 		}
+	}
+
+	public void endGame() {
+		this.gameStarted = false;
+		this.sendMessages = false;
+		this.centralServer.removeServer(this);
+	}
+
+	/**
+	 * Centralized place to print messages to allow for debugging messages to be
+	 * disabled on release and enabled when needed
+	 * 
+	 * @param message
+	 *            String to print out to standard out
+	 */
+	public void println(String message) {
+		if (DEBUG)
+			System.out.println(message);
 	}
 }

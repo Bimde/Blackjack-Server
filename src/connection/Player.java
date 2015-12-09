@@ -7,6 +7,7 @@ import gameplay.Card;
 public class Player {
 
 	private ArrayList<Card> currentCards = new ArrayList<Card>();
+	private Server server;
 	private int handValue;
 	private int coins;
 	private int playerNo;
@@ -24,6 +25,7 @@ public class Player {
 	 * @param playerNo
 	 */
 	public Player(Server server, int playerNo) {
+		this.server = server;
 		this.coins = Server.START_COINS;
 		this.playerNo = playerNo;
 		this.isStanding = false;
@@ -39,13 +41,12 @@ public class Player {
 	public void addCard(Card card) {
 		this.currentCards.add(card);
 		int handTotal = 0;
-		System.out.println("Card rank: " + card.getRank());
+		this.server.println("Card rank: " + card.getRank());
 
 		// If the cards in the hand busts, try to keep deranking aces until it
 		// stops busting
 		boolean tryDeranking = true;
-		while ((handTotal = calculateHand(this.currentCards)) > 21
-				&& tryDeranking) {
+		while ((handTotal = calculateHand(this.currentCards)) > 21 && tryDeranking) {
 			tryDeranking = false;
 			for (int cardNo = 0; cardNo < this.currentCards.size(); cardNo++) {
 				if (this.currentCards.get(cardNo).derankAce()) {
@@ -57,7 +58,7 @@ public class Player {
 
 		// Update the player's total value
 		this.handValue = handTotal;
-		System.out.println("Hand: " + this.handValue);
+		this.server.println("Hand: " + this.handValue);
 	}
 
 	/**
@@ -169,6 +170,7 @@ public class Player {
 
 	/**
 	 * Gets the assigned player number
+	 * 
 	 * @return The player number of the player
 	 */
 	public int getPlayerNo() {
@@ -177,7 +179,9 @@ public class Player {
 
 	/**
 	 * Assigns the player number
-	 * @param playerNo The player number for the player
+	 * 
+	 * @param playerNo
+	 *            The player number for the player
 	 */
 	public void setPlayerNo(int playerNo) {
 		this.playerNo = playerNo;
@@ -185,6 +189,7 @@ public class Player {
 
 	/**
 	 * Gets the current bet of the player
+	 * 
 	 * @return The current bet of the player
 	 */
 	public int getCurrentBet() {
@@ -193,7 +198,9 @@ public class Player {
 
 	/**
 	 * Sets the current bet for the player
-	 * @param currentBet The current bet for the player
+	 * 
+	 * @param currentBet
+	 *            The current bet for the player
 	 */
 	public void setCurrentBet(int currentBet) {
 		this.currentBet = currentBet;
