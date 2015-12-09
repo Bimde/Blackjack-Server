@@ -26,7 +26,7 @@ public class CentralServer {
 
 	public CentralServer(String[] args) {
 		String portStr;
-		int port = 5000;
+		int port = -1;
 		Scanner keyboard = new Scanner(System.in);
 
 		if (args.length > 0) {

@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.0.1](https://github.com/Bimde/Blackjack-Server/compare/v2.0...v2.0.1) - 2015-12-09
+### Changes:
+ - Changed it so that everything uses the same delay.
+
+### Fixes:
+ - Fixed spectators from not receiving messages.
+ - Fixed exception from entering an invalid bet.
+
 ## [2.0](https://github.com/Bimde/Blackjack-Server/compare/v1.2...v2.0) - 2015-12-09
 ### Features:
  - Added multiple servers per IP/port.
@@ -51,16 +59,13 @@
  - Fixed the server preventing clients from becoming players if 6 or more clients where connected (even if they weren't players yet).
  - Fixed kicking players once they run out of coins.
 
-## [1.02](https://github.com/Bimde/Blackjack-Server/compare/v1.0.1...v1.02) - 2015-12-07
-
+## [1.0.2](https://github.com/Bimde/Blackjack-Server/compare/v1.0.1...v1.02) - 2015-12-07
 ### Fixes:
  - Hotfix for clients disconnecting before joining the lobby.
 
-## [1.01](https://github.com/Bimde/Blackjack-Server/compare/v1.0...v1.01) - 2015-12-07
-
+## [1.0.1](https://github.com/Bimde/Blackjack-Server/compare/v1.0...v1.01) - 2015-12-07
 ### Fixes:
  - Hotfix for instant blackjacks.
 
 ## 1.0 - 2015/12/07
-
 Initial Release.
