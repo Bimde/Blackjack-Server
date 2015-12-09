@@ -31,7 +31,7 @@ public class Validator {
 	 *         returns -1.
 	 */
 	public static boolean isValidBet(String bet, int maxBet) {
-		if (bet.matches("([0-9])+")) {
+		if (bet.matches("([0-9]){1, 8}")) {
 			int amount = Integer.parseInt(bet);
 			if (amount <= maxBet && amount >= MIN_BET)
 				return true;
