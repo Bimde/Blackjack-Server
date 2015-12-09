@@ -26,6 +26,7 @@ public class Server implements ActionListener {
 	private Timer messageTimer;
 	private ArrayDeque<Message> messages;
 	private CentralServer centralServer;
+	private boolean sendMessages;
 
 	public ArrayList<Client> getAllClients() {
 		return allClients;
@@ -54,6 +55,7 @@ public class Server implements ActionListener {
 		this.playersReady = 0;
 		this.messageTimer = new Timer(MESSAGE_DELAY, this);
 		this.messages = new ArrayDeque<Message>();
+		this.sendMessages = true;
 		this.messageTimer.start();
 	}
 
@@ -155,7 +157,8 @@ public class Server implements ActionListener {
 	 *            the message to send.
 	 */
 	public void queueMessage(Message message) {
-		this.messages.add(message);
+		if (this.sendMessages)
+			this.messages.add(message);
 	}
 
 	public boolean isQueueEmpty() {
@@ -227,8 +230,11 @@ public class Server implements ActionListener {
 	 * specified clients
 	 */
 	public void actionPerformed(ActionEvent arg0) {
-		if (this.messages.size() == 0)
+		if (this.messages.size() == 0) {
+			if (!this.sendMessages)
+				this.messageTimer.stop();
 			return;
+		}
 		Message msg = this.messages.remove();
 		System.out.println("Our Message: " + msg.getMessage());
 
@@ -249,7 +255,8 @@ public class Server implements ActionListener {
 	}
 
 	public void endGame() {
-		this.messageTimer.stop();
+		this.gameStarted = false;
+		this.sendMessages = false;
 		this.centralServer.removeServer(this);
 	}
 }

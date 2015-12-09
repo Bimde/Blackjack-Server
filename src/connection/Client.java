@@ -74,10 +74,12 @@ public class Client implements Runnable, Comparable<Client> {
 			e.printStackTrace();
 		}
 
-		if (this.isPlayer()) {
-			this.server.disconnectPlayer(this);
+		// Do not need to disconnect from server if before being added to server
+		if (this.server != null) {
+			if (this.isPlayer())
+				this.server.disconnectPlayer(this);
+			this.server.disconnectClient(this);
 		}
-		this.server.disconnectClient(this);
 		this.userType = 'U';
 	}
 
