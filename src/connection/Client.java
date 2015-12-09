@@ -64,8 +64,7 @@ public class Client implements Runnable, Comparable<Client> {
 		// determined
 		if (this.userType == 'P') {
 			if (Server.DEBUG)
-				System.out.println(this.player.getPlayerNo()
-						+ " has disconnected");
+				System.out.println(this.player.getPlayerNo() + " has disconnected");
 		} else {
 			if (Server.DEBUG)
 				System.out.println("Client has disconnected");
@@ -99,8 +98,7 @@ public class Client implements Runnable, Comparable<Client> {
 			this.connected = false;
 		}
 		try {
-			this.input = new BufferedReader(new InputStreamReader(
-					this.socket.getInputStream()));
+			this.input = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 		} catch (IOException e) {
 			System.err.println("Error getting client's input stream");
 			e.printStackTrace();
@@ -117,7 +115,7 @@ public class Client implements Runnable, Comparable<Client> {
 		}
 		// Not using Server#println because server is not yet determined
 		if (Server.DEBUG)
-			System.out.println("New user registered as " + name);
+			this.centralServer.println("New user registered as " + this.name);
 
 		// The user type is unassigned at first
 		this.userType = 'U';
@@ -129,8 +127,7 @@ public class Client implements Runnable, Comparable<Client> {
 			if (message.equalsIgnoreCase("PLAY")) {
 				this.sendMessage("% ACCEPTED");
 				this.centralServer.addToServer(this, true);
-				this.player = new Player(this.server,
-						this.server.returnAndUsePlayerNumber());
+				this.player = new Player(this.server, this.server.returnAndUsePlayerNumber());
 				this.server.newPlayer(this);
 				this.userType = 'P';
 			} else if (message.equalsIgnoreCase("SPECTATE")) {
@@ -157,34 +154,26 @@ public class Client implements Runnable, Comparable<Client> {
 		// Game
 		while (this.isPlayer() && this.connected) {
 			String message = this.readLine();
-			this.server.println(this.getPlayerNo() + " : " + this.name
-					+ "'S MESSAGE: " + message);
+			this.server.println(this.getPlayerNo() + " : " + this.name + "'S MESSAGE: " + message);
 
 			// If the player is betting then set the bet
 			int betPlaced = 0;
 
 			if (message != null) {
-				if (this.dealer.bettingIsActive()
-						&& this.player.getCurrentBet() == 0
-						&& message.matches("[0-9]{1,8}")
+				if (this.dealer.bettingIsActive() && this.player.getCurrentBet() == 0 && message.matches("[0-9]{1,8}")
 						&& (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET
 						&& betPlaced <= this.player.getCoins()) {
-					this.server.queueMessage("$ " + this.getPlayerNo()
-							+ " bets " + betPlaced);
-					this.server.println("Bet Placed (not applicable if 0): "
-							+ betPlaced);
+					this.server.queueMessage("$ " + this.getPlayerNo() + " bets " + betPlaced);
+					this.server.println("Bet Placed (not applicable if 0): " + betPlaced);
 					this.player.setCurrentBet(betPlaced);
-				} else if (this.dealer.getCurrentPlayerTurn() == this
-						.getPlayerNo() && message.equalsIgnoreCase("hit")) {
+				} else
+					if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("hit")) {
 					this.player.setCurrentMove('H');
-				} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo()
-						&& message.equalsIgnoreCase("stand")) {
+				} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo() && message.equalsIgnoreCase("stand")) {
 					this.player.setCurrentMove('S');
-				} else if (this.dealer.getCurrentPlayerTurn() == this
-						.getPlayerNo()
+				} else if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo()
 						&& message.equalsIgnoreCase("doubledown")
-						&& this.player.getCoins() >= this.player
-								.getCurrentBet() * 2) {
+						&& this.player.getCoins() >= this.player.getCurrentBet() * 2) {
 					this.player.setCurrentMove('D');
 				} else {
 					this.sendMessage("% FORMATERROR");

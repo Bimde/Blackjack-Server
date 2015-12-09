@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.DefaultCaret;
 
 import utilities.Validator;
 
@@ -25,41 +26,28 @@ public class CentralServer {
 	private JScrollPane pane;
 
 	public static void main(String[] args) {
-		args = new String[1];
-		args[0] = JOptionPane.showInputDialog("Enter a port: ");
-
-		new CentralServer(args);
+		new CentralServer();
 	}
 
-	public CentralServer(String[] args) {
-		String portStr;
+	public CentralServer() {
 		int port = -1;
 		Scanner keyboard = new Scanner(System.in);
-		frame = new JFrame("Server");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		textArea = new JTextArea();
-		pane = new JScrollPane(textArea);
-		pane.setPreferredSize(new Dimension(300, 400));
-		frame.add(pane);
-		frame.setVisible(true);
-		frame.pack();
-
-		if (args.length > 0) {
-			if (Validator.isValidPort(args[0])) {
-				port = Integer.parseInt(args[0]);
-			}
-		} else {
-			System.out.print("Please enter a port: ");
-			portStr = keyboard.nextLine();
-			if (Validator.isValidPort(portStr)) {
-				port = Integer.parseInt(portStr);
-			}
-		}
+		this.frame = new JFrame("Server");
+		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.textArea = new JTextArea();
+		this.pane = new JScrollPane(this.textArea);
+		((DefaultCaret) this.textArea.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		this.textArea.setEditable(false);
+		this.pane.setPreferredSize(new Dimension(300, 400));
+		this.frame.add(this.pane);
+		this.frame.setVisible(true);
+		this.frame.pack();
 
 		// While the port entered is invalid, continually ask for another port
 		while (port == -1) {
-			System.out.print("Please enter a valid port: ");
-			portStr = keyboard.nextLine();
+			String portStr = null;
+			while (portStr == null)
+				portStr = JOptionPane.showInputDialog("Enter a port (1-5 digits): ");
 			if (Validator.isValidPort(portStr)) {
 				port = Integer.parseInt(portStr);
 			}
@@ -70,8 +58,7 @@ public class CentralServer {
 		try {
 			this.socket = new ServerSocket(port);
 		} catch (IOException e) {
-			System.err.println("Error creating a new server socket on port "
-					+ port);
+			System.err.println("Error creating a new server socket on port " + port);
 			e.printStackTrace();
 		}
 		this.listOfServers = new ArrayList<Server>();
@@ -100,11 +87,9 @@ public class CentralServer {
 		// Uses a regular for loop instead of for-each loop to prevent changes
 		// in list of servers during search causing iterator to throw
 		// ConcurrentModificationException
-		for (int serverNo = 0; !serverFound
-				&& serverNo < this.listOfServers.size(); serverNo++) {
+		for (int serverNo = 0; !serverFound && serverNo < this.listOfServers.size(); serverNo++) {
 			Server currentServer = this.listOfServers.get(serverNo);
-			if (!currentServer.gameStarted()
-					&& (!isPlayer || !currentServer.isFull())) {
+			if (!currentServer.gameStarted() && (!isPlayer || !currentServer.isFull())) {
 				availableServer = currentServer;
 				serverUsed = serverNo;
 				serverFound = true;
@@ -121,11 +106,9 @@ public class CentralServer {
 		client.setServer(availableServer);
 
 		if (isPlayer)
-			this.println("Player connected to server #"
-					+ (serverUsed + 1));
+			this.println("Player connected to server #" + (serverUsed + 1));
 		else
-			this.println("Client connected to server #"
-					+ (serverUsed + 1));
+			this.println("Client connected to server #" + (serverUsed + 1));
 	}
 
 	ServerSocket getSocket() {
