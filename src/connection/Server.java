@@ -19,7 +19,7 @@ import utilities.ClientList;
 public class Server implements ActionListener {
 	private ArrayList<Client> allClients;
 	private ClientList players;
-	private int playersReady, currentTimer;
+	private int playersReady, currentTimerNo;
 	private boolean gameStarted;
 	private Dealer dealer;
 
@@ -56,7 +56,7 @@ public class Server implements ActionListener {
 		this.playersReady = 0;
 		this.messageTimer = new Timer(MESSAGE_DELAY, this);
 		this.messages = new ArrayDeque<Message>();
-		this.currentTimer = 0;
+		this.currentTimerNo = 0;
 		this.sendMessages = true;
 		this.messageTimer.start();
 	}
@@ -115,9 +115,9 @@ public class Server implements ActionListener {
 	public void startReadyTimer(boolean playerJoined) {
 		// Make sure that the server is not full
 		// Otherwise, start the game right away
-		this.currentTimer++;
-		if (this.currentTimer > Integer.MAX_VALUE - 5)
-			this.currentTimer = 0;
+		this.currentTimerNo++;
+		if (this.currentTimerNo > Integer.MAX_VALUE - 5)
+			this.currentTimerNo = 0;
 
 		if (playerJoined || !this.lobbyTimerActive) {
 			if (this.players.size() < 6) {
@@ -126,7 +126,7 @@ public class Server implements ActionListener {
 
 				// Create new thread to prevent interference with other
 				// activities
-				new Thread(new Updatable(this.currentTimer) {
+				new Thread(new Updatable(this.currentTimerNo) {
 					@Override
 					public void run() {
 						// Keep checking if the entire lobby is ready until the
@@ -134,10 +134,13 @@ public class Server implements ActionListener {
 						// 'Server#START_DELAY' constant is reached
 						while ((System.nanoTime() - startTime)
 								/ 1000000000 < Server.START_DELAY) {
+
+							// Cancel the timer if the number of players ready
+							// changes
 							if (Server.this.playersReady == 0
 									|| Server.this.playersReady != Server.this.players
 											.size()
-									|| this.value != Server.this.currentTimer) {
+									|| this.value != Server.this.currentTimerNo) {
 								Server.this.println("Cancelled timer");
 								Server.this.lobbyTimerActive = false;
 								return;
