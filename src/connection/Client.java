@@ -148,6 +148,10 @@ public class Client implements Runnable, Comparable<Client> {
 				this.centralServer.addToServer(this, false);
 				this.sendMessage("% ACCEPTED");
 			}
+			else
+			{
+				this.sendMessage("% FORMATERROR");
+			}
 		}
 		
 		// Inform the user of all the players currently in the lobby
