@@ -1,22 +1,23 @@
 package connection;
 
-import gameplay.Dealer;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import gameplay.Dealer;
 import utilities.ClientList;
 import utilities.Validator;
 
 /**
  * Object for every client connecting to a blackjack server.
+ * 
  * @author Bimesh De Silva, Patrick Liu, William Xu, Barbara Guo
  * @version December 1, 2015
  */
-public class Client implements Runnable, Comparable<Client> {
+public class Client implements Runnable {
+
 	private Server server;
 	private CentralServer centralServer;
 	private Socket socket;
@@ -64,8 +65,8 @@ public class Client implements Runnable, Comparable<Client> {
 		// determined
 		if (this.userType == 'P') {
 			if (Server.DEBUG) {
-				System.out.println(this.player.getPlayerNo()
-						+ " has disconnected");
+				System.out.println(
+						this.player.getPlayerNo() + " has disconnected");
 			}
 		} else {
 			if (Server.DEBUG) {
@@ -97,7 +98,8 @@ public class Client implements Runnable, Comparable<Client> {
 	}
 
 	/**
-	 *  Starts the thread of a client, mostly used for inputs and outputs of messages
+	 * Starts the thread of a client, mostly used for inputs and outputs of
+	 * messages
 	 */
 	@Override
 	public void run() {
@@ -112,8 +114,8 @@ public class Client implements Runnable, Comparable<Client> {
 
 		// Set up the input
 		try {
-			this.input = new BufferedReader(new InputStreamReader(
-					this.socket.getInputStream()));
+			this.input = new BufferedReader(
+					new InputStreamReader(this.socket.getInputStream()));
 		} catch (IOException e) {
 			System.err.println("Error getting client's input stream");
 			e.printStackTrace();
@@ -191,24 +193,27 @@ public class Client implements Runnable, Comparable<Client> {
 				if (this.dealer.bettingIsActive()
 						&& this.player.getCurrentBet() == 0
 						&& message.matches("[0-9]{1,8}")
-						&& (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET
+						&& (betPlaced = Integer
+								.parseInt(message)) >= Server.MIN_BET
 						&& betPlaced <= this.player.getCoins()) {
-					this.server.queueMessage("$ " + this.getPlayerNo()
-							+ " bets " + betPlaced);
-					this.server.println("Bet Placed (not applicable if 0): "
-							+ betPlaced);
+					this.server.queueMessage(
+							"$ " + this.getPlayerNo() + " bets " + betPlaced);
+					this.server.println(
+							"Bet Placed (not applicable if 0): " + betPlaced);
 					this.player.setCurrentBet(betPlaced);
-				} else if (this.dealer.getCurrentPlayerTurn() == this
-						.getPlayerNo() && message.equalsIgnoreCase("hit")) {
+				} else
+					if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo()
+							&& message.equalsIgnoreCase("hit")) {
 					this.player.setCurrentMove('H');
 				} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo()
 						&& message.equalsIgnoreCase("stand")) {
 					this.player.setCurrentMove('S');
-				} else if (this.dealer.getCurrentPlayerTurn() == this
-						.getPlayerNo()
-						&& message.equalsIgnoreCase("doubledown")
-						&& this.player.getCoins() >= this.player
-								.getCurrentBet() * 2) {
+				} else
+					if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo()
+							&& message.equalsIgnoreCase("doubledown")
+							&& this.player
+									.getCoins() >= this.player.getCurrentBet()
+											* 2) {
 					this.player.setCurrentMove('D');
 				} else {
 					this.sendMessage("% FORMATERROR");
@@ -342,15 +347,8 @@ public class Client implements Runnable, Comparable<Client> {
 	}
 
 	/**
-	 *  Clients are identified by player number
-	 */
-	@Override
-	public int compareTo(Client object) {
-		return this.getPlayerNo() - object.getPlayerNo();
-	}
-
-	/**
-	 * Returns the player's name and their coins
+	 * Returns the player's name and their coins using the following format:
+	 * 'player's name : player's current coins', 'ex. Bob : 150'
 	 */
 	@Override
 	public String toString() {
