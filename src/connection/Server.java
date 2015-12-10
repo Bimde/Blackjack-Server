@@ -215,7 +215,7 @@ public class Server implements ActionListener {
 		}
 	}
 
-	public boolean isQueueEmpty() {
+	public boolean isMessageQueueEmpty() {
 		return this.messages.size() == 0;
 	}
 

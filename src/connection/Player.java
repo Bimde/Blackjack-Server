@@ -13,7 +13,9 @@ public class Player {
 	private int currentBet = 0;
 	private boolean isStanding;
 
-	// 'N' for none, 'H' for hit, 'S' for stand, and 'D' for doubledown
+	/**
+	 * 'N' for none, 'H' for hit, 'S' for stand, and 'D' for doubledown
+	 */
 	private char currentMove;
 
 	/**
