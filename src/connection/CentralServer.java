@@ -1,17 +1,17 @@
 package connection;
 
-//import java.awt.Dimension;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-//import javax.swing.JFrame;
-//import javax.swing.JOptionPane;
-//import javax.swing.JScrollPane;
-//import javax.swing.JTextArea;
-//import javax.swing.text.DefaultCaret;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.text.DefaultCaret;
 
 import utilities.Validator;
 
@@ -27,10 +27,9 @@ public class CentralServer {
 	private ArrayList<Server> listOfServers;
 	private int userNo = 0;
 	private int serverUsed;
-
-	// private JTextArea textArea;
-	// private JFrame frame;
-	// private JScrollPane pane;
+	private JTextArea textArea;
+	private JFrame frame;
+	private JScrollPane pane;
 
 	public static void main(String[] args) {
 		new CentralServer(args);
@@ -45,56 +44,56 @@ public class CentralServer {
 		int port = -1;
 		Scanner keyboard = new Scanner(System.in);
 
-		// // Create a GUI for debugging
-		// this.frame = new JFrame("~~~Blackjack Server~~~");
-		// this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// this.textArea = new JTextArea();
-		// this.pane = new JScrollPane(this.textArea);
-		// ((DefaultCaret) this.textArea.getCaret())
-		// .setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-		// this.textArea.setEditable(false);
-		// this.pane.setPreferredSize(new Dimension(300, 400));
-		// this.frame.add(this.pane);
-		// this.frame.setVisible(true);
-		// this.frame.pack();
-
-		// // While the port entered is invalid, continually ask for another
-		// port
-		// while (port == -1) {
-		// portStr = null;
-		// while (portStr == null)
-		// portStr = JOptionPane
-		// .showInputDialog("Enter a port (1-5 digits): ");
-		// if (Validator.isValidPort(portStr)) {
-		// port = Integer.parseInt(portStr);
-		// }
-		// }
-
 		// Keep trying to connect to a new port while the port is invalid
 		while (port == -1) {
-			// If an argument was entered, use the argument as a port
-			// Otherwise, ask the user to enter a port
-			if (args.length > 0) {
-				if (Validator.isValidPort(args[0])) {
-					port = Integer.parseInt(args[0]);
-				}
-			} else {
-				System.out.print("Please enter a port: ");
-				portStr = keyboard.nextLine();
-				if (Validator.isValidPort(portStr)) {
-					port = Integer.parseInt(portStr);
-				}
-			}
+			// Create a GUI for debugging
+			this.frame = new JFrame("Blackjack Server");
+			this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			this.textArea = new JTextArea();
+			this.pane = new JScrollPane(this.textArea);
+			((DefaultCaret) this.textArea.getCaret())
+					.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+			this.textArea.setEditable(false);
+			this.pane.setPreferredSize(new Dimension(300, 400));
+			this.frame.add(this.pane);
+			this.frame.setVisible(true);
+			this.frame.pack();
 
 			// While the port entered is invalid, continually ask for another
 			// port
 			while (port == -1) {
-				System.out.print("Please enter a valid port: ");
-				portStr = keyboard.nextLine();
+				portStr = null;
+				while (portStr == null)
+					portStr = JOptionPane
+							.showInputDialog("Enter a port (1-5 digits): ");
 				if (Validator.isValidPort(portStr)) {
 					port = Integer.parseInt(portStr);
 				}
 			}
+
+			// // If an argument was entered, use the argument as a port
+			// // Otherwise, ask the user to enter a port
+			// if (args.length > 0) {
+			// if (Validator.isValidPort(args[0])) {
+			// port = Integer.parseInt(args[0]);
+			// }
+			// } else {
+			// System.out.print("Please enter a port: ");
+			// portStr = keyboard.nextLine();
+			// if (Validator.isValidPort(portStr)) {
+			// port = Integer.parseInt(portStr);
+			// }
+			// }
+			//
+			// // While the port entered is invalid, continually ask for another
+			// // port
+			// while (port == -1) {
+			// System.out.print("Please enter a valid port: ");
+			// portStr = keyboard.nextLine();
+			// if (Validator.isValidPort(portStr)) {
+			// port = Integer.parseInt(portStr);
+			// }
+			// }
 
 			// Create the socket based on the port entered
 			try {
@@ -192,8 +191,8 @@ public class CentralServer {
 	 *            the message to print.
 	 */
 	public void println(String message) {
-		// this.textArea.append(message + "\n");
-		System.out.println(message);
+		this.textArea.append(message + "\n");
+		// System.out.println(message);
 	}
 
 	ArrayList<Server> getListOfServers() {

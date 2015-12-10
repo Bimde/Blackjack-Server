@@ -1,4 +1,15 @@
 # Change Log
+## [2.1.2](https://github.com/Bimde/Blackjack-Server/compare/v2.1.1...v.2.1.2) - 2015-12-10
+### Changes:
+ - Changed the timer so that a full room must be ready to start the game.
+ - Changed the GUI into a console UI.
+	- Made the GUI somewhat easily togglable (via comments).
+
+### Fixes:
+ - Fixed an infinite loop when the port entered is already being used.
+ - Fixed a NullPointerException when a client without a name disconnects.
+ - Fixed the timer so that it resets properly when the number of clients change.
+
 ## [2.1.1](https://github.com/Bimde/Blackjack-Server/compare/v2.1...v2.1.1) - 2015-12-09
 ### Changes:
  - Organized code.
