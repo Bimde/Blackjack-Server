@@ -8,8 +8,8 @@ public class Validator {
 	 * Checks if a string is a valid port number.
 	 *
 	 * @param str
-	 *            the string to check.
-	 * @return whether or not the string is a valid port number.
+	 *            the String to check.
+	 * @return whether or not the String is a valid port number.
 	 */
 	public static boolean isValidPort(String str) {
 		return str.matches("([0-9]{1,5})");
@@ -20,10 +20,10 @@ public class Validator {
 	 * (Server#MIN_BET) and the specified maximum
 	 * 
 	 * @param bet
-	 *            String containing the bet from the client
+	 *            the String containing the bet from the client
 	 * @param maxBet
-	 *            Maximum bet value (usually the player's current coin balance)
-	 * @return Whether or not the bet is valid
+	 *            maximum bet value (usually the player's current coin balance)
+	 * @return whether or not the bet is valid
 	 */
 	public static boolean isValidBet(String bet, int maxBet) {
 		if (bet.matches("([0-9]){1, 8}")) {

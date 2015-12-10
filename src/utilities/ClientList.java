@@ -92,7 +92,7 @@ public class ClientList implements Iterable<Client> {
 	 * Removes specified Client object from list
 	 * 
 	 * @param client
-	 *            Client object to remove
+	 *            the Client object to remove
 	 */
 	public void remove(Client client) {
 		ClientNode temp = this.head;
@@ -118,7 +118,7 @@ public class ClientList implements Iterable<Client> {
 	 * Removes node from the list
 	 * 
 	 * @param client
-	 *            Client to remove.
+	 *            the Client to remove.
 	 */
 	private void remove(ClientNode client) {
 
