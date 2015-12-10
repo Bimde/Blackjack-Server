@@ -33,6 +33,7 @@ public class Server implements ActionListener {
 	private ArrayDeque<Message> messages;
 	private CentralServer centralServer;
 	private boolean sendMessages;
+	private boolean lobbyTimerActive;
 
 	public ArrayList<Client> getAllClients() {
 		return allClients;
@@ -105,7 +106,8 @@ public class Server implements ActionListener {
 		this.queueMessage("% " + playerNo + " READY");
 
 		// Do a 15 second timer to wait for more people to join
-		if (this.playersReady != 0 && this.playersReady == this.players.size()) {
+		if (this.playersReady != 0
+				&& this.playersReady == this.players.size()) {
 			this.startReadyTimer();
 		}
 	}
@@ -113,22 +115,42 @@ public class Server implements ActionListener {
 	public void startReadyTimer() {
 		// Make sure that the server is not full
 		// Otherwise, start the game right away
-		if (this.players.size() < 6) {
-			long startTime = System.nanoTime();
+		if (!this.lobbyTimerActive) {
+			if (this.players.size() < 6) {
+				this.lobbyTimerActive = true;
+				long startTime = System.nanoTime();
 
-			// Keep checking if the entire lobby is ready until the start delay
-			// is reached
-			while ((System.nanoTime() - startTime) / 1000000000 < START_DELAY) {
-				if (this.playersReady == 0
-						|| this.playersReady != this.players.size()) {
-					// If there are fewer players ready than there are players
-					// in the lobby, stop the timer
-					this.println("Cancelled timer");
-					return;
-				}
+				// Create new thread to prevent interference with other
+				// activities
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						// Keep checking if the entire lobby is ready until the
+						// start delay
+						// is reached
+						while ((System.nanoTime() - startTime)
+								/ 1000000000 < START_DELAY) {
+							if (Server.this.playersReady == 0
+									|| Server.this.playersReady != Server.this.players
+											.size()) {
+								Server.this.println("Cancelled timer");
+								Server.this.lobbyTimerActive = false;
+								return;
+							}
+							try {
+								Thread.sleep(Server.MESSAGE_DELAY / 10);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+						Server.this.startGame();
+					}
+				}).start();
+
+			} else {
+				this.startGame();
 			}
 		}
-		this.startGame();
 	}
 
 	/**
@@ -170,6 +192,7 @@ public class Server implements ActionListener {
 	 * for the game.
 	 */
 	private void startGame() {
+		this.lobbyTimerActive = false;
 		this.gameStarted = true;
 		this.queueMessage("% START");
 		this.dealer = new Dealer(this, this.players);
@@ -217,9 +240,8 @@ public class Server implements ActionListener {
 		this.players.add(source);
 
 		// Send a message to all clients that a new player has joined
-		this.queueMessage(new Message(Message.ALL_CLIENTS,
-				source.getPlayerNo(), "@ " + source.getPlayerNo() + " "
-						+ source.getName()));
+		this.queueMessage(new Message(Message.ALL_CLIENTS, source.getPlayerNo(),
+				"@ " + source.getPlayerNo() + " " + source.getName()));
 	}
 
 	/**
