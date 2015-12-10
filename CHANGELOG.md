@@ -12,6 +12,7 @@
  - Fixed a NullPointerException when the dealer of a client was null.
  - Fixed the timer so that it doesn't start twice and create two new rounds.
  - Now returns a % FORMATERROR when a user doesn't type PLAY or SPECTATE.
+ - Fixed spectators from not receiving a list of pre-existing players in the lobby.
 
 ## [2.1](https://github.com/Bimde/Blackjack-Server/compare/v2.0.1...v2.1) - 2015-12-09
 ### Changes:
