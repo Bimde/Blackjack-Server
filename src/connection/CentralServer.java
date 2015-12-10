@@ -101,7 +101,7 @@ public class CentralServer {
 	 * first non-full && non-started room and spectator in the first non-started
 	 * room).<br>
 	 * Synchronized to prevent players from creating two new servers at the same
-	 * time if a available server doesn't exist
+	 * time if a available server doesn't exist.
 	 * 
 	 * @param client
 	 *            the client to add to the server.
