@@ -350,8 +350,8 @@ public class Dealer implements Runnable {
 			// standings string. Broadcasts the string at the end.
 			String standings = "+ ";
 			for (Client player : this.players) {
-				standings += (player.getPlayerNo() + " " + player.getPlayer()
-						.getCoins()) + " ";
+				standings += (player.getPlayerNo() + " "
+						+ player.getPlayer().getCoins()) + " ";
 			}
 			this.server.queueMessage(standings);
 
