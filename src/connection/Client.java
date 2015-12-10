@@ -60,8 +60,8 @@ public class Client implements Runnable, Comparable<Client> {
 		// determined
 		if (this.userType == 'P') {
 			if (Server.DEBUG) {
-				System.out.println(
-						this.player.getPlayerNo() + " has disconnected");
+				System.out.println(this.player.getPlayerNo()
+						+ " has disconnected");
 			}
 		} else {
 			if (Server.DEBUG) {
@@ -105,8 +105,8 @@ public class Client implements Runnable, Comparable<Client> {
 
 		// Set up the input
 		try {
-			this.input = new BufferedReader(
-					new InputStreamReader(this.socket.getInputStream()));
+			this.input = new BufferedReader(new InputStreamReader(
+					this.socket.getInputStream()));
 		} catch (IOException e) {
 			System.err.println("Error getting client's input stream");
 			e.printStackTrace();
@@ -147,12 +147,11 @@ public class Client implements Runnable, Comparable<Client> {
 				this.userType = 'S';
 				this.centralServer.addToServer(this, false);
 				this.sendMessage("% ACCEPTED");
-			}
-			else {
+			} else {
 				this.sendMessage("% FORMATERROR");
 			}
 		}
-		
+
 		// Inform the user of all the players currently in the lobby
 		this.sendStartMessage();
 
@@ -185,27 +184,24 @@ public class Client implements Runnable, Comparable<Client> {
 				if (this.dealer.bettingIsActive()
 						&& this.player.getCurrentBet() == 0
 						&& message.matches("[0-9]{1,8}")
-						&& (betPlaced = Integer
-								.parseInt(message)) >= Server.MIN_BET
+						&& (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET
 						&& betPlaced <= this.player.getCoins()) {
-					this.server.queueMessage(
-							"$ " + this.getPlayerNo() + " bets " + betPlaced);
-					this.server.println(
-							"Bet Placed (not applicable if 0): " + betPlaced);
+					this.server.queueMessage("$ " + this.getPlayerNo()
+							+ " bets " + betPlaced);
+					this.server.println("Bet Placed (not applicable if 0): "
+							+ betPlaced);
 					this.player.setCurrentBet(betPlaced);
-				} else
-					if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo()
-							&& message.equalsIgnoreCase("hit")) {
+				} else if (this.dealer.getCurrentPlayerTurn() == this
+						.getPlayerNo() && message.equalsIgnoreCase("hit")) {
 					this.player.setCurrentMove('H');
 				} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo()
 						&& message.equalsIgnoreCase("stand")) {
 					this.player.setCurrentMove('S');
-				} else
-					if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo()
-							&& message.equalsIgnoreCase("doubledown")
-							&& this.player
-									.getCoins() >= this.player.getCurrentBet()
-											* 2) {
+				} else if (this.dealer.getCurrentPlayerTurn() == this
+						.getPlayerNo()
+						&& message.equalsIgnoreCase("doubledown")
+						&& this.player.getCoins() >= this.player
+								.getCurrentBet() * 2) {
 					this.player.setCurrentMove('D');
 				} else {
 					this.sendMessage("% FORMATERROR");
@@ -303,11 +299,19 @@ public class Client implements Runnable, Comparable<Client> {
 	}
 
 	/**
-	 * Sends a list of players that were already connected to the server.
+	 * Sends a list of players that were already connected to the server as well
+	 * as the current user's player number (-1 if spectator)
 	 */
 	private void sendStartMessage() {
 		ClientList players = this.server.getCurrentPlayers();
-		String message = "@ " + this.getPlayerNo() + " " + (players.size() - 1);
+		int noOfPlayersBefore = players.size();
+		if (this.isPlayer()) {
+			noOfPlayersBefore--;
+		}
+
+		// Tells the user his/her player number, the number of other players in
+		// the lobby, as well as all their names separated by //
+		String message = "@ " + this.getPlayerNo() + " " + noOfPlayersBefore;
 		for (Client client : players) {
 			if (client != this)
 				message += " " + client.getName() + " //";
