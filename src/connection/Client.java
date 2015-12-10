@@ -97,13 +97,8 @@ public class Client implements Runnable {
 	}
 
 	/**
-<<<<<<< HEAD
 	 * Starts the thread of a client, mostly used for input and output of
 	 * messages.
-=======
-	 * Starts the thread of a client, mostly used for inputs and outputs of
-	 * messages
->>>>>>> bc2ca3b14cb4d5e162540a0d86a57b278f1c2ca9
 	 */
 	@Override
 	public void run() {
@@ -351,12 +346,8 @@ public class Client implements Runnable {
 	}
 
 	/**
-<<<<<<< HEAD
-	 * Returns the player's name and their coins.
-=======
 	 * Returns the player's name and their coins using the following format:
 	 * 'player's name : player's current coins', 'ex. Bob : 150'
->>>>>>> bc2ca3b14cb4d5e162540a0d86a57b278f1c2ca9
 	 */
 	@Override
 	public String toString() {
