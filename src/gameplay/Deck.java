@@ -37,7 +37,8 @@ public class Deck {
 		for (int i = 0; i < this.numOfDecks; i++) {
 			for (int suit = 0; suit < Dealer.SUITS.length; suit++) {
 				for (int rank = 0; rank < Dealer.RANKS.length; rank++) {
-					this.cards.add(new Card(Dealer.SUITS[suit], Dealer.RANKS[rank]));
+					this.cards.add(new Card(Dealer.SUITS[suit],
+							Dealer.RANKS[rank]));
 				}
 			}
 		}

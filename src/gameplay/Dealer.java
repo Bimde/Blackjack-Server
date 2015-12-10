@@ -129,7 +129,6 @@ public class Dealer implements Runnable {
 				try {
 					Thread.sleep(Server.MESSAGE_DELAY);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -179,6 +178,7 @@ public class Dealer implements Runnable {
 					currentPlayer.getPlayer().setCurrentMove('N');
 				}
 
+				// Set the turn to the current player and tell all players
 				while (currentPlayer.isPlayer() && this.server.gameStarted()
 						&& !endTurn) {
 					currentPlayer.getPlayer().setCurrentMove('N');
@@ -199,6 +199,7 @@ public class Dealer implements Runnable {
 					}
 
 					if (currentMove == 'H') {
+						// Hit
 						// Draw a new card and give it to the player
 						cardDrawn = this.deck.getCard();
 						this.server.queueMessage("# "
@@ -207,6 +208,10 @@ public class Dealer implements Runnable {
 						currentPlayer.getPlayer().addCard(cardDrawn);
 
 						if (currentPlayer.getPlayer().getHandValue() > 21) {
+							// If the player bust, remove their bet from their
+							// coins
+							// Broadcast to the server that the player bust
+							// End the player's turn
 							int newCoins = currentPlayer.getCoins()
 									- currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
@@ -215,6 +220,11 @@ public class Dealer implements Runnable {
 									+ newCoins);
 							endTurn = true;
 						} else if (currentPlayer.getPlayer().getHandValue() == 21) {
+							// If the player got blackjack, add their bet to
+							// their coins
+							// Broadcast to the server that the player got a
+							// blackjack
+							// End the player's turn
 							int newCoins = currentPlayer.getCoins()
 									+ currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
@@ -223,8 +233,9 @@ public class Dealer implements Runnable {
 									+ " blackjack " + newCoins);
 							endTurn = true;
 						}
-
 					} else if (currentMove == 'S') {
+						// Stand
+						// End the player's turn
 						endTurn = true;
 						this.server.queueMessage("& "
 								+ currentPlayer.getPlayerNo() + " stand "
@@ -234,7 +245,6 @@ public class Dealer implements Runnable {
 							&& currentMove == 'D'
 							&& currentPlayer.getCoins() >= currentPlayer
 									.getBet() * 2) {
-
 						// If the client double downs, double their bet
 						currentPlayer.setBet(currentPlayer.getBet() * 2);
 
@@ -246,6 +256,9 @@ public class Dealer implements Runnable {
 						currentPlayer.getPlayer().addCard(cardDrawn);
 
 						if (currentPlayer.getPlayer().getHandValue() > 21) {
+							// If the player bust, remove their bet from their
+							// coins
+							// Broadcast to the server that the player bust
 							int newCoins = currentPlayer.getCoins()
 									- currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
@@ -253,6 +266,10 @@ public class Dealer implements Runnable {
 									+ currentPlayer.getPlayerNo() + " bust "
 									+ newCoins);
 						} else if (currentPlayer.getPlayer().getHandValue() == 21) {
+							// If the player got blackjack, add their bet to
+							// their coins
+							// Broadcast to the server that the player got a
+							// blackjack
 							int newCoins = currentPlayer.getCoins()
 									+ currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
@@ -260,20 +277,20 @@ public class Dealer implements Runnable {
 									+ currentPlayer.getPlayerNo()
 									+ " blackjack " + newCoins);
 						} else {
+							// If the player didn't bust or get a blackjack, set
+							// them to stand
 							this.server.queueMessage("& "
 									+ currentPlayer.getPlayerNo() + " stand "
 									+ currentPlayer.getCoins());
 							currentPlayer.getPlayer().setCurrentMove('S');
 						}
 
-						// Change to stand
+						// End the player's turn
 						endTurn = true;
 					} else {
 						currentPlayer.sendMessage("% FORMATERROR");
 					}
-
 				}
-
 			}
 
 			try {
@@ -290,7 +307,6 @@ public class Dealer implements Runnable {
 			// higher
 			// Broadcast each card as the dealer draws
 			while (this.dealerHand < 17) {
-
 				try {
 					Thread.sleep(Server.MESSAGE_DELAY);
 				} catch (InterruptedException e) {
@@ -303,6 +319,9 @@ public class Dealer implements Runnable {
 
 			// Bust the dealer if the dealer gets over 21 (basically guarantee
 			// win by making the value -1)
+
+			// If the dealer gets blackjack or is still less than 21, broadcast
+			// the corresponding message
 			if (this.dealerHand > 21) {
 				this.dealerHand = -1;
 				this.server.queueMessage("& 0 bust X");
@@ -345,6 +364,8 @@ public class Dealer implements Runnable {
 				this.server.queueMessage("% SHUFFLE");
 			}
 
+			// Disconnect all players who do not have enough coins to continue
+			// playing
 			for (Client currentPlayer : this.players) {
 				if (currentPlayer.getPlayer().getCoins() < Server.MIN_BET) {
 					this.server.println("Disconnecting player from server");
@@ -353,6 +374,7 @@ public class Dealer implements Runnable {
 			}
 		}
 
+		// End the game when there are no more players
 		this.server.println("All players have left.\nGame over.");
 		this.server.endGame();
 	}
