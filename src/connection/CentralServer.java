@@ -73,8 +73,8 @@ public class CentralServer {
 		try {
 			this.socket = new ServerSocket(port);
 		} catch (IOException e) {
-			System.err.println("Error creating a new server socket on port "
-					+ port);
+			System.err.println(
+					"Error creating a new server socket on port " + port);
 			e.printStackTrace();
 		}
 		this.listOfServers = new ArrayList<Server>();
@@ -99,20 +99,22 @@ public class CentralServer {
 	/**
 	 * Place a player/spectator in the next available game room (player in the
 	 * first non-full && non-started room and spectator in the first non-started
-	 * room).
+	 * room).<br>
+	 * Synchronized to prevent players from creating two new servers at the same
+	 * time if a available server doesn't exist
 	 * 
 	 * @param client
 	 *            the client to add to the server.
 	 * @param isPlayer
 	 *            whether or not it is a player.
 	 */
-	void addToServer(Client client, boolean isPlayer) {
+	synchronized void addToServer(Client client, boolean isPlayer) {
 		Server availableServer = null;
 		int serverUsed = 0;
 		boolean serverFound = false;
 
 		// Uses a regular for loop instead of for-each loop to prevent changes
-		// in list of servers during search causing iterator to throw
+		// in list of servers during search from causing iterator to throw
 		// ConcurrentModificationException
 		for (int serverNo = 0; !serverFound
 				&& serverNo < this.listOfServers.size(); serverNo++) {
