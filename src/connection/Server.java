@@ -10,6 +10,11 @@ import javax.swing.Timer;
 import gameplay.Dealer;
 import utilities.ClientList;
 
+/**
+ * Object for each individual blackjack server that is within a central server.
+ * @author Bimesh De Silva, Patrick Liu, William Xu, Barbara Guo
+ * @version December 1, 2015
+ */
 public class Server implements ActionListener {
 	private ArrayList<Client> allClients;
 	private ClientList players;

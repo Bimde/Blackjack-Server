@@ -1,5 +1,10 @@
 package gameplay;
 
+/**
+ * Object that represents a playing card. Includes a rank and suit.
+ * @author Barbara Guo, Bimesh De Silva, Patrick Liu, William Xu
+ * @version December 1, 2015
+ */
 public class Card {
 	private char suit, rank;
 	private int value;

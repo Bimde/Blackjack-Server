@@ -10,6 +10,8 @@ import utilities.ClientList;
 /**
  * Handles the actual gameplay, i.e. which player's turn is it, giving the
  * dealer cards, etc.
+ * @author Bimesh De Silva, Patrick Liu, Barbara Guo, William Xu
+ * @version December 1, 2015
  */
 public class Dealer implements Runnable {
 	public static final char[] SUITS = { 'S', 'C', 'H', 'D' };

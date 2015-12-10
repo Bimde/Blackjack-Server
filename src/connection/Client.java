@@ -11,6 +11,11 @@ import java.net.Socket;
 import utilities.ClientList;
 import utilities.Validator;
 
+/**
+ * Object for every client connecting to a blackjack server.
+ * @author Bimesh De Silva, Patrick Liu, William Xu, Barbara Guo
+ * @version December 1, 2015
+ */
 public class Client implements Runnable, Comparable<Client> {
 	private Server server;
 	private CentralServer centralServer;

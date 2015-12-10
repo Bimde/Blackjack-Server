@@ -15,6 +15,12 @@ import javax.swing.text.DefaultCaret;
 
 import utilities.Validator;
 
+/**
+ * Central server that hosts multiple servers for blackjack games.
+ * Automatically allocates new players to different servers.
+ * @author Bimesh De Silva, Patrick Liu, William Xu
+ * @version December 8, 2015
+ */
 public class CentralServer {
 	private ServerSocket socket;
 	private ArrayList<Server> listOfServers;

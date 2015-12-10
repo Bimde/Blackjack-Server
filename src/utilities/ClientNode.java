@@ -3,10 +3,11 @@ package utilities;
 import connection.Client;
 
 /**
- * Node used for the 'ClientList' which stores 'Client' object
+ * Node used for the ClientList object which stores Client objects.
+ * @author Bimesh De Silva, Patrick Liu
+ * @version December 2, 2015
  */
 class ClientNode {
-
 	/**
 	 * Contained Client object.
 	 */
