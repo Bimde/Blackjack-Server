@@ -19,7 +19,6 @@ public class Client implements Runnable, Comparable<Client> {
 	private PrintWriter output;
 	private String name;
 	private boolean connected;
-
 	private Dealer dealer;
 
 	/**
@@ -92,6 +91,9 @@ public class Client implements Runnable, Comparable<Client> {
 		this.userType = 'U';
 	}
 
+	/**
+	 *  Starts the thread of a client, mostly used for inputs and outputs of messages
+	 */
 	@Override
 	public void run() {
 		// Set up the output
@@ -227,10 +229,6 @@ public class Client implements Runnable, Comparable<Client> {
 		this.output.flush();
 	}
 
-	protected Socket getSocket() {
-		return this.socket;
-	}
-
 	protected void setServer(Server server) {
 		this.server = server;
 	}
@@ -248,10 +246,6 @@ public class Client implements Runnable, Comparable<Client> {
 			return -1;
 		}
 		return this.player.getPlayerNo();
-	}
-
-	public char getUserType() {
-		return this.userType;
 	}
 
 	public boolean isPlayer() {
@@ -294,10 +288,6 @@ public class Client implements Runnable, Comparable<Client> {
 		this.player.setCoins(noOfCoins);
 	}
 
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
-
 	/**
 	 * Sends a list of players that were already connected to the server as well
 	 * as the current user's player number (-1 if spectator)
@@ -337,19 +327,26 @@ public class Client implements Runnable, Comparable<Client> {
 		return line;
 	}
 
+	/**
+	 * Check if this client (if a player) is ready to start the game
+	 * 
+	 * @return whether or not the player is ready
+	 */
 	public boolean isReady() {
 		return this.isReady;
 	}
 
-	public void setReady(boolean isReady) {
-		this.isReady = isReady;
-	}
-
+	/**
+	 *  Clients are identified by player number
+	 */
 	@Override
 	public int compareTo(Client object) {
 		return this.getPlayerNo() - object.getPlayerNo();
 	}
 
+	/**
+	 * Returns the player's name and their coins
+	 */
 	@Override
 	public String toString() {
 		return this.name + " : " + this.player.getCoins();
