@@ -148,8 +148,7 @@ public class Client implements Runnable, Comparable<Client> {
 				this.centralServer.addToServer(this, false);
 				this.sendMessage("% ACCEPTED");
 			}
-			else
-			{
+			else {
 				this.sendMessage("% FORMATERROR");
 			}
 		}
@@ -158,7 +157,6 @@ public class Client implements Runnable, Comparable<Client> {
 		this.sendStartMessage();
 
 		if (this.isPlayer()) {
-			
 			// Check if the player is ready to start
 			while (this.connected && !this.isReady) {
 				String message = this.readLine();
