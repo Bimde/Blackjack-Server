@@ -25,11 +25,15 @@ import utilities.Validator;
 public class CentralServer {
 	private ServerSocket socket;
 	private ArrayList<Server> listOfServers;
-	private int userNo = 0;
 	private int serverUsed;
 	private JTextArea textArea;
 	private JFrame frame;
-	private JScrollPane pane;
+	private JScrollPane srollPane;
+
+	/**
+	 * Keeps tracks of the number of clients who joined the server
+	 */
+	private int userNo;
 
 	public static void main(String[] args) {
 		new CentralServer(args);
@@ -50,12 +54,15 @@ public class CentralServer {
 			this.frame = new JFrame("Blackjack Server");
 			this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			this.textArea = new JTextArea();
-			this.pane = new JScrollPane(this.textArea);
+			this.srollPane = new JScrollPane(this.textArea);
+
+			// Enables auto-scrolling when new messages are added
 			((DefaultCaret) this.textArea.getCaret())
 					.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+
 			this.textArea.setEditable(false);
-			this.pane.setPreferredSize(new Dimension(300, 400));
-			this.frame.add(this.pane);
+			this.srollPane.setPreferredSize(new Dimension(300, 400));
+			this.frame.add(this.srollPane);
 			this.frame.setVisible(true);
 			this.frame.pack();
 
@@ -71,6 +78,7 @@ public class CentralServer {
 				}
 			}
 
+			// // Used when launching server through console
 			// // If an argument was entered, use the argument as a port
 			// // Otherwise, ask the user to enter a port
 			// if (args.length > 0) {
@@ -99,9 +107,8 @@ public class CentralServer {
 			try {
 				this.socket = new ServerSocket(port);
 			} catch (IOException e) {
-				System.err
-						.println("Error creating a new server socket on port "
-								+ port);
+				System.err.println(
+						"Error creating a new server socket on port " + port);
 				e.printStackTrace();
 				port = -1;
 			}
@@ -112,6 +119,7 @@ public class CentralServer {
 		keyboard.close();
 
 		// Accept and connect new clients who join the server
+		this.userNo = 0;
 		while (true) {
 			this.println("Waiting for client to connect...");
 			try {
