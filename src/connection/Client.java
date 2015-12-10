@@ -164,7 +164,7 @@ public class Client implements Runnable, Comparable<Client> {
 			}
 		}
 
-		// Game
+		// Game loop
 		while (this.isPlayer() && this.connected) {
 			String message = this.readLine();
 			this.server.println(this.getPlayerNo() + " : " + this.name
