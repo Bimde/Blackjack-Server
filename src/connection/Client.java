@@ -64,8 +64,8 @@ public class Client implements Runnable {
 		// determined
 		if (this.userType == 'P') {
 			if (Server.DEBUG) {
-				System.out.println(
-						this.player.getPlayerNo() + " has disconnected");
+				System.out.println(this.player.getPlayerNo()
+						+ " has disconnected");
 			}
 		} else {
 			if (Server.DEBUG) {
@@ -113,8 +113,8 @@ public class Client implements Runnable {
 
 		// Set up the input
 		try {
-			this.input = new BufferedReader(
-					new InputStreamReader(this.socket.getInputStream()));
+			this.input = new BufferedReader(new InputStreamReader(
+					this.socket.getInputStream()));
 		} catch (IOException e) {
 			System.err.println("Error getting client's input stream");
 			e.printStackTrace();
@@ -194,27 +194,24 @@ public class Client implements Runnable {
 				if (this.dealer.bettingIsActive()
 						&& this.player.getCurrentBet() == 0
 						&& message.matches("[0-9]{1,8}")
-						&& (betPlaced = Integer
-								.parseInt(message)) >= Server.MIN_BET
+						&& (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET
 						&& betPlaced <= this.player.getCoins()) {
-					this.server.queueMessage(
-							"$ " + this.getPlayerNo() + " bets " + betPlaced);
-					this.server.println(
-							"Bet Placed (not applicable if 0): " + betPlaced);
+					this.server.queueMessage("$ " + this.getPlayerNo()
+							+ " bets " + betPlaced);
+					this.server.println("Bet Placed (not applicable if 0): "
+							+ betPlaced);
 					this.player.setCurrentBet(betPlaced);
-				} else
-					if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo()
-							&& message.equalsIgnoreCase("hit")) {
+				} else if (this.dealer.getCurrentPlayerTurn() == this
+						.getPlayerNo() && message.equalsIgnoreCase("hit")) {
 					this.player.setCurrentMove('H');
 				} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo()
 						&& message.equalsIgnoreCase("stand")) {
 					this.player.setCurrentMove('S');
-				} else
-					if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo()
-							&& message.equalsIgnoreCase("doubledown")
-							&& this.player
-									.getCoins() >= this.player.getCurrentBet()
-											* 2) {
+				} else if (this.dealer.getCurrentPlayerTurn() == this
+						.getPlayerNo()
+						&& message.equalsIgnoreCase("doubledown")
+						&& this.player.getCoins() >= this.player
+								.getCurrentBet() * 2) {
 					this.player.setCurrentMove('D');
 				} else {
 					this.sendMessage("% FORMATERROR");
