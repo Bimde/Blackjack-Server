@@ -20,7 +20,7 @@ import javax.swing.text.DefaultCaret;
 
 import utilities.Validator;
 
-public class BetterClient implements ActionListener, KeyListener {
+public class ServerTester implements ActionListener, KeyListener {
 	JFrame frame = new JFrame();
 	JPanel panel = new JPanel();
 	static boolean running = true;
@@ -39,7 +39,7 @@ public class BetterClient implements ActionListener, KeyListener {
 
 	public static void main(String[] args) throws UnknownHostException,
 			IOException {
-		new BetterClient();
+		new ServerTester();
 	}
 
 	public static class IdleTimer implements Runnable {
@@ -56,7 +56,7 @@ public class BetterClient implements ActionListener, KeyListener {
 		}
 	}
 
-	public BetterClient() throws UnknownHostException, IOException {
+	public ServerTester() throws UnknownHostException, IOException {
 		pane.setSize(300, 300);
 		pane.setLocation(0, 0);
 		panel.setSize(300, 500);
@@ -161,7 +161,6 @@ public class BetterClient implements ActionListener, KeyListener {
 						try {
 							msg = myReader.readLine();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						chatBox.append(msg + "\n");
