@@ -12,6 +12,7 @@ import utilities.ClientList;
 
 /**
  * Object for each individual blackjack server that is within a central server.
+ * 
  * @author Bimesh De Silva, Patrick Liu, William Xu, Barbara Guo
  * @version December 1, 2015
  */
@@ -106,7 +107,8 @@ public class Server implements ActionListener {
 
 	/**
 	 * Once all the players in the lobby declare they are ready, set a timer to
-	 * run before starting the game in order to give more people a chance to join
+	 * run before starting the game in order to give more people a chance to
+	 * join.
 	 */
 	public void startReadyTimer() {
 		// Make sure that the server is not full
@@ -329,10 +331,10 @@ public class Server implements ActionListener {
 	}
 
 	/**
-	 * Add a new client to the server
+	 * Add a new client to the server.
 	 * 
 	 * @param newClient
-	 *            the new client to add
+	 *            the new client to add.
 	 */
 	public void addClient(Client newClient) {
 		this.allClients.add(newClient);

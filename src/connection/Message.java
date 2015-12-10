@@ -2,6 +2,7 @@ package connection;
 
 /**
  * Object to hold the destination and content of message.
+ * 
  * @author Bimesh De Silva, Patrick Liu, Barbara Guo, William Xu
  * @version December 3, 2015
  */

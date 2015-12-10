@@ -16,8 +16,9 @@ import javax.swing.text.DefaultCaret;
 import utilities.Validator;
 
 /**
- * Central server that hosts multiple servers for blackjack games.
- * Automatically allocates new players to different servers.
+ * Central server that hosts multiple servers for blackjack games. Automatically
+ * allocates new players to different servers.
+ * 
  * @author Bimesh De Silva, Patrick Liu, William Xu
  * @version December 8, 2015
  */
@@ -41,8 +42,8 @@ public class CentralServer {
 	public CentralServer() {
 		int port = -1;
 		Scanner keyboard = new Scanner(System.in);
-		
-		// Create a gui for debugging
+
+		// Create a GUI for debugging
 		this.frame = new JFrame("~~~Blackjack Server~~~");
 		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.textArea = new JTextArea();
@@ -68,7 +69,7 @@ public class CentralServer {
 
 		keyboard.close();
 
-		// Create the socket based on the port enterred
+		// Create the socket based on the port entered
 		try {
 			this.socket = new ServerSocket(port);
 		} catch (IOException e) {
@@ -98,12 +99,12 @@ public class CentralServer {
 	/**
 	 * Place a player/spectator in the next available game room (player in the
 	 * first non-full && non-started room and spectator in the first non-started
-	 * room)
+	 * room).
 	 * 
 	 * @param client
-	 *            the client to add to the server
+	 *            the client to add to the server.
 	 * @param isPlayer
-	 *            whether or not it is a player
+	 *            whether or not it is a player.
 	 */
 	void addToServer(Client client, boolean isPlayer) {
 		Server availableServer = null;
@@ -141,16 +142,20 @@ public class CentralServer {
 	}
 
 	/**
-	 *  Remove the game room once the game has ended
-	 * @param server the server to remove
+	 * Remove the game room once the game has ended.
+	 * 
+	 * @param server
+	 *            the server to remove.
 	 */
 	public void removeServer(Server server) {
 		this.listOfServers.remove(server);
 	}
-	
+
 	/**
-	 * Print to the debugging gui console
-	 * @param message the message to print
+	 * Print to the debugging GUI.
+	 * 
+	 * @param message
+	 *            the message to print.
 	 */
 	public void println(String message) {
 		this.textArea.append(message + "\n");
@@ -159,7 +164,7 @@ public class CentralServer {
 	ArrayList<Server> getListOfServers() {
 		return this.listOfServers;
 	}
-	
+
 	public int getServerUsed() {
 		return this.serverUsed;
 	}

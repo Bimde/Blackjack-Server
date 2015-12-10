@@ -13,10 +13,11 @@ import utilities.Validator;
 
 /**
  * Object for every client connecting to a blackjack server.
+ * 
  * @author Bimesh De Silva, Patrick Liu, William Xu, Barbara Guo
  * @version December 1, 2015
  */
-public class Client implements Runnable, Comparable<Client> {
+public class Client implements Runnable {
 	private Server server;
 	private CentralServer centralServer;
 	private Socket socket;
@@ -27,17 +28,17 @@ public class Client implements Runnable, Comparable<Client> {
 	private Dealer dealer;
 
 	/**
-	 * Whether or not the player is ready to start the game
+	 * Whether or not the player is ready to start the game.
 	 */
 	private boolean isReady = false;
 
 	/**
-	 * Potential Player object if the client is a player
+	 * Potential Player object if the client is a player.
 	 */
 	private Player player;
 
 	/**
-	 * 'U' for unassigned, 'P' for player and 'S' for spectator
+	 * 'U' for unassigned, 'P' for player and 'S' for spectator.
 	 */
 	private char userType;
 
@@ -97,7 +98,8 @@ public class Client implements Runnable, Comparable<Client> {
 	}
 
 	/**
-	 *  Starts the thread of a client, mostly used for inputs and outputs of messages
+	 * Starts the thread of a client, mostly used for input and output of
+	 * messages.
 	 */
 	@Override
 	public void run() {
@@ -333,24 +335,16 @@ public class Client implements Runnable, Comparable<Client> {
 	}
 
 	/**
-	 * Check if this client (if a player) is ready to start the game
+	 * Check if this client (if a player) is ready to start the game.
 	 * 
-	 * @return whether or not the player is ready
+	 * @return whether or not the player is ready.
 	 */
 	public boolean isReady() {
 		return this.isReady;
 	}
 
 	/**
-	 *  Clients are identified by player number
-	 */
-	@Override
-	public int compareTo(Client object) {
-		return this.getPlayerNo() - object.getPlayerNo();
-	}
-
-	/**
-	 * Returns the player's name and their coins
+	 * Returns the player's name and their coins.
 	 */
 	@Override
 	public String toString() {

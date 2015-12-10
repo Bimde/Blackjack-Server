@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import gameplay.Card;
 
 /**
- * Object for actual players of blackjack servers. Will be put in a client object if said client is a player.
+ * Object for actual players of blackjack servers. Will be put in a client
+ * object if said client is a player.
+ * 
  * @author Bimesh De Silva, Barbara Guo, William Xu, Patrick Liu
  * @version December 3, 2015
  */

@@ -8,6 +8,7 @@ import connection.Client;
 /**
  * Linked list containing Client objects to store and retrieve players based on
  * their 'playerNo' parameter.
+ * 
  * @author Bimesh De Silva, Patrick Liu, William Xu
  * @version December 2, 2015
  */

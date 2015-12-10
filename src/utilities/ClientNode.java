@@ -4,6 +4,7 @@ import connection.Client;
 
 /**
  * Node used for the ClientList object which stores Client objects.
+ * 
  * @author Bimesh De Silva, Patrick Liu
  * @version December 2, 2015
  */
