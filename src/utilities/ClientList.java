@@ -13,7 +13,7 @@ import connection.Client;
 public class ClientList implements Iterable<Client> {
 
 	/**
-	 * Links to first and last nodes in list
+	 * Links to first and last nodes in list.
 	 */
 	private ClientNode head, tail;
 
@@ -74,7 +74,7 @@ public class ClientList implements Iterable<Client> {
 	 * Gets a Client object from the list given its player number.
 	 * 
 	 * @param playerNo
-	 *            the number associated with the desired client
+	 *            the number associated with the desired client.
 	 * @return the client associated with specified player number. If the player
 	 *         is not found, returns null.
 	 */
@@ -89,10 +89,10 @@ public class ClientList implements Iterable<Client> {
 	}
 
 	/**
-	 * Removes specified Client object from list
+	 * Removes specified Client object from list.
 	 * 
 	 * @param client
-	 *            the Client object to remove
+	 *            the Client object to remove.
 	 */
 	public void remove(Client client) {
 		ClientNode temp = this.head;
@@ -104,7 +104,7 @@ public class ClientList implements Iterable<Client> {
 	}
 
 	/**
-	 * Removes Client object associated with specified playerNo from list
+	 * Removes Client object associated with specified playerNo from list.
 	 * 
 	 * @param client
 	 *            the player number to remove.
@@ -115,7 +115,7 @@ public class ClientList implements Iterable<Client> {
 
 	/**
 	 * *** For internal use only, as there is no external access to nodes ***
-	 * Removes node from the list
+	 * Removes node from the list.
 	 * 
 	 * @param client
 	 *            the Client to remove.
@@ -137,8 +137,8 @@ public class ClientList implements Iterable<Client> {
 
 	/**
 	 * Creates a new iterator using the Client objects contained in the list's
-	 * nodes <br>
-	 * Allows for use with a for-each loop
+	 * nodes. <br>
+	 * Allows for use with a for-each loop.
 	 */
 	@Override
 	public Iterator<Client> iterator() {
@@ -183,6 +183,7 @@ public class ClientList implements Iterable<Client> {
 
 		// Returns '[]' for an empty list or removes the last ',' character and
 		// trailing space and adds the closing ']' otherwise
-		return rep.length() <= 1 ? "[]" : rep.substring(0, rep.length() - 2) + "]";
+		return rep.length() <= 1 ? "[]" : rep.substring(0, rep.length() - 2)
+				+ "]";
 	}
 }

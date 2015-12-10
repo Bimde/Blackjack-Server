@@ -8,12 +8,12 @@ import connection.Client;
 class ClientNode {
 
 	/**
-	 * Contained Client object
+	 * Contained Client object.
 	 */
 	private Client client;
 
 	/**
-	 * Nodes used to traverse through list
+	 * Nodes used to traverse through list.
 	 */
 	private ClientNode next, previous;
 
@@ -21,7 +21,7 @@ class ClientNode {
 	 * Constructs new ClientNode object containing the specified client object.
 	 * 
 	 * @param client
-	 *            the Client object to put in node
+	 *            the Client object to put in node.
 	 */
 	public ClientNode(Client client) {
 		this.client = client;
