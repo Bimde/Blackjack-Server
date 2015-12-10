@@ -1,6 +1,7 @@
 package utilities;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import connection.Client;
 
@@ -10,10 +11,14 @@ import connection.Client;
  *
  */
 public class ClientList implements Iterable<Client> {
+
+	/**
+	 * Links to first and last nodes in list
+	 */
 	private ClientNode head, tail;
 
 	/**
-	 * Constructs a new ClientList object containing Client objects.
+	 * Constructs new ClientList object containing Client objects.
 	 */
 	public ClientList() {
 	}
@@ -76,7 +81,6 @@ public class ClientList implements Iterable<Client> {
 	private ClientNode getNode(int playerNo) {
 		ClientNode temp = this.head;
 		while (temp != null) {
-
 			if ((temp.getClient().getPlayer().getPlayerNo() == playerNo))
 				return temp;
 			temp = temp.getNext();
@@ -85,10 +89,10 @@ public class ClientList implements Iterable<Client> {
 	}
 
 	/**
-	 * Removes a Client object from the list.
+	 * Removes specified Client object from list
 	 * 
 	 * @param client
-	 *            the client to remove.
+	 *            Client object to remove
 	 */
 	public void remove(Client client) {
 		ClientNode temp = this.head;
@@ -100,7 +104,7 @@ public class ClientList implements Iterable<Client> {
 	}
 
 	/**
-	 * Removes a Client object from the list.
+	 * Removes Client object associated with specified playerNo from list
 	 * 
 	 * @param client
 	 *            the player number to remove.
@@ -110,12 +114,15 @@ public class ClientList implements Iterable<Client> {
 	}
 
 	/**
-	 * Removes a Client object from the list.
+	 * *** For internal use only, as there is no external access to nodes ***
+	 * Removes node from the list
 	 * 
 	 * @param client
-	 *            the client to remove.
+	 *            Client to remove.
 	 */
 	private void remove(ClientNode client) {
+
+		// Removes and updates all links to node
 		if (client != null) {
 			if (this.head == client)
 				this.head = client.getNext();
@@ -125,17 +132,21 @@ public class ClientList implements Iterable<Client> {
 				client.getPrevious().setNext(client.getNext());
 			if (client.getNext() != null)
 				client.getNext().setPrevious(client.getPrevious());
-		} else {
-			System.out.println("!!!!!!!!!!!!!!!!!!!!Client was null");
 		}
 	}
 
 	/**
+	 * Creates a new iterator using the Client objects contained in the list's
+	 * nodes <br>
 	 * Allows for use with a for-each loop
 	 */
 	@Override
 	public Iterator<Client> iterator() {
 		return new Iterator<Client>() {
+
+			/**
+			 * Sets the first element of the iterator to the head of the list
+			 */
 			private ClientNode current = ClientList.this.head;
 
 			@Override
@@ -150,15 +161,16 @@ public class ClientList implements Iterable<Client> {
 					this.current = this.current.getNext();
 					return temp;
 				}
-				return null;
+				throw new NoSuchElementException("No more elements in the list");
 			}
 		};
 	}
 
 	/**
 	 * Returns a string representation of the list using the following format:
-	 * '[client1{@link #Client.toString()}, client2#toString, ...,
-	 * clientn#toString()]'
+	 * '[client1{@link #Client.toString() .toString()}, client2
+	 * {@link #Client.toString() .toString()}, ..., clientn
+	 * {@link #Client.toString() .toString()}]'
 	 */
 	@Override
 	public String toString() {
@@ -168,6 +180,9 @@ public class ClientList implements Iterable<Client> {
 			rep += temp.getClient().toString() + ", ";
 			temp = temp.getNext();
 		}
+
+		// Returns '[]' for an empty list or removes the last ',' character and
+		// trailing space and adds the closing ']' otherwise
 		return rep.length() <= 1 ? "[]" : rep.substring(0, rep.length() - 2) + "]";
 	}
 }

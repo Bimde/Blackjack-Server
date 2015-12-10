@@ -18,11 +18,10 @@ class ClientNode {
 	private ClientNode next, previous;
 
 	/**
-	 * Constructs a new ClientNode object containing the specified client
-	 * object.
+	 * Constructs new ClientNode object containing the specified client object.
 	 * 
 	 * @param client
-	 *            the client to put in the node.
+	 *            Client object to put in node
 	 */
 	public ClientNode(Client client) {
 		this.client = client;
@@ -31,17 +30,17 @@ class ClientNode {
 	/**
 	 * Getter for the contained Client object.
 	 * 
-	 * @return the contained Client object.
+	 * @return Contained Client object.
 	 */
 	public Client getClient() {
 		return this.client;
 	}
 
 	/**
-	 * Setter for the following node.
+	 * Setter for following node.
 	 * 
 	 * @param next
-	 *            the new following node.
+	 *            New following node.
 	 */
 	public void setNext(ClientNode next) {
 		this.next = next;
@@ -50,26 +49,26 @@ class ClientNode {
 	/**
 	 * Getter for the following node.
 	 * 
-	 * @return the following node.
+	 * @return Following node.
 	 */
 	public ClientNode getNext() {
 		return this.next;
 	}
 
 	/**
-	 * Setter for the preceding node.
+	 * Setter for preceding node.
 	 * 
 	 * @param previous
-	 *            the new preceding node.
+	 *            New preceding node.
 	 */
 	public void setPrevious(ClientNode previous) {
 		this.previous = previous;
 	}
 
 	/**
-	 * Getter for the preceding node.
+	 * Getter for preceding node.
 	 * 
-	 * @return the preceding node.
+	 * @return Preceding node.
 	 */
 	public ClientNode getPrevious() {
 		return this.previous;

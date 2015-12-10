@@ -1,10 +1,9 @@
 package utilities;
 
+import connection.Server;
+
 public class Validator {
 
-	public static final int MIN_BET = 1;
-
-	// Name checker here or let the user handle it
 	/**
 	 * Checks if a string is a valid port number.
 	 *
@@ -13,44 +12,36 @@ public class Validator {
 	 * @return whether or not the string is a valid port number.
 	 */
 	public static boolean isValidPort(String str) {
-		if (str.matches("(\\d{1,5})")) {
-			return true;
-		} else {
-			return false;
-		}
+		return str.matches("([0-9]{1,5})");
 	}
 
 	/**
-	 * Checks if a bet is valid.
+	 * Checks if a string contains an integer within the minimum bet
+	 * (Server#MIN_BET) and the specified maximum
 	 * 
 	 * @param bet
-	 *            the string containing the bet from the client.
+	 *            String containing the bet from the client
 	 * @param maxBet
-	 *            the maximum bet value (usually the player's current balance).
-	 * @return the player's bet in integer form. If the bet is not valid,
-	 *         returns -1.
+	 *            Maximum bet value (usually the player's current coin balance)
+	 * @return Whether or not the bet is valid
 	 */
 	public static boolean isValidBet(String bet, int maxBet) {
 		if (bet.matches("([0-9]){1, 8}")) {
 			int amount = Integer.parseInt(bet);
-			if (amount <= maxBet && amount >= MIN_BET)
+			if (amount <= maxBet && amount >= Server.MIN_BET)
 				return true;
 		}
 		return false;
 	}
 
 	/**
-	 * Checks if a name is valid.
+	 * Checks if a name is alphanumeric and within 1 to 16 characters
 	 * 
 	 * @param name
 	 *            the name to check.
 	 * @return whether or not the name is valid.
 	 */
 	public static boolean isValidName(String name) {
-		if (name.matches("([a-zA-Z0-9 ]){1,16}")) {
-			return true;
-		} else {
-			return false;
-		}
+		return name.matches("([a-zA-Z0-9 ]){1,16}");
 	}
 }
