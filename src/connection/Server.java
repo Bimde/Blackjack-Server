@@ -18,11 +18,16 @@ public class Server implements ActionListener {
 	private Dealer dealer;
 
 	public static final String START_MESSAGE = "START";
-	public static final int START_COINS = 1000, MESSAGE_DELAY = 500, MIN_BET = 10, START_DELAY = 15;
+	public static final int START_COINS = 1000, MESSAGE_DELAY = 500,
+			MIN_BET = 10, START_DELAY = 15;
 	public static final boolean DEBUG = true;
 
-	// Array indicating which player numbers have been taken (index 0 is dealer)
-	public boolean[] playerNumbers = { true, false, false, false, false, false, false };
+	/**
+	 * Array indicating which player numbers have been taken (index 0 is
+	 * dealer).
+	 */
+	public boolean[] playerNumbers = { true, false, false, false, false, false,
+			false };
 
 	private Timer messageTimer;
 	private ArrayDeque<Message> messages;
@@ -44,8 +49,8 @@ public class Server implements ActionListener {
 	/**
 	 * Constructor for a new Server object.
 	 * 
-	 * @param port
-	 *            the port to start the server on.
+	 * @param centralServer
+	 *            the central server to put the new server on.
 	 */
 	public Server(CentralServer centralServer) {
 		// Sets up client list to hold each client
@@ -71,7 +76,8 @@ public class Server implements ActionListener {
 	}
 
 	/**
-	 * Return the first unused player number and -1 if everything is used.
+	 * Return the first unused player number and -1 if everything is used. Also
+	 * fills up the unused player number.
 	 * 
 	 * @return the first unused player number.
 	 */
@@ -94,21 +100,35 @@ public class Server implements ActionListener {
 	 */
 	public void ready(int playerNo) {
 		this.playersReady++;
-		this.queueMessage("% " + playerNo + " READY");
-		if (this.playersReady != 0 && this.playersReady == this.players.size()) {
-			// Do a 15 second timer to wait for more people to join
 
-			if (this.players.size() < 6) {
-				long startTime = System.nanoTime();
-				while ((System.nanoTime() - startTime) / 1000000000 < START_DELAY) {
-					if (this.playersReady == 0 || this.playersReady != this.players.size()) {
-						this.println("Cancelled timer");
-						return;
-					}
+		// Tell all of the players in the lobby that somebody has become ready
+		this.queueMessage("% " + playerNo + " READY");
+
+		// Do a 15 second timer to wait for more people to join
+		if (this.playersReady != 0 && this.playersReady == this.players.size()) {
+			this.startReadyTimer();
+		}
+	}
+
+	public void startReadyTimer() {
+		// Make sure that the server is not full
+		// Otherwise, start the game right away
+		if (this.players.size() < 6) {
+			long startTime = System.nanoTime();
+
+			// Keep checking if the entire lobby is ready until the start delay
+			// is reached
+			while ((System.nanoTime() - startTime) / 1000000000 < START_DELAY) {
+				if (this.playersReady == 0
+						|| this.playersReady != this.players.size()) {
+					// If there are fewer players ready than there are players
+					// in the lobby, stop the timer
+					this.println("Cancelled timer");
+					return;
 				}
 			}
-			this.startGame();
 		}
+		this.startGame();
 	}
 
 	/**
@@ -118,24 +138,31 @@ public class Server implements ActionListener {
 	 *            the client to disconnect.
 	 */
 	public void disconnectPlayer(Client source) {
-		this.println("---" + this.players);
+		// Announce to all other players that a player has disconnected
 		this.queueMessage("! " + source.getPlayer().getPlayerNo());
+
+		// Remove the player and free up its space
 		source.setUserType('S');
 		this.players.remove(source);
 		this.playerNumbers[source.getPlayerNo()] = false;
+
 		if (this.gameStarted) {
+			// If the player was the last player in the game, stop the game
 			if (this.players.size() == 0) {
 				this.gameStarted = false;
 			}
 		} else {
+			// Decrease the number of players ready if they were ready
 			if (source.isReady()) {
 				this.playersReady--;
 			}
-			if (this.playersReady != 0 && this.playersReady == this.players.size()) {
-				this.startGame();
+
+			// Start the timer if everybody else was ready
+			if (this.playersReady != 0
+					&& this.playersReady == this.players.size()) {
+				this.startReadyTimer();
 			}
 		}
-		this.println("---" + this.players);
 	}
 
 	/**
@@ -153,7 +180,7 @@ public class Server implements ActionListener {
 	}
 
 	/**
-	 * Queues specified message to be sent.
+	 * Queues a message to send.
 	 * 
 	 * @param message
 	 *            the message to send.
@@ -188,8 +215,11 @@ public class Server implements ActionListener {
 	 */
 	public void newPlayer(Client source) {
 		this.players.add(source);
-		this.queueMessage(new Message(Message.ALL_CLIENTS, source.getPlayerNo(),
-				"@ " + source.getPlayerNo() + " " + source.getName()));
+
+		// Send a message to all clients that a new player has joined
+		this.queueMessage(new Message(Message.ALL_CLIENTS,
+				source.getPlayerNo(), "@ " + source.getPlayerNo() + " "
+						+ source.getName()));
 	}
 
 	/**
@@ -221,23 +251,24 @@ public class Server implements ActionListener {
 	}
 
 	/**
-	 * Gets the client list of current players
+	 * Gets the client list of current players.
 	 * 
-	 * @return The list of current players
+	 * @return the list of current players.
 	 */
 	protected ClientList getCurrentPlayers() {
 		return this.players;
 	}
 
 	/**
-	 * Gets called by 'actionPerformed' method to send the latest message to the
-	 * specified clients
+	 * Constantly sends out messages from the server's message queue at a
+	 * specified delay (specified by Server.MESSAGE_DELAY).
 	 */
 	public void actionPerformed(ActionEvent arg0) {
 		synchronized (this.messages) {
 			if (this.messages.size() == 0) {
-				if (!this.sendMessages)
+				if (!this.sendMessages) {
 					this.messageTimer.stop();
+				}
 				return;
 			}
 			Message msg = this.messages.remove();
@@ -245,21 +276,29 @@ public class Server implements ActionListener {
 
 			// Messages are either to the entire server or to individual clients
 			if (msg.getPlayerNo() == Message.ALL_CLIENTS) {
-				// Send the messages at the same time
+				// Send the message to every client at the same time
 				synchronized (this.allClients) {
 					for (Client client : this.allClients) {
-						if (client.getPlayerNo() != msg.getIgnoredPlayer())
+						// Send the message only to clients who are not ignored
+						if (client.getPlayerNo() != msg.getIgnoredPlayer()) {
 							client.sendMessage(msg.getMessage());
+						}
 					}
 				}
 			} else {
+				// Send the message to a specific client
 				Client temp = this.players.get(msg.getPlayerNo());
-				if (temp != null)
+				if (temp != null) {
 					temp.sendMessage(msg.getMessage());
+				}
 			}
 		}
 	}
 
+	/**
+	 * Ends the current game of the server and then removes the server from the
+	 * central server it is a part of.
+	 */
 	public void endGame() {
 		this.gameStarted = false;
 		this.sendMessages = false;
@@ -268,13 +307,14 @@ public class Server implements ActionListener {
 
 	/**
 	 * Centralized place to print messages to allow for debugging messages to be
-	 * disabled on release and enabled when needed
+	 * disabled on release and enabled when needed.
 	 * 
 	 * @param message
-	 *            String to print out to standard out
+	 *            string to print out to standard out.
 	 */
 	public void println(String message) {
-		if (DEBUG)
+		if (DEBUG) {
 			this.centralServer.println(message);
+		}
 	}
 }

@@ -29,7 +29,7 @@ public class Card {
 	/**
 	 * De-ranks the card from 11 to 1 if it is an ace.
 	 * 
-	 * @return whether or not the card could be deranked.
+	 * @return whether or not the card can be de-ranked.
 	 */
 	public boolean derankAce() {
 		boolean canDerank = (this.rank == 'A' && this.value == 11);
@@ -39,29 +39,14 @@ public class Card {
 		return canDerank;
 	}
 
-	/**
-	 * Gets the value of the card.
-	 * 
-	 * @return the value of the card.
-	 */
 	public int getValue() {
 		return value;
 	}
 
-	/**
-	 * Gets the suit of the card.
-	 * 
-	 * @return the suit of the card.
-	 */
 	public char getSuit() {
 		return suit;
 	}
 
-	/**
-	 * Gets the rank of a card.
-	 * 
-	 * @return the rank of the card.
-	 */
 	public char getRank() {
 		return rank;
 	}

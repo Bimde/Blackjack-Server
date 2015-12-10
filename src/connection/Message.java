@@ -10,13 +10,13 @@ public class Message {
 	private int ignoredPlayer;
 
 	/**
-	 * Constructs a new Message object
+	 * Constructor for a new Message object.
 	 * 
 	 * @param playerNo
-	 *            Player number of the receiver of the message, set to
-	 *            Message.ALL_CLIENTS if all clients should receive message
+	 *            the player number of the receiver of the message. Set to
+	 *            Message.ALL_CLIENTS if all clients should receive message.
 	 * @param message
-	 *            Message to be sent
+	 *            the message to be sent.
 	 */
 	public Message(int playerNo, String message) {
 		this.playerNo = playerNo;
@@ -25,19 +25,18 @@ public class Message {
 	}
 
 	/**
-	 * Constructs a new Message object with a 'ALL_CLIENTS' flag and
-	 * instructions to ignore a specific player
+	 * Constructor for a new Message object with a 'ALL_CLIENTS' flag and
+	 * instructions to ignore a specific player.
 	 * 
 	 * @param playerNo
-	 *            Player number of the receiver of the message, set to
-	 *            Message.ALL_CLIENTS if all clients should receive message
+	 *            the player number of the receiver of the message. Set to
+	 *            Message.ALL_CLIENTS if all clients should receive message.
 	 * @param ignoredPlayer
-	 *            the player number associated with the player which to ignore
-	 *            <br>
+	 *            the player number associated with the player which to ignore. <br>
 	 *            This is should only be used if the playerNo is set to
-	 *            'Message.ALL_CLIENTS'
+	 *            'Message.ALL_CLIENTS'.
 	 * @param message
-	 *            the message to be sent
+	 *            the message to be sent.
 	 */
 	public Message(int playerNo, int ignoredPlayer, String message) {
 		this.playerNo = playerNo;
@@ -46,28 +45,28 @@ public class Message {
 	}
 
 	/**
-	 * Get message to be sent
+	 * Get the message to be sent.
 	 * 
-	 * @return Message to be sent
+	 * @return the message to be sent.
 	 */
 	public String getMessage() {
 		return message;
 	}
 
 	/**
-	 * Getter for ignored player
+	 * Getter for ignored player.
 	 * 
-	 * @return Player number associated with player which to not send this
-	 *         message to
+	 * @return player number associated with player which to not send this
+	 *         message to.
 	 */
 	public int getIgnoredPlayer() {
 		return this.ignoredPlayer;
 	}
 
 	/**
-	 * Get the destination of the message (player number)
+	 * Get the destination of the message (player number).
 	 * 
-	 * @return the player number of the receiver of the message
+	 * @return the player number of the receiver of the message.
 	 */
 	public int getPlayerNo() {
 		return playerNo;

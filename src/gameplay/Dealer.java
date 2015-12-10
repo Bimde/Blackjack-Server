@@ -13,20 +13,20 @@ import utilities.ClientList;
  */
 public class Dealer implements Runnable {
 	public static final char[] SUITS = { 'S', 'C', 'H', 'D' };
-	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K' };
+	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7',
+			'8', '9', 'T', 'J', 'Q', 'K' };
 	public static final int NUMBER_OF_DECKS = 6;
 
 	/**
-	 * Minimum cards required in the deck before the start of the round
+	 * Minimum cards required in the deck before the start of the round.
 	 */
 	public static final int MINIMUM_CARDS_PER_PLAYER = 21;
 
 	public static final int BETTING_TIME = 60;
 	/**
 	 * Chance that the deck will be shuffled at the end of a round (in
-	 * percentage)
-	 * 
-	 * Setting this to 100 means the deck will be shuffled after every turn
+	 * percentage). Setting this to 100 means the deck will be shuffled after
+	 * every turn.
 	 */
 	public static final int SHUFFLE_CHANCE = 20;
 	private Server server;
@@ -39,7 +39,9 @@ public class Dealer implements Runnable {
 	private BettingTimer betTimer;
 	private Thread betTimerThread;
 
-	// The timer for the betting period before each round
+	/**
+	 * The timer for the betting period before each round
+	 */
 	private class BettingTimer implements Runnable {
 		@Override
 		public void run() {
@@ -63,7 +65,7 @@ public class Dealer implements Runnable {
 	}
 
 	/**
-	 * Constructs a new Dealer object. Starts up the actual main game of
+	 * Constructor for a new Dealer object. Starts up the actual main game of
 	 * Blackjack.
 	 * 
 	 * @param server
@@ -98,9 +100,9 @@ public class Dealer implements Runnable {
 			this.server.queueMessage("% NEWROUND");
 			this.server.println("Starting new round...");
 
-			this.server.println("Betting starts now...");
 			// Give players 60 seconds to place their bets, and reset all their
 			// previous bets
+			this.server.println("Betting starts now...");
 			this.bettingIsActive = true;
 			this.betTimerThread = new Thread(new BettingTimer());
 			this.betTimerThread.start();
@@ -155,7 +157,8 @@ public class Dealer implements Runnable {
 				for (int card = 0; card < 2; card++) {
 					cardDrawn = this.deck.getCard();
 					player.getPlayer().addCard(cardDrawn);
-					this.server.queueMessage("# " + (player.getPlayerNo()) + " " + cardDrawn.toString());
+					this.server.queueMessage("# " + (player.getPlayerNo())
+							+ " " + cardDrawn.toString());
 
 				}
 			}
@@ -167,22 +170,27 @@ public class Dealer implements Runnable {
 
 				// Check if player has blackjack from first two cards
 				if (currentPlayer.getPlayer().getHandValue() == 21) {
-					int newCoins = currentPlayer.getCoins() + currentPlayer.getBet();
+					int newCoins = currentPlayer.getCoins()
+							+ currentPlayer.getBet();
 					currentPlayer.setCoins(newCoins);
-					this.server.queueMessage("& " + currentPlayer.getPlayerNo() + " blackjack " + newCoins);
+					this.server.queueMessage("& " + currentPlayer.getPlayerNo()
+							+ " blackjack " + newCoins);
 					endTurn = true;
 					currentPlayer.getPlayer().setCurrentMove('N');
 				}
 
-				while (currentPlayer.isPlayer() && this.server.gameStarted() && !endTurn) {
+				while (currentPlayer.isPlayer() && this.server.gameStarted()
+						&& !endTurn) {
 					currentPlayer.getPlayer().setCurrentMove('N');
-					this.server.queueMessage("% " + (this.currentPlayerTurn) + " turn");
+					this.server.queueMessage("% " + (this.currentPlayerTurn)
+							+ " turn");
 
 					char currentMove = 'N';
 
 					// Wait for a response from the player
 					while (currentPlayer.isPlayer()
-							&& (currentMove = currentPlayer.getPlayer().getCurrentMove()) == 'N') {
+							&& (currentMove = currentPlayer.getPlayer()
+									.getCurrentMove()) == 'N') {
 						try {
 							Thread.sleep(Server.MESSAGE_DELAY);
 						} catch (InterruptedException e) {
@@ -193,47 +201,68 @@ public class Dealer implements Runnable {
 					if (currentMove == 'H') {
 						// Draw a new card and give it to the player
 						cardDrawn = this.deck.getCard();
-						this.server.queueMessage("# " + (currentPlayer.getPlayerNo()) + " " + cardDrawn.toString());
+						this.server.queueMessage("# "
+								+ (currentPlayer.getPlayerNo()) + " "
+								+ cardDrawn.toString());
 						currentPlayer.getPlayer().addCard(cardDrawn);
 
 						if (currentPlayer.getPlayer().getHandValue() > 21) {
-							int newCoins = currentPlayer.getCoins() - currentPlayer.getBet();
+							int newCoins = currentPlayer.getCoins()
+									- currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
-							this.server.queueMessage("& " + currentPlayer.getPlayerNo() + " bust " + newCoins);
+							this.server.queueMessage("& "
+									+ currentPlayer.getPlayerNo() + " bust "
+									+ newCoins);
 							endTurn = true;
 						} else if (currentPlayer.getPlayer().getHandValue() == 21) {
-							int newCoins = currentPlayer.getCoins() + currentPlayer.getBet();
+							int newCoins = currentPlayer.getCoins()
+									+ currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
-							this.server.queueMessage("& " + currentPlayer.getPlayerNo() + " blackjack " + newCoins);
+							this.server.queueMessage("& "
+									+ currentPlayer.getPlayerNo()
+									+ " blackjack " + newCoins);
 							endTurn = true;
 						}
 
 					} else if (currentMove == 'S') {
 						endTurn = true;
-						this.server.queueMessage(
-								"& " + currentPlayer.getPlayerNo() + " stand " + currentPlayer.getCoins());
-					} else if (currentPlayer.getPlayer().getCurrentCards().size() <= 2 && currentMove == 'D'
-							&& currentPlayer.getCoins() >= currentPlayer.getBet() * 2) {
+						this.server.queueMessage("& "
+								+ currentPlayer.getPlayerNo() + " stand "
+								+ currentPlayer.getCoins());
+					} else if (currentPlayer.getPlayer().getCurrentCards()
+							.size() <= 2
+							&& currentMove == 'D'
+							&& currentPlayer.getCoins() >= currentPlayer
+									.getBet() * 2) {
 
 						// If the client double downs, double their bet
 						currentPlayer.setBet(currentPlayer.getBet() * 2);
 
 						// Draw a new card and give it to the player
 						cardDrawn = this.deck.getCard();
-						this.server.queueMessage("# " + (currentPlayer.getPlayerNo()) + " " + cardDrawn.toString());
+						this.server.queueMessage("# "
+								+ (currentPlayer.getPlayerNo()) + " "
+								+ cardDrawn.toString());
 						currentPlayer.getPlayer().addCard(cardDrawn);
 
 						if (currentPlayer.getPlayer().getHandValue() > 21) {
-							int newCoins = currentPlayer.getCoins() - currentPlayer.getBet();
+							int newCoins = currentPlayer.getCoins()
+									- currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
-							this.server.queueMessage("& " + currentPlayer.getPlayerNo() + " bust " + newCoins);
+							this.server.queueMessage("& "
+									+ currentPlayer.getPlayerNo() + " bust "
+									+ newCoins);
 						} else if (currentPlayer.getPlayer().getHandValue() == 21) {
-							int newCoins = currentPlayer.getCoins() + currentPlayer.getBet();
+							int newCoins = currentPlayer.getCoins()
+									+ currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
-							this.server.queueMessage("& " + currentPlayer.getPlayerNo() + " blackjack " + newCoins);
+							this.server.queueMessage("& "
+									+ currentPlayer.getPlayerNo()
+									+ " blackjack " + newCoins);
 						} else {
-							this.server.queueMessage(
-									"& " + currentPlayer.getPlayerNo() + " stand " + currentPlayer.getCoins());
+							this.server.queueMessage("& "
+									+ currentPlayer.getPlayerNo() + " stand "
+									+ currentPlayer.getCoins());
 							currentPlayer.getPlayer().setCurrentMove('S');
 						}
 
@@ -285,7 +314,8 @@ public class Dealer implements Runnable {
 
 			// Check for winners amongst all the players who said to stand
 			for (Client player : this.players) {
-				if (player.isPlayer() && player.getPlayer().getCurrentMove() == 'S') {
+				if (player.isPlayer()
+						&& player.getPlayer().getCurrentMove() == 'S') {
 					this.checkResult(player);
 				}
 			}
@@ -294,7 +324,8 @@ public class Dealer implements Runnable {
 			// standings string. Broadcasts the string at the end.
 			String standings = "+ ";
 			for (Client player : this.players) {
-				standings += (player.getPlayerNo() + " " + player.getPlayer().getCoins()) + " ";
+				standings += (player.getPlayerNo() + " " + player.getPlayer()
+						.getCoins()) + " ";
 			}
 			this.server.queueMessage(standings);
 
@@ -307,7 +338,8 @@ public class Dealer implements Runnable {
 			}
 
 			// Shuffle deck and broadcast the message
-			if (this.deck.size() < MINIMUM_CARDS_PER_PLAYER * this.players.size()
+			if (this.deck.size() < MINIMUM_CARDS_PER_PLAYER
+					* this.players.size()
 					|| Math.random() * 100 < SHUFFLE_CHANCE) {
 				this.deck.reloadDeck();
 				this.server.queueMessage("% SHUFFLE");
@@ -338,7 +370,8 @@ public class Dealer implements Runnable {
 		// If the cards in the hand busts, try to keep deranking aces until it
 		// stops busting
 		boolean tryDeranking = true;
-		while ((handTotal = this.calculateHand(this.dealerCards)) > 21 && tryDeranking) {
+		while ((handTotal = this.calculateHand(this.dealerCards)) > 21
+				&& tryDeranking) {
 			tryDeranking = false;
 			for (int cardNo = 0; cardNo < this.dealerCards.size(); cardNo++) {
 				if (this.dealerCards.get(cardNo).derankAce()) {

@@ -37,7 +37,8 @@ public class BetterClient implements ActionListener, KeyListener {
 	static PrintWriter output;
 	Thread inputThread;
 
-	public static void main(String[] args) throws UnknownHostException, IOException {
+	public static void main(String[] args) throws UnknownHostException,
+			IOException {
 		new BetterClient();
 	}
 
@@ -61,8 +62,8 @@ public class BetterClient implements ActionListener, KeyListener {
 		panel.setSize(300, 500);
 		panel.setLayout(null);
 		panel.add(pane);
-		
-		DefaultCaret caret = (DefaultCaret)chatBox.getCaret();
+
+		DefaultCaret caret = (DefaultCaret) chatBox.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
 		send.addActionListener(this);
@@ -142,7 +143,8 @@ public class BetterClient implements ActionListener, KeyListener {
 			// Getting input from the server.
 			BufferedReader myReader = null;
 			try {
-				myReader = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
+				myReader = new BufferedReader(new InputStreamReader(
+						mySocket.getInputStream()));
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -181,15 +183,18 @@ public class BetterClient implements ActionListener, KeyListener {
 		// Create the components of the window
 		JTextField ipAddressField = new JTextField(ipAddress);
 		JTextField portField = new JTextField(Integer.toString(port));
-		Object[] connectObjects = { "IP Address:", ipAddressField, "Port:", portField };
+		Object[] connectObjects = { "IP Address:", ipAddressField, "Port:",
+				portField };
 
 		// Keep creating a window asking for a server
 		// until a valid server is chosen
 		while (!serverBoolean) {
 			if (alreadyConnected) {
-				JOptionPane.showConfirmDialog(frame, connectObjects, "Choose a server", JOptionPane.OK_CANCEL_OPTION);
+				JOptionPane.showConfirmDialog(frame, connectObjects,
+						"Choose a server", JOptionPane.OK_CANCEL_OPTION);
 			} else {
-				JOptionPane.showConfirmDialog(frame, connectObjects, "Choose a server", JOptionPane.DEFAULT_OPTION);
+				JOptionPane.showConfirmDialog(frame, connectObjects,
+						"Choose a server", JOptionPane.DEFAULT_OPTION);
 			}
 			// Get the information that the user entered
 			String currentIpAddress = ipAddressField.getText();
@@ -205,12 +210,14 @@ public class BetterClient implements ActionListener, KeyListener {
 					port = Integer.parseInt(currentPort);
 					serverBoolean = true;
 				} else {
-					JOptionPane.showMessageDialog(frame, "Please enter a valid port.", "Invalid port",
+					JOptionPane.showMessageDialog(frame,
+							"Please enter a valid port.", "Invalid port",
 							JOptionPane.WARNING_MESSAGE);
 				}
 			} else {
-				JOptionPane.showMessageDialog(frame, "Please enter a valid IP address.", "Invalid IP address",
-						JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(frame,
+						"Please enter a valid IP address.",
+						"Invalid IP address", JOptionPane.WARNING_MESSAGE);
 			}
 		}
 	}

@@ -16,7 +16,6 @@ import javax.swing.text.DefaultCaret;
 import utilities.Validator;
 
 public class CentralServer {
-
 	private ServerSocket socket;
 	private ArrayList<Server> listOfServers;
 	private int userNo = 0;
@@ -29,6 +28,10 @@ public class CentralServer {
 		new CentralServer();
 	}
 
+	/**
+	 * Constructor for a new CentralServer object. This central server will hold
+	 * all servers/games started on the same IP address/port.
+	 */
 	public CentralServer() {
 		int port = -1;
 		Scanner keyboard = new Scanner(System.in);
@@ -36,7 +39,8 @@ public class CentralServer {
 		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.textArea = new JTextArea();
 		this.pane = new JScrollPane(this.textArea);
-		((DefaultCaret) this.textArea.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		((DefaultCaret) this.textArea.getCaret())
+				.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		this.textArea.setEditable(false);
 		this.pane.setPreferredSize(new Dimension(300, 400));
 		this.frame.add(this.pane);
@@ -47,7 +51,8 @@ public class CentralServer {
 		while (port == -1) {
 			String portStr = null;
 			while (portStr == null)
-				portStr = JOptionPane.showInputDialog("Enter a port (1-5 digits): ");
+				portStr = JOptionPane
+						.showInputDialog("Enter a port (1-5 digits): ");
 			if (Validator.isValidPort(portStr)) {
 				port = Integer.parseInt(portStr);
 			}
@@ -58,7 +63,8 @@ public class CentralServer {
 		try {
 			this.socket = new ServerSocket(port);
 		} catch (IOException e) {
-			System.err.println("Error creating a new server socket on port " + port);
+			System.err.println("Error creating a new server socket on port "
+					+ port);
 			e.printStackTrace();
 		}
 		this.listOfServers = new ArrayList<Server>();
@@ -87,9 +93,11 @@ public class CentralServer {
 		// Uses a regular for loop instead of for-each loop to prevent changes
 		// in list of servers during search causing iterator to throw
 		// ConcurrentModificationException
-		for (int serverNo = 0; !serverFound && serverNo < this.listOfServers.size(); serverNo++) {
+		for (int serverNo = 0; !serverFound
+				&& serverNo < this.listOfServers.size(); serverNo++) {
 			Server currentServer = this.listOfServers.get(serverNo);
-			if (!currentServer.gameStarted() && (!isPlayer || !currentServer.isFull())) {
+			if (!currentServer.gameStarted()
+					&& (!isPlayer || !currentServer.isFull())) {
 				availableServer = currentServer;
 				serverUsed = serverNo;
 				serverFound = true;
