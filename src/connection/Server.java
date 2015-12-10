@@ -40,18 +40,6 @@ public class Server implements ActionListener {
 	private boolean sendMessages;
 	private boolean lobbyTimerActive;
 
-	public ArrayList<Client> getAllClients() {
-		return allClients;
-	}
-
-	public void setAllClients(ArrayList<Client> allClients) {
-		this.allClients = allClients;
-	}
-
-	public void addClient(Client newClient) {
-		this.allClients.add(newClient);
-	}
-
 	/**
 	 * Constructor for a new Server object.
 	 * 
@@ -111,12 +99,15 @@ public class Server implements ActionListener {
 		this.queueMessage("% " + playerNo + " READY");
 
 		// Do a 15 second timer to wait for more people to join
-		if (this.playersReady != 0
-				&& this.playersReady == this.players.size()) {
+		if (this.playersReady != 0 && this.playersReady == this.players.size()) {
 			this.startReadyTimer();
 		}
 	}
 
+	/**
+	 * Once all the players in the lobby declare they are ready, set a timer to
+	 * run before starting the game in order to give more people a chance to join
+	 */
 	public void startReadyTimer() {
 		// Make sure that the server is not full
 		// Otherwise, start the game right away
@@ -133,8 +124,7 @@ public class Server implements ActionListener {
 						// Keep checking if the entire lobby is ready until the
 						// start delay
 						// is reached
-						while ((System.nanoTime() - startTime)
-								/ 1000000000 < START_DELAY) {
+						while ((System.nanoTime() - startTime) / 1000000000 < START_DELAY) {
 							if (Server.this.playersReady == 0
 									|| Server.this.playersReady != Server.this.players
 											.size()) {
@@ -220,6 +210,11 @@ public class Server implements ActionListener {
 		}
 	}
 
+	/**
+	 * Check whether or not there are still messages to be sent
+	 * 
+	 * @return whether or not the queue of messages is empty
+	 */
 	public boolean isMessageQueueEmpty() {
 		return this.messages.size() == 0;
 	}
@@ -245,8 +240,9 @@ public class Server implements ActionListener {
 		this.players.add(source);
 
 		// Send a message to all clients that a new player has joined
-		this.queueMessage(new Message(Message.ALL_CLIENTS, source.getPlayerNo(),
-				"@ " + source.getPlayerNo() + " " + source.getName()));
+		this.queueMessage(new Message(Message.ALL_CLIENTS,
+				source.getPlayerNo(), "@ " + source.getPlayerNo() + " "
+						+ source.getName()));
 	}
 
 	/**
@@ -333,6 +329,16 @@ public class Server implements ActionListener {
 	}
 
 	/**
+	 * Add a new client to the server
+	 * 
+	 * @param newClient
+	 *            the new client to add
+	 */
+	public void addClient(Client newClient) {
+		this.allClients.add(newClient);
+	}
+
+	/**
 	 * Centralized place to print messages to allow for debugging messages to be
 	 * disabled on release and enabled when needed.
 	 * 
@@ -343,5 +349,13 @@ public class Server implements ActionListener {
 		if (DEBUG) {
 			this.centralServer.println(message);
 		}
+	}
+
+	public ArrayList<Client> getAllClients() {
+		return allClients;
+	}
+
+	public void setAllClients(ArrayList<Client> allClients) {
+		this.allClients = allClients;
 	}
 }

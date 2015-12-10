@@ -24,7 +24,6 @@ public class Client implements Runnable, Comparable<Client> {
 	private PrintWriter output;
 	private String name;
 	private boolean connected;
-
 	private Dealer dealer;
 
 	/**
@@ -65,8 +64,8 @@ public class Client implements Runnable, Comparable<Client> {
 		// determined
 		if (this.userType == 'P') {
 			if (Server.DEBUG) {
-				System.out.println(
-						this.player.getPlayerNo() + " has disconnected");
+				System.out.println(this.player.getPlayerNo()
+						+ " has disconnected");
 			}
 		} else {
 			if (Server.DEBUG) {
@@ -97,6 +96,9 @@ public class Client implements Runnable, Comparable<Client> {
 		this.userType = 'U';
 	}
 
+	/**
+	 *  Starts the thread of a client, mostly used for inputs and outputs of messages
+	 */
 	@Override
 	public void run() {
 		// Set up the output
@@ -110,8 +112,8 @@ public class Client implements Runnable, Comparable<Client> {
 
 		// Set up the input
 		try {
-			this.input = new BufferedReader(
-					new InputStreamReader(this.socket.getInputStream()));
+			this.input = new BufferedReader(new InputStreamReader(
+					this.socket.getInputStream()));
 		} catch (IOException e) {
 			System.err.println("Error getting client's input stream");
 			e.printStackTrace();
@@ -152,12 +154,11 @@ public class Client implements Runnable, Comparable<Client> {
 				this.userType = 'S';
 				this.centralServer.addToServer(this, false);
 				this.sendMessage("% ACCEPTED");
-			}
-			else {
+			} else {
 				this.sendMessage("% FORMATERROR");
 			}
 		}
-		
+
 		// Inform the user of all the players currently in the lobby
 		this.sendStartMessage();
 
@@ -190,27 +191,24 @@ public class Client implements Runnable, Comparable<Client> {
 				if (this.dealer.bettingIsActive()
 						&& this.player.getCurrentBet() == 0
 						&& message.matches("[0-9]{1,8}")
-						&& (betPlaced = Integer
-								.parseInt(message)) >= Server.MIN_BET
+						&& (betPlaced = Integer.parseInt(message)) >= Server.MIN_BET
 						&& betPlaced <= this.player.getCoins()) {
-					this.server.queueMessage(
-							"$ " + this.getPlayerNo() + " bets " + betPlaced);
-					this.server.println(
-							"Bet Placed (not applicable if 0): " + betPlaced);
+					this.server.queueMessage("$ " + this.getPlayerNo()
+							+ " bets " + betPlaced);
+					this.server.println("Bet Placed (not applicable if 0): "
+							+ betPlaced);
 					this.player.setCurrentBet(betPlaced);
-				} else
-					if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo()
-							&& message.equalsIgnoreCase("hit")) {
+				} else if (this.dealer.getCurrentPlayerTurn() == this
+						.getPlayerNo() && message.equalsIgnoreCase("hit")) {
 					this.player.setCurrentMove('H');
 				} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo()
 						&& message.equalsIgnoreCase("stand")) {
 					this.player.setCurrentMove('S');
-				} else
-					if (this.dealer.getCurrentPlayerTurn() == this.getPlayerNo()
-							&& message.equalsIgnoreCase("doubledown")
-							&& this.player
-									.getCoins() >= this.player.getCurrentBet()
-											* 2) {
+				} else if (this.dealer.getCurrentPlayerTurn() == this
+						.getPlayerNo()
+						&& message.equalsIgnoreCase("doubledown")
+						&& this.player.getCoins() >= this.player
+								.getCurrentBet() * 2) {
 					this.player.setCurrentMove('D');
 				} else {
 					this.sendMessage("% FORMATERROR");
@@ -236,10 +234,6 @@ public class Client implements Runnable, Comparable<Client> {
 		this.output.flush();
 	}
 
-	protected Socket getSocket() {
-		return this.socket;
-	}
-
 	protected void setServer(Server server) {
 		this.server = server;
 	}
@@ -257,10 +251,6 @@ public class Client implements Runnable, Comparable<Client> {
 			return -1;
 		}
 		return this.player.getPlayerNo();
-	}
-
-	public char getUserType() {
-		return this.userType;
 	}
 
 	public boolean isPlayer() {
@@ -303,16 +293,20 @@ public class Client implements Runnable, Comparable<Client> {
 		this.player.setCoins(noOfCoins);
 	}
 
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
-
 	/**
-	 * Sends a list of players that were already connected to the server.
+	 * Sends a list of players that were already connected to the server as well
+	 * as the current user's player number (-1 if spectator)
 	 */
 	private void sendStartMessage() {
 		ClientList players = this.server.getCurrentPlayers();
-		String message = "@ " + this.getPlayerNo() + " " + (players.size() - 1);
+		int noOfPlayersBefore = players.size();
+		if (this.isPlayer()) {
+			noOfPlayersBefore--;
+		}
+
+		// Tells the user his/her player number, the number of other players in
+		// the lobby, as well as all their names separated by //
+		String message = "@ " + this.getPlayerNo() + " " + noOfPlayersBefore;
 		for (Client client : players) {
 			if (client != this)
 				message += " " + client.getName() + " //";
@@ -338,19 +332,26 @@ public class Client implements Runnable, Comparable<Client> {
 		return line;
 	}
 
+	/**
+	 * Check if this client (if a player) is ready to start the game
+	 * 
+	 * @return whether or not the player is ready
+	 */
 	public boolean isReady() {
 		return this.isReady;
 	}
 
-	public void setReady(boolean isReady) {
-		this.isReady = isReady;
-	}
-
+	/**
+	 *  Clients are identified by player number
+	 */
 	@Override
 	public int compareTo(Client object) {
 		return this.getPlayerNo() - object.getPlayerNo();
 	}
 
+	/**
+	 * Returns the player's name and their coins
+	 */
 	@Override
 	public String toString() {
 		return this.name + " : " + this.player.getCoins();

@@ -41,7 +41,9 @@ public class CentralServer {
 	public CentralServer() {
 		int port = -1;
 		Scanner keyboard = new Scanner(System.in);
-		this.frame = new JFrame("Server");
+		
+		// Create a gui for debugging
+		this.frame = new JFrame("~~~Blackjack Server~~~");
 		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.textArea = new JTextArea();
 		this.pane = new JScrollPane(this.textArea);
@@ -66,6 +68,7 @@ public class CentralServer {
 
 		keyboard.close();
 
+		// Create the socket based on the port enterred
 		try {
 			this.socket = new ServerSocket(port);
 		} catch (IOException e) {
@@ -76,6 +79,7 @@ public class CentralServer {
 		this.listOfServers = new ArrayList<Server>();
 		this.listOfServers.add(new Server(this));
 
+		// Accept and connect new clients who join the server
 		while (true) {
 			this.println("Waiting for client to connect...");
 			try {
@@ -91,6 +95,16 @@ public class CentralServer {
 		}
 	}
 
+	/**
+	 * Place a player/spectator in the next available game room (player in the
+	 * first non-full && non-started room and spectator in the first non-started
+	 * room)
+	 * 
+	 * @param client
+	 *            the client to add to the server
+	 * @param isPlayer
+	 *            whether or not it is a player
+	 */
 	void addToServer(Client client, boolean isPlayer) {
 		Server availableServer = null;
 		int serverUsed = 0;
@@ -110,46 +124,43 @@ public class CentralServer {
 			}
 		}
 
+		// Create a new game room if there are no available rooms for the client
 		if (!serverFound) {
 			availableServer = new Server(this);
 			serverUsed = this.listOfServers.size();
 			this.listOfServers.add(availableServer);
 		}
 
+		// Add the client to the available room and print the information
 		availableServer.addClient(client);
 		client.setServer(availableServer);
-
 		if (isPlayer)
 			this.println("Player connected to server #" + (serverUsed + 1));
 		else
 			this.println("Client connected to server #" + (serverUsed + 1));
 	}
 
-	ServerSocket getSocket() {
-		return this.socket;
+	/**
+	 *  Remove the game room once the game has ended
+	 * @param server the server to remove
+	 */
+	public void removeServer(Server server) {
+		this.listOfServers.remove(server);
+	}
+	
+	/**
+	 * Print to the debugging gui console
+	 * @param message the message to print
+	 */
+	public void println(String message) {
+		this.textArea.append(message + "\n");
 	}
 
 	ArrayList<Server> getListOfServers() {
 		return this.listOfServers;
 	}
-
-	public void println(String message) {
-		this.textArea.append(message + "\n");
-	}
-
-	void addServer(Server newServer) {
-		this.listOfServers.add(newServer);
-	}
-
-	void removeServer(Server server) {
-		this.listOfServers.remove(server);
-	}
-
-	int getUserNo() {
-		return this.userNo;
-	}
-
-	int getServerUsed() {
+	
+	public int getServerUsed() {
 		return this.serverUsed;
 	}
 }
