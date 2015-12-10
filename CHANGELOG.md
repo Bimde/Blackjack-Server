@@ -1,4 +1,13 @@
 # Change Log
+## [2.1.1](https://github.com/Bimde/Blackjack-Server/compare/v2.1...v2.1.1) - 2015-12-09
+### Changes:
+ - Organized code.
+	- Removed the Leaderboard object (unused).
+	- Applied formatting to make all files consistent.
+	- Added more comments and documentation.
+
+### Fixes:
+ - Fixed the timer from not starting when a player disconnects and makes it so that the entire lobby is ready.
 
 ## [2.1](https://github.com/Bimde/Blackjack-Server/compare/v2.0.1...v2.1) - 2015-12-09
 ### Changes:
@@ -68,13 +77,13 @@
  - Fixed the server preventing clients from becoming players if 6 or more clients where connected (even if they weren't players yet).
  - Fixed kicking players once they run out of coins.
 
-## [1.0.2](https://github.com/Bimde/Blackjack-Server/compare/v1.0.1...v1.02) - 2015-12-07
+## 1.0.2 - 2015-12-07
 ### Fixes:
  - Hotfix for clients disconnecting before joining the lobby.
 
-## [1.0.1](https://github.com/Bimde/Blackjack-Server/compare/v1.0...v1.01) - 2015-12-07
+## 1.0.1 - 2015-12-07
 ### Fixes:
  - Hotfix for instant blackjacks.
 
-## 1.0 - 2015/12/07
+## 1.0 - 2015-12-07
 Initial Release.
