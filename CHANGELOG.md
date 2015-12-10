@@ -5,6 +5,7 @@
 	- Removed the Leaderboard object (unused).
 	- Applied formatting to make all files consistent.
 	- Added more comments and documentation.
+	- Removed unused methods.
 
 ### Fixes:
  - Fixed the timer from not starting when a player disconnects and makes it so that the entire lobby is ready.

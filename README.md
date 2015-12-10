@@ -9,4 +9,4 @@ The protocol of this program is laid out in this [Google Doc](https://docs.googl
  - Follow the rest of the instructions in the GUI.
 
 ### Notes:
-To enable/disable the debug messages or change other constants used in the program, change the numbers of the constants at the top of `Server.java` (lines 21-23).
+To enable/disable the debug messages or change other constants used in the program, change the numbers of the constants at the top of `Server.java` (lines 27-29).
