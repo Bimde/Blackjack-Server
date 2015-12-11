@@ -140,15 +140,23 @@ public class Server implements ActionListener {
 	 * Once all the players in the lobby declare they are ready, set a timer to
 	 * run before starting the game in order to give more people a chance to
 	 * join.
+	 * 
+	 * @param newPlayerReady
+	 *            whether or not this method call is a result of a new player
+	 *            becoming ready. This should be false if this method is being
+	 *            called as a result of a player disconnection
 	 */
-	public void startReadyTimer(boolean playerJoined) {
+	private void startReadyTimer(boolean newPlayerReady) {
 		// Make sure that the server is not full
 		// Otherwise, start the game right away
 		this.currentTimerNo++;
 		if (this.currentTimerNo > Integer.MAX_VALUE - 5)
 			this.currentTimerNo = 0;
 
-		if (playerJoined || !this.lobbyTimerActive) {
+		// Only create a timer to start the game if a timer currently isn't
+		// running or if a new player became ready, preventing multiple games
+		// from starting
+		if (newPlayerReady || !this.lobbyTimerActive) {
 			if (this.players.size() < 6) {
 				this.lobbyTimerActive = true;
 				long startTime = System.nanoTime();
@@ -183,8 +191,10 @@ public class Server implements ActionListener {
 						Server.this.startGame();
 					}
 				}).start();
-
-			} else if (this.players.size() == this.playersReady) {
+			}
+			// Skip the timer if the lobby is full and all the players are ready
+			// because it's not possible for more players to join.
+			else if (this.players.size() == this.playersReady) {
 				this.startGame();
 			}
 		}
