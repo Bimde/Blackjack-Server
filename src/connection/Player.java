@@ -18,7 +18,6 @@ public class Player {
 	private int coins;
 	private int playerNo;
 	private int currentBet = 0;
-	private boolean isStanding;
 
 	/**
 	 * 'N' for none, 'H' for hit, 'S' for stand, and 'D' for doubledown
@@ -37,7 +36,6 @@ public class Player {
 		this.server = server;
 		this.playerNo = playerNo;
 		this.coins = Server.START_COINS;
-		this.isStanding = false;
 		this.currentMove = 'N';
 	}
 
@@ -53,7 +51,6 @@ public class Player {
 
 		// Update the value of the player's hand
 		int handTotal = 0;
-		this.server.println("Card rank: " + card.getRank());
 
 		// If the cards in the hand busts, try to keep deranking aces until it
 		// stops busting
@@ -69,7 +66,10 @@ public class Player {
 			}
 		}
 
-		// Update the player's total value
+		// Show the server gui what the player just got
+		this.server.println("Card value: " + card.getValue());
+		
+		// Update the player's total hand value
 		this.handValue = handTotal;
 		this.server.println("Hand: " + this.handValue);
 	}
@@ -144,35 +144,42 @@ public class Player {
 		this.currentCards = currentCards;
 	}
 
-	public boolean getIsStanding() {
-		return this.isStanding;
-	}
-
-	public void setStanding(boolean isStanding) {
-		this.setCurrentMove('S');
-		this.isStanding = isStanding;
-	}
-
+	/**
+	 * Get the player's current balance
+	 * @return the number of coins the player has
+	 */
 	public int getCoins() {
 		return this.coins;
 	}
 
+	/**
+	 * Change the player's balance
+	 * @param coins the number of coins to change it to
+	 */
 	public void setCoins(int coins) {
 		this.coins = coins;
 	}
 
+	/**
+	 * Get the player number of this player
+	 * @return the player number
+	 */
 	public int getPlayerNo() {
 		return this.playerNo;
 	}
 
-	public void setPlayerNo(int playerNo) {
-		this.playerNo = playerNo;
-	}
-
+	/**
+	 * Get the player's bet for this round
+	 * @return the player's bet in coins
+	 */
 	public int getCurrentBet() {
 		return this.currentBet;
 	}
 
+	/**
+	 * Set the player's bet for this round
+	 * @param currentBet the number of coins to set it to
+	 */
 	public void setCurrentBet(int currentBet) {
 		this.currentBet = currentBet;
 	}

@@ -24,6 +24,10 @@ public class Client implements Runnable {
 	private PrintWriter output;
 	private String name;
 	private boolean connected;
+
+	/**
+	 * The current dealer for the game the user is in
+	 */
 	private Dealer dealer;
 
 	/**
@@ -85,7 +89,8 @@ public class Client implements Runnable {
 			e.printStackTrace();
 		}
 
-		// Do not need to disconnect from server if before being added to server
+		// Disconnect the user as a client and also as a player only if it was
+		// assigned as a player
 		if (this.server != null) {
 			if (this.isPlayer()) {
 				this.server.disconnectPlayer(this);
@@ -97,7 +102,7 @@ public class Client implements Runnable {
 	}
 
 	/**
-	 * Starts the thread of a client, mostly used for input and output of
+	 * Starts the thread of this client, mostly used for input and output of
 	 * messages.
 	 */
 	@Override
@@ -165,8 +170,8 @@ public class Client implements Runnable {
 			this.sendStartMessage();
 		}
 
+		// Check if the player is ready to start
 		if (this.isPlayer()) {
-			// Check if the player is ready to start
 			while (this.connected && !this.isReady) {
 				String message = this.readLine();
 				if (message.equalsIgnoreCase("READY")) {
@@ -180,10 +185,12 @@ public class Client implements Runnable {
 
 		// Game loop
 		while (this.isPlayer() && this.connected) {
+			
+			// Get the message the client sends and work with it later
 			String message = this.readLine();
-			this.server.println(this.getPlayerNo() + " : " + this.name
-					+ "'S MESSAGE: " + message);
-
+			
+			// Display to the gui console what the client said
+			this.server.println("(" + this.getPlayerNo() + ") " + this.name + " sent: " + message);
 			int betPlaced = 0;
 
 			// Set the bet if the player is betting
@@ -218,12 +225,6 @@ public class Client implements Runnable {
 				}
 			}
 		}
-
-		try {
-			Thread.sleep(Server.MESSAGE_DELAY);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -235,65 +236,6 @@ public class Client implements Runnable {
 	public void sendMessage(String message) {
 		this.output.println(message);
 		this.output.flush();
-	}
-
-	protected void setServer(Server server) {
-		this.server = server;
-	}
-
-	public void setDealer(Dealer dealer) {
-		this.dealer = dealer;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public int getPlayerNo() {
-		if (this.player == null) {
-			return -1;
-		}
-		return this.player.getPlayerNo();
-	}
-
-	public boolean isPlayer() {
-		return (this.userType == 'P');
-	}
-
-	public void setUserType(char userType) {
-		this.userType = userType;
-	}
-
-	public int getBet() {
-		if (this.player == null) {
-			return -1;
-		}
-		return this.player.getCurrentBet();
-	}
-
-	public int getCoins() {
-		if (this.player == null) {
-			return -1;
-		}
-		return this.player.getCoins();
-	}
-
-	public Player getPlayer() {
-		return this.player;
-	}
-
-	public void setBet(int betAmount) {
-		if (this.player == null) {
-			return;
-		}
-		this.player.setCurrentBet(betAmount);
-	}
-
-	public void setCoins(int noOfCoins) {
-		if (this.player == null) {
-			return;
-		}
-		this.player.setCoins(noOfCoins);
 	}
 
 	/**
@@ -351,5 +293,108 @@ public class Client implements Runnable {
 	@Override
 	public String toString() {
 		return this.name + " : " + this.player.getCoins();
+	}
+	
+	/**
+	 *  Set the game server that the client plays in
+	 * @param server the server to set to
+	 */
+	protected void setServer(Server server) {
+		this.server = server;
+	}
+
+	/**
+	 * Set the dealer that the client plays with
+	 * @param dealer the dealer to play with
+	 */
+	public void setDealer(Dealer dealer) {
+		this.dealer = dealer;
+	}
+
+	/**
+	 * Get the name of the client
+	 * @return the name of the client
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
+	 * Get the player number in order to identify the player, return -1 if the client is a spectator
+	 * @return the player number
+	 */
+	public int getPlayerNo() {
+		if (this.player == null) {
+			return -1;
+		}
+		return this.player.getPlayerNo();
+	}
+	
+	/**
+	 * Check whether the client is a player or not
+	 * @return whether or not the client is a player
+	 */
+	public boolean isPlayer() {
+		return (this.userType == 'P');
+	}
+
+	/**
+	 * Set the user to a player or a spectator
+	 * @param userType the type of user to set to
+	 */
+	public void setUserType(char userType) {
+		this.userType = userType;
+	}
+
+	/**
+	 * Get the bet amount for the current round
+	 * @return the bet amount in coins for the round
+	 */
+	public int getBet() {
+		if (this.player == null) {
+			return -1;
+		}
+		return this.player.getCurrentBet();
+	}
+
+	/**
+	 * Get the current balance in coins of the player
+	 * @return the number of coins the player has
+	 */
+	public int getCoins() {
+		if (this.player == null) {
+			return -1;
+		}
+		return this.player.getCoins();
+	}
+	
+	/**
+	 * Get the player object for this client
+	 * @return the player object
+	 */
+	public Player getPlayer() {
+		return this.player;
+	}
+
+	/**
+	 * Set the betting amount for this round
+	 * @param betAmount the number of coins to bet
+	 */
+	public void setBet(int betAmount) {
+		if (this.player == null) {
+			return;
+		}
+		this.player.setCurrentBet(betAmount);
+	}
+	
+	/**
+	 * Update the player's balance
+	 * @param noOfCoins the number of coins the player has
+	 */
+	public void setCoins(int noOfCoins) {
+		if (this.player == null) {
+			return;
+		}
+		this.player.setCoins(noOfCoins);
 	}
 }

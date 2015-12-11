@@ -24,8 +24,9 @@ import utilities.Validator;
  */
 public class CentralServer {
 	private ServerSocket socket;
-	private ArrayList<Server> listOfServers;
-	private int serverUsed;
+	private ArrayList<Server> listOfGameServers;
+	
+	// Gui components for displaying server events
 	private JTextArea textArea;
 	private JFrame frame;
 	private JScrollPane srollPane;
@@ -78,31 +79,6 @@ public class CentralServer {
 				}
 			}
 
-			// // Used when launching server through console
-			// // If an argument was entered, use the argument as a port
-			// // Otherwise, ask the user to enter a port
-			// if (args.length > 0) {
-			// if (Validator.isValidPort(args[0])) {
-			// port = Integer.parseInt(args[0]);
-			// }
-			// } else {
-			// System.out.print("Please enter a port: ");
-			// portStr = keyboard.nextLine();
-			// if (Validator.isValidPort(portStr)) {
-			// port = Integer.parseInt(portStr);
-			// }
-			// }
-			//
-			// // While the port entered is invalid, continually ask for another
-			// // port
-			// while (port == -1) {
-			// System.out.print("Please enter a valid port: ");
-			// portStr = keyboard.nextLine();
-			// if (Validator.isValidPort(portStr)) {
-			// port = Integer.parseInt(portStr);
-			// }
-			// }
-
 			// Create the socket based on the port entered
 			try {
 				this.socket = new ServerSocket(port);
@@ -112,8 +88,8 @@ public class CentralServer {
 				e.printStackTrace();
 				port = -1;
 			}
-			this.listOfServers = new ArrayList<Server>();
-			this.listOfServers.add(new Server(this));
+			this.listOfGameServers = new ArrayList<Server>();
+			this.listOfGameServers.add(new Server(this));
 		}
 
 		keyboard.close();
@@ -138,7 +114,7 @@ public class CentralServer {
 	/**
 	 * Place a player/spectator in the next available game room (player in the
 	 * first non-full && non-started room and spectator in the first non-started
-	 * room).<br>
+	 * room).
 	 * Synchronized to prevent players from creating two new servers at the same
 	 * time if a available server doesn't exist.
 	 * 
@@ -156,8 +132,8 @@ public class CentralServer {
 		// in list of servers during search from causing iterator to throw
 		// ConcurrentModificationException
 		for (int serverNo = 0; !serverFound
-				&& serverNo < this.listOfServers.size(); serverNo++) {
-			Server currentServer = this.listOfServers.get(serverNo);
+				&& serverNo < this.listOfGameServers.size(); serverNo++) {
+			Server currentServer = this.listOfGameServers.get(serverNo);
 			if (!currentServer.gameStarted()
 					&& (!isPlayer || !currentServer.isFull())) {
 				availableServer = currentServer;
@@ -169,8 +145,8 @@ public class CentralServer {
 		// Create a new game room if there are no available rooms for the client
 		if (!serverFound) {
 			availableServer = new Server(this);
-			serverUsed = this.listOfServers.size();
-			this.listOfServers.add(availableServer);
+			serverUsed = this.listOfGameServers.size();
+			this.listOfGameServers.add(availableServer);
 		}
 
 		// Add the client to the available room and print the information
@@ -189,7 +165,7 @@ public class CentralServer {
 	 *            the server to remove.
 	 */
 	public void removeServer(Server server) {
-		this.listOfServers.remove(server);
+		this.listOfGameServers.remove(server);
 	}
 
 	/**
@@ -201,13 +177,5 @@ public class CentralServer {
 	public void println(String message) {
 		this.textArea.append(message + "\n");
 		// System.out.println(message);
-	}
-
-	ArrayList<Server> getListOfServers() {
-		return this.listOfServers;
-	}
-
-	public int getServerUsed() {
-		return this.serverUsed;
 	}
 }

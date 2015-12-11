@@ -36,13 +36,31 @@ public class Dealer implements Runnable {
 	 * every turn.
 	 */
 	public static final int SHUFFLE_CHANCE = 20;
+	
 	private Server server;
 	private Deck deck;
 	private ClientList players;
+	
+	/**
+	 * The cards in the dealer's current hand
+	 */
 	private ArrayList<Card> dealerCards;
+	
+	/**
+	 * The value of all the cards in the dealer's current hand
+	 */
 	private int dealerHand;
+	
+	/**
+	 * Whether player's can place a bet
+	 */
 	private Boolean bettingIsActive;
+	
+	/**
+	 * The player number of the player who should make their choice to hit, stand, or doubledown
+	 */
 	private int currentPlayerTurn;
+	
 	private BettingTimer betTimer;
 	private Thread betTimerThread;
 
@@ -464,7 +482,7 @@ public class Dealer implements Runnable {
 	 */
 	public void checkResult(Client client) {
 		// If the player gets anything closer to the blackjack than the
-		// dealer they win
+		// dealer they win, and dealer wins on a tie
 		Player player = client.getPlayer();
 		if (player.getHandValue() > this.dealerHand) {
 			player.setCoins(player.getCoins() + player.getCurrentBet());

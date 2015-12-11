@@ -7,7 +7,12 @@ package connection;
  * @version December 3, 2015
  */
 public class Message {
+	
+	/**
+	 * Constant variable to represent sending a message to every client (-1)
+	 */
 	public static final int ALL_CLIENTS = -1;
+	
 	private String message;
 	private int playerNo;
 	private int ignoredPlayer;

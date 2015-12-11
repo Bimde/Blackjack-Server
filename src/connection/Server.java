@@ -23,9 +23,15 @@ public class Server implements ActionListener {
 	private boolean gameStarted;
 	private Dealer dealer;
 
+	// Constant variables dictating many aspects of the server that can be
+	// changed without huge consequence
 	public static final String START_MESSAGE = "START";
 	public static final int START_COINS = 1000, MESSAGE_DELAY = 500,
 			MIN_BET = 10, START_DELAY = 15;
+	
+	/**
+	 * Whether or not the central server will display the debugging messages in the gui
+	 */
 	public static final boolean DEBUG = true;
 
 	/**
@@ -360,13 +366,5 @@ public class Server implements ActionListener {
 		if (DEBUG) {
 			this.centralServer.println(message);
 		}
-	}
-
-	public ArrayList<Client> getAllClients() {
-		return allClients;
-	}
-
-	public void setAllClients(ArrayList<Client> allClients) {
-		this.allClients = allClients;
 	}
 }
