@@ -9,7 +9,7 @@ import connection.Client;
  * @version December 2, 2015
  */
 class ClientNode {
-	
+
 	/**
 	 * Contained Client object.
 	 */

@@ -47,6 +47,7 @@ public class Card {
 
 	/**
 	 * Get the card value (1-11).
+	 * 
 	 * @return the value of the card.
 	 */
 	public int getValue() {
@@ -54,7 +55,9 @@ public class Card {
 	}
 
 	/**
-	 * Get the suit of the card (for the purpose of displaying to the player clients)
+	 * Get the suit of the card (for the purpose of displaying to the player
+	 * clients)
+	 * 
 	 * @return the suit of the card.
 	 */
 	public char getSuit() {
@@ -62,7 +65,9 @@ public class Card {
 	}
 
 	/**
-	 * Get the rank of the card (for the purpose of displaying to the player clients).
+	 * Get the rank of the card (for the purpose of displaying to the player
+	 * clients).
+	 * 
 	 * @return the card rank.
 	 */
 	public char getRank() {

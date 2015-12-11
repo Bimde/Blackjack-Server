@@ -83,8 +83,9 @@ public class CentralServer {
 			try {
 				this.socket = new ServerSocket(port);
 			} catch (IOException e) {
-				System.err.println(
-						"Error creating a new server socket on port " + port);
+				System.err
+						.println("Error creating a new server socket on port "
+								+ port);
 				e.printStackTrace();
 				port = -1;
 			}

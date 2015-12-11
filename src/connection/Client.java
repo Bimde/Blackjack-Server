@@ -185,12 +185,13 @@ public class Client implements Runnable {
 
 		// Game loop
 		while (this.isPlayer() && this.connected) {
-			
+
 			// Get the message the client sends and work with it later
 			String message = this.readLine();
-			
+
 			// Display to the gui console what the client said
-			this.server.println("(" + this.getPlayerNo() + ") " + this.name + " sent: " + message);
+			this.server.println("(" + this.getPlayerNo() + ") " + this.name
+					+ " sent: " + message);
 			int betPlaced = 0;
 
 			// Set the bet if the player is betting
@@ -294,10 +295,12 @@ public class Client implements Runnable {
 	public String toString() {
 		return this.name + " : " + this.player.getCoins();
 	}
-	
+
 	/**
-	 *  Set the game server that the client plays in
-	 * @param server the server to set to
+	 * Set the game server that the client plays in
+	 * 
+	 * @param server
+	 *            the server to set to
 	 */
 	protected void setServer(Server server) {
 		this.server = server;
@@ -305,7 +308,9 @@ public class Client implements Runnable {
 
 	/**
 	 * Set the dealer that the client plays with
-	 * @param dealer the dealer to play with
+	 * 
+	 * @param dealer
+	 *            the dealer to play with
 	 */
 	public void setDealer(Dealer dealer) {
 		this.dealer = dealer;
@@ -313,6 +318,7 @@ public class Client implements Runnable {
 
 	/**
 	 * Get the name of the client
+	 * 
 	 * @return the name of the client
 	 */
 	public String getName() {
@@ -320,7 +326,9 @@ public class Client implements Runnable {
 	}
 
 	/**
-	 * Get the player number in order to identify the player, return -1 if the client is a spectator
+	 * Get the player number in order to identify the player, return -1 if the
+	 * client is a spectator
+	 * 
 	 * @return the player number
 	 */
 	public int getPlayerNo() {
@@ -329,9 +337,10 @@ public class Client implements Runnable {
 		}
 		return this.player.getPlayerNo();
 	}
-	
+
 	/**
 	 * Check whether the client is a player or not
+	 * 
 	 * @return whether or not the client is a player
 	 */
 	public boolean isPlayer() {
@@ -340,7 +349,9 @@ public class Client implements Runnable {
 
 	/**
 	 * Set the user to a player or a spectator
-	 * @param userType the type of user to set to
+	 * 
+	 * @param userType
+	 *            the type of user to set to
 	 */
 	public void setUserType(char userType) {
 		this.userType = userType;
@@ -348,6 +359,7 @@ public class Client implements Runnable {
 
 	/**
 	 * Get the bet amount for the current round
+	 * 
 	 * @return the bet amount in coins for the round
 	 */
 	public int getBet() {
@@ -359,6 +371,7 @@ public class Client implements Runnable {
 
 	/**
 	 * Get the current balance in coins of the player
+	 * 
 	 * @return the number of coins the player has
 	 */
 	public int getCoins() {
@@ -367,9 +380,10 @@ public class Client implements Runnable {
 		}
 		return this.player.getCoins();
 	}
-	
+
 	/**
 	 * Get the player object for this client
+	 * 
 	 * @return the player object
 	 */
 	public Player getPlayer() {
@@ -378,7 +392,9 @@ public class Client implements Runnable {
 
 	/**
 	 * Set the betting amount for this round
-	 * @param betAmount the number of coins to bet
+	 * 
+	 * @param betAmount
+	 *            the number of coins to bet
 	 */
 	public void setBet(int betAmount) {
 		if (this.player == null) {
@@ -386,10 +402,12 @@ public class Client implements Runnable {
 		}
 		this.player.setCurrentBet(betAmount);
 	}
-	
+
 	/**
 	 * Update the player's balance
-	 * @param noOfCoins the number of coins the player has
+	 * 
+	 * @param noOfCoins
+	 *            the number of coins the player has
 	 */
 	public void setCoins(int noOfCoins) {
 		if (this.player == null) {
