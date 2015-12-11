@@ -124,7 +124,7 @@ public class Player {
 	}
 
 	/**
-	 * Gets the player's hand
+	 * Gets the player's hand.
 	 * 
 	 * @return a list of the cards in the player's hand in the form of an
 	 *         ArrayList of Card objects.

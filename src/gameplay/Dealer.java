@@ -24,7 +24,7 @@ public class Dealer implements Runnable {
 
 	/**
 	 * Characters representing the various ranks of the cards in the deck. <br>
-	 * Note that "10" is represented but 'T' to remain consistent with the 
+	 * Note that "10" is represented but 'T' to remain consistent with the
 	 * single character format and allow for the use of a char array instead of
 	 * a string array.
 	 */
@@ -71,7 +71,7 @@ public class Dealer implements Runnable {
 
 	/**
 	 * The player number of the player who should make their choice to hit,
-	 * stand, or doubledown
+	 * stand, or doubledown.
 	 */
 	private int currentPlayerTurn;
 

@@ -26,7 +26,7 @@ public class CentralServer {
 	private ServerSocket socket;
 	private ArrayList<Server> listOfGameServers;
 
-	// Gui components for displaying server events
+	// GUI components for displaying server events
 	private JTextArea textArea;
 	private JFrame frame;
 	private JScrollPane srollPane;
@@ -37,14 +37,14 @@ public class CentralServer {
 	private int noOfClients;
 
 	public static void main(String[] args) {
-		new CentralServer(args);
+		new CentralServer();
 	}
 
 	/**
 	 * Constructor for a new CentralServer object. This central server will hold
 	 * all servers/games started on the same IP address/port.
 	 */
-	public CentralServer(String[] args) {
+	public CentralServer() {
 		String portStr;
 		int port = -1;
 		Scanner keyboard = new Scanner(System.in);
@@ -159,7 +159,7 @@ public class CentralServer {
 	}
 
 	/**
-	 * Remove the game room once the game has ended.
+	 * Remove a server/game room once the game has ended.
 	 * 
 	 * @param server
 	 *            the server to remove.
