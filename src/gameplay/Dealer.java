@@ -15,9 +15,22 @@ import utilities.ClientList;
  * @version December 1, 2015
  */
 public class Dealer implements Runnable {
+
+	/**
+	 * Characters representing the suits of the card deck: spades, clubs,
+	 * hearts, and diamonds
+	 */
 	public static final char[] SUITS = { 'S', 'C', 'H', 'D' };
+
+	/**
+	 * Characters representing the various ranks of the cards in the deck. <br>
+	 * Note that "10" is represented but 'T' to remain consistent with the 
+	 * single character format and allow for the use of a char array instead of
+	 * a string array.
+	 */
 	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7',
 			'8', '9', 'T', 'J', 'Q', 'K' };
+
 	public static final int NUMBER_OF_DECKS = 6;
 
 	/**
