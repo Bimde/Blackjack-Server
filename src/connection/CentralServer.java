@@ -25,7 +25,7 @@ import utilities.Validator;
 public class CentralServer {
 	private ServerSocket socket;
 	private ArrayList<Server> listOfGameServers;
-	
+
 	// Gui components for displaying server events
 	private JTextArea textArea;
 	private JFrame frame;
@@ -114,9 +114,8 @@ public class CentralServer {
 	/**
 	 * Place a player/spectator in the next available game room (player in the
 	 * first non-full && non-started room and spectator in the first non-started
-	 * room).
-	 * Synchronized to prevent players from creating two new servers at the same
-	 * time if a available server doesn't exist.
+	 * room). Synchronized to prevent players from creating two new servers at
+	 * the same time if a available server doesn't exist.
 	 * 
 	 * @param client
 	 *            the client to add to the server.
@@ -169,10 +168,12 @@ public class CentralServer {
 	}
 
 	/**
-	 * Print to the debugging GUI.
+	 * Prints specified message to the debugging GUI.<br>
+	 * This method will <b>bypass</b> the {@link Server#DEBUG debugging
+	 * constant}, meaning anything sent to this method will be sent to the GUI.
 	 * 
 	 * @param message
-	 *            the message to print.
+	 *            the message to send to the GUI.
 	 */
 	public void println(String message) {
 		this.textArea.append(message + "\n");

@@ -24,13 +24,36 @@ public class Server implements ActionListener {
 	private Dealer dealer;
 
 	// Constant variables dictating many aspects of the server that can be
-	// changed without huge consequence
-	public static final String START_MESSAGE = "START";
-	public static final int START_COINS = 1000, MESSAGE_DELAY = 500,
-			MIN_BET = 10, START_DELAY = 15;
-	
+	// changed for testing without huge consequences.
+
 	/**
-	 * Whether or not the central server will display the debugging messages in the gui
+	 * Number of coins each player starts with.
+	 */
+	public static final int START_COINS = 1000;
+
+	/**
+	 * Guaranteed minimum time (in milliseconds) between messages being sent to
+	 * clients.<br>
+	 * This value can be changed for testing, but potentially causes destructive
+	 * effects with synchronization as the value gets smaller.
+	 */
+	public static final int MESSAGE_DELAY = 500;
+
+	/**
+	 * Minimum amount of coins required to participate in a round.
+	 */
+	public static final int MIN_BET = 10;
+
+	/**
+	 * Number of seconds the server waits after the last player in the lobby
+	 * sends the 'ready' message. <br>
+	 * This is bypassed if the lobby is at maximum capacity.
+	 */
+	public static final int START_DELAY = 15;
+
+	/**
+	 * Whether or not the central server will display the debugging messages in
+	 * the gui.
 	 */
 	public static final boolean DEBUG = true;
 
@@ -107,7 +130,8 @@ public class Server implements ActionListener {
 		this.queueMessage("% " + playerNo + " READY");
 
 		// Do a 15 second timer to wait for more people to join
-		if (this.playersReady != 0 && this.playersReady == this.players.size()) {
+		if (this.playersReady != 0
+				&& this.playersReady == this.players.size()) {
 			this.startReadyTimer(true);
 		}
 	}
@@ -137,7 +161,8 @@ public class Server implements ActionListener {
 						// Keep checking if the entire lobby is ready until the
 						// number of seconds specified by the
 						// 'Server#START_DELAY' constant is reached
-						while ((System.nanoTime() - startTime) / 1000000000 < Server.START_DELAY) {
+						while ((System.nanoTime() - startTime)
+								/ 1000000000 < Server.START_DELAY) {
 
 							// Cancel the timer if the number of players ready
 							// changes
@@ -257,9 +282,8 @@ public class Server implements ActionListener {
 		this.players.add(source);
 
 		// Send a message to all clients that a new player has joined
-		this.queueMessage(new Message(Message.ALL_CLIENTS,
-				source.getPlayerNo(), "@ " + source.getPlayerNo() + " "
-						+ source.getName()));
+		this.queueMessage(new Message(Message.ALL_CLIENTS, source.getPlayerNo(),
+				"@ " + source.getPlayerNo() + " " + source.getName()));
 	}
 
 	/**
@@ -356,8 +380,11 @@ public class Server implements ActionListener {
 	}
 
 	/**
-	 * Centralized place to print messages to allow for debugging messages to be
-	 * disabled on release and enabled when needed.
+	 * Centralized place for all objects associated with this Server to send
+	 * debugging messages to the GUI from. Prevents all objects from needing
+	 * references to the {@link CentralServer}. <br>
+	 * When using this method, it is not necessary to check if {@link #DEBUG
+	 * debugging} is enabled, as the message will only be sent if so.
 	 * 
 	 * @param message
 	 *            string to print out to standard out.
