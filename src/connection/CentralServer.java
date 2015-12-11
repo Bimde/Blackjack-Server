@@ -152,10 +152,11 @@ public class CentralServer {
 		// Add the client to the available room and print the information
 		availableServer.addClient(client);
 		client.setServer(availableServer);
-		if (isPlayer)
+		if (isPlayer) {
 			this.println("Player connected to server #" + (serverUsed + 1));
-		else
+		} else {
 			this.println("Client connected to server #" + (serverUsed + 1));
+		}
 	}
 
 	/**

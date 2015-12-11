@@ -186,7 +186,6 @@ public class Client implements Runnable {
 
 		// Game loop
 		while (this.isPlayer() && this.connected) {
-
 			// Get the message the client sends and work with it later
 			String message = this.readLine();
 
