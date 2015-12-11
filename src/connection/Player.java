@@ -8,7 +8,7 @@ import gameplay.Card;
  * Object for actual players of blackjack servers. Will be put in a client
  * object if said client is a player.
  * 
- * @author Bimesh De Silva, Barbara Guo, William Xu, Patrick Liu
+ * @author Bimesh De Silva, Patrick Liu, William Xu, Barbara Guo
  * @version December 3, 2015
  */
 public class Player {

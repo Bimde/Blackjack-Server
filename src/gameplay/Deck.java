@@ -6,7 +6,7 @@ import java.util.Collections;
 /**
  * Deck object, contains all the decks of cards to be used.
  * 
- * @author Bimesh De Silva, Barbara Guo, Patrick Liu, William Xu
+ * @author Bimesh De Silva, Patrick Liu, William Xu, Barbara Guo
  * @version December 1, 2015
  */
 public class Deck {
@@ -40,8 +40,8 @@ public class Deck {
 		for (int i = 0; i < this.numOfDecks; i++) {
 			for (int suit = 0; suit < Dealer.SUITS.length; suit++) {
 				for (int rank = 0; rank < Dealer.RANKS.length; rank++) {
-					this.cards.add(
-							new Card(Dealer.SUITS[suit], Dealer.RANKS[rank]));
+					this.cards.add(new Card(Dealer.SUITS[suit],
+							Dealer.RANKS[rank]));
 				}
 			}
 		}

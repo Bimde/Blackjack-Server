@@ -101,8 +101,7 @@ public class Server implements ActionListener {
 		this.queueMessage("% " + playerNo + " READY");
 
 		// Do a 15 second timer to wait for more people to join
-		if (this.playersReady != 0
-				&& this.playersReady == this.players.size()) {
+		if (this.playersReady != 0 && this.playersReady == this.players.size()) {
 			this.startReadyTimer(true);
 		}
 	}
@@ -132,8 +131,7 @@ public class Server implements ActionListener {
 						// Keep checking if the entire lobby is ready until the
 						// number of seconds specified by the
 						// 'Server#START_DELAY' constant is reached
-						while ((System.nanoTime() - startTime)
-								/ 1000000000 < Server.START_DELAY) {
+						while ((System.nanoTime() - startTime) / 1000000000 < Server.START_DELAY) {
 
 							// Cancel the timer if the number of players ready
 							// changes
@@ -253,8 +251,9 @@ public class Server implements ActionListener {
 		this.players.add(source);
 
 		// Send a message to all clients that a new player has joined
-		this.queueMessage(new Message(Message.ALL_CLIENTS, source.getPlayerNo(),
-				"@ " + source.getPlayerNo() + " " + source.getName()));
+		this.queueMessage(new Message(Message.ALL_CLIENTS,
+				source.getPlayerNo(), "@ " + source.getPlayerNo() + " "
+						+ source.getName()));
 	}
 
 	/**

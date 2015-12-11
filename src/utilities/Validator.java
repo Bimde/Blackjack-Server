@@ -5,7 +5,7 @@ import connection.Server;
 /**
  * Validates strings to see if they are valid for the specified input.
  * 
- * @author Patrick Liu, Bimesh De Silva
+ * @author Bimesh De Silva, Patrick Liu, William Xu, Barbara Guo
  * @version December 1, 2015
  */
 public class Validator {

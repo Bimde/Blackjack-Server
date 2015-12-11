@@ -3,7 +3,7 @@ package gameplay;
 /**
  * Object that represents a playing card. Includes a rank and suit.
  * 
- * @author Barbara Guo, Bimesh De Silva, Patrick Liu, William Xu
+ * @author Bimesh De Silva, Patrick Liu, William Xu, Barbara Guo
  * @version December 1, 2015
  */
 public class Card {

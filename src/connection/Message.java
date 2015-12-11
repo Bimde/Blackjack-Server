@@ -3,7 +3,7 @@ package connection;
 /**
  * Object to hold the destination and content of message.
  * 
- * @author Bimesh De Silva, Patrick Liu, Barbara Guo, William Xu
+ * @author Bimesh De Silva, Patrick Liu, William Xu, Barbara Guo
  * @version December 3, 2015
  */
 public class Message {
