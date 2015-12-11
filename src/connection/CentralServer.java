@@ -32,9 +32,9 @@ public class CentralServer {
 	private JScrollPane srollPane;
 
 	/**
-	 * Keeps tracks of the number of clients who joined the server
+	 * Keeps tracks of the number of clients who joined the server.
 	 */
-	private int userNo;
+	private int noOfClients;
 
 	public static void main(String[] args) {
 		new CentralServer(args);
@@ -95,15 +95,15 @@ public class CentralServer {
 		keyboard.close();
 
 		// Accept and connect new clients who join the server
-		this.userNo = 0;
+		this.noOfClients = 0;
 		while (true) {
 			this.println("Waiting for client to connect...");
 			try {
 				Socket client = this.socket.accept();
 				Client temp = new Client(client, this);
 				new Thread(temp).start();
-				this.userNo++;
-				this.println("Client #" + this.userNo + " has connected");
+				this.noOfClients++;
+				this.println("Client #" + this.noOfClients + " has connected");
 			} catch (Exception e) {
 				this.println("Error connecting to client");
 				e.printStackTrace();
@@ -176,6 +176,5 @@ public class CentralServer {
 	 */
 	public void println(String message) {
 		this.textArea.append(message + "\n");
-		// System.out.println(message);
 	}
 }

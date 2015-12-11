@@ -9,7 +9,7 @@ package connection;
 public class Message {
 	
 	/**
-	 * Constant variable to represent sending a message to every client (-1)
+	 * Constant variable to represent sending a message to every client (-1).
 	 */
 	public static final int ALL_CLIENTS = -1;
 	

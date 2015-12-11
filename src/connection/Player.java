@@ -20,7 +20,7 @@ public class Player {
 	private int currentBet = 0;
 
 	/**
-	 * 'N' for none, 'H' for hit, 'S' for stand, and 'D' for doubledown
+	 * 'N' for none, 'H' for hit, 'S' for stand, and 'D' for doubledown.
 	 */
 	private char currentMove;
 
@@ -68,7 +68,7 @@ public class Player {
 
 		// Show the server gui what the player just got
 		this.server.println("Card value: " + card.getValue());
-		
+
 		// Update the player's total hand value
 		this.handValue = handTotal;
 		this.server.println("Hand: " + this.handValue);
@@ -145,40 +145,47 @@ public class Player {
 	}
 
 	/**
-	 * Get the player's current balance
-	 * @return the number of coins the player has
+	 * Get the player's current balance.
+	 * 
+	 * @return the number of coins the player has.
 	 */
 	public int getCoins() {
 		return this.coins;
 	}
 
 	/**
-	 * Change the player's balance
-	 * @param coins the number of coins to change it to
+	 * Change the player's balance.
+	 * 
+	 * @param coins
+	 *            the number of coins to change it to.
 	 */
 	public void setCoins(int coins) {
 		this.coins = coins;
 	}
 
 	/**
-	 * Get the player number of this player
-	 * @return the player number
+	 * Get the player number of this player.
+	 * 
+	 * @return the player number.
 	 */
 	public int getPlayerNo() {
 		return this.playerNo;
 	}
 
 	/**
-	 * Get the player's bet for this round
-	 * @return the player's bet in coins
+	 * Get the player's bet for this round.
+	 * 
+	 * @return the player's bet in coins.
 	 */
 	public int getCurrentBet() {
 		return this.currentBet;
 	}
 
 	/**
-	 * Set the player's bet for this round
-	 * @param currentBet the number of coins to set it to
+	 * Set the player's bet for this round.
+	 * 
+	 * @param currentBet
+	 *            the number of coins to set it to.
 	 */
 	public void setCurrentBet(int currentBet) {
 		this.currentBet = currentBet;

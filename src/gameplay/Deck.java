@@ -61,9 +61,9 @@ public class Deck {
 	}
 
 	/**
-	 * Getter for the number of cards in the list
+	 * Getter for the number of cards in the list.
 	 * 
-	 * @return the number of cards in the list
+	 * @return the number of cards in the list.
 	 */
 	public int size() {
 		return this.cards.size();

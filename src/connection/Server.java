@@ -228,9 +228,9 @@ public class Server implements ActionListener {
 	}
 
 	/**
-	 * Check whether or not there are still messages to be sent
+	 * Check whether or not there are still messages to be sent.
 	 * 
-	 * @return whether or not the queue of messages is empty
+	 * @return whether or not the queue of messages is empty.
 	 */
 	public boolean isMessageQueueEmpty() {
 		return this.messages.size() == 0;

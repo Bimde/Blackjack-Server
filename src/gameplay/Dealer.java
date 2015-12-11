@@ -26,7 +26,7 @@ public class Dealer implements Runnable {
 	public static final int MINIMUM_CARDS_PER_PLAYER = 21;
 
 	/**
-	 * Seconds provided for clients to place their bets
+	 * Seconds provided for clients to place their bets.
 	 */
 	public static final int BETTING_TIME = 60;
 
@@ -42,17 +42,17 @@ public class Dealer implements Runnable {
 	private ClientList players;
 	
 	/**
-	 * The cards in the dealer's current hand
+	 * The cards in the dealer's current hand.
 	 */
 	private ArrayList<Card> dealerCards;
 	
 	/**
-	 * The value of all the cards in the dealer's current hand
+	 * The value of all the cards in the dealer's current hand.
 	 */
 	private int dealerHand;
 	
 	/**
-	 * Whether player's can place a bet
+	 * Whether player's can place a bet.
 	 */
 	private Boolean bettingIsActive;
 	
@@ -65,7 +65,7 @@ public class Dealer implements Runnable {
 	private Thread betTimerThread;
 
 	/**
-	 * The timer for the betting period before each round
+	 * The timer for the betting period before each round.
 	 */
 	private class BettingTimer implements Runnable {
 		@Override
@@ -457,18 +457,18 @@ public class Dealer implements Runnable {
 	}
 
 	/**
-	 * Getter for whether the game is currently in the betting state
+	 * Getter for whether the game is currently in the betting state.
 	 * 
-	 * @return whether or not the game is currently in the betting state
+	 * @return whether or not the game is currently in the betting state.
 	 */
 	public boolean bettingIsActive() {
 		return this.bettingIsActive;
 	}
 
 	/**
-	 * Getter for the player number of the player whose turn it is
+	 * Getter for the player number of the player whose turn it is.
 	 * 
-	 * @return the player number of the player whose turn it is
+	 * @return the player number of the player whose turn it is.
 	 */
 	public int getCurrentPlayerTurn() {
 		return this.currentPlayerTurn;
