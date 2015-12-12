@@ -229,6 +229,14 @@ public class Client implements Runnable {
 					this.sendMessage("% FORMATERROR");
 				}
 			}
+
+			// Pause for a short moment before getting the next message to let
+			// everything update first
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

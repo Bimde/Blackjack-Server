@@ -320,10 +320,10 @@ public class Dealer implements Runnable {
 						} else {
 							// If the player didn't bust or get a blackjack, set
 							// them to stand
+							currentPlayer.getPlayer().setCurrentMove('S');
 							this.server.queueMessage("& "
 									+ currentPlayer.getPlayerNo() + " stand "
 									+ currentPlayer.getCoins());
-							currentPlayer.getPlayer().setCurrentMove('S');
 						}
 
 						// End the player's turn
