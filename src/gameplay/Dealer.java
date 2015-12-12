@@ -31,6 +31,9 @@ public class Dealer implements Runnable {
 	public static final char[] RANKS = { 'A', '2', '3', '4', '5', '6', '7',
 			'8', '9', 'T', 'J', 'Q', 'K' };
 
+	/**
+	 * The number of decks (52 cards per deck) in play after each shuffle
+	 */
 	public static final int NUMBER_OF_DECKS = 6;
 
 	/**
