@@ -219,7 +219,8 @@ public class Client implements Runnable {
 						.getPlayerNo()
 						&& message.equalsIgnoreCase("doubledown")
 						&& this.player.getCoins() >= this.player
-								.getCurrentBet() * 2) {
+								.getCurrentBet() * 2 && this.player.getCurrentCards()
+								.size() == 2) {
 					this.player.setCurrentMove('D');
 				} else {
 					this.sendMessage("% FORMATERROR");

@@ -201,7 +201,7 @@ public class Dealer implements Runnable {
 				}
 			}
 
-			// Goes through each client
+			// Goes through each client for their turn
 			for (Client currentPlayer : this.players) {
 				this.currentPlayerTurn = currentPlayer.getPlayerNo();
 				boolean endTurn = false;
@@ -275,15 +275,11 @@ public class Dealer implements Runnable {
 					} else if (currentMove == 'S') {
 						// Stand
 						// End the player's turn
-						endTurn = true;
 						this.server.queueMessage("& "
 								+ currentPlayer.getPlayerNo() + " stand "
 								+ currentPlayer.getCoins());
-					} else if (currentPlayer.getPlayer().getCurrentCards()
-							.size() <= 2
-							&& currentMove == 'D'
-							&& currentPlayer.getCoins() >= currentPlayer
-									.getBet() * 2) {
+						endTurn = true;
+					} else if (currentMove == 'D') {
 						// If the client double downs, double their bet
 						currentPlayer.setBet(currentPlayer.getBet() * 2);
 
@@ -326,8 +322,6 @@ public class Dealer implements Runnable {
 
 						// End the player's turn
 						endTurn = true;
-					} else {
-						currentPlayer.sendMessage("% FORMATERROR");
 					}
 				}
 			}
@@ -377,6 +371,13 @@ public class Dealer implements Runnable {
 					this.checkResult(player);
 				}
 			}
+			
+			// Set a small delay to make sure everything updates
+			try {
+				Thread.sleep(Server.MESSAGE_DELAY);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
 			// Loop through each player and get their coins, adding it to the
 			// standings string. Broadcasts the string at the end.
@@ -389,6 +390,8 @@ public class Dealer implements Runnable {
 
 			// Clear the cards of each player including the dealer
 			this.dealerCards.clear();
+			this.dealerHand = 0;
+			
 			for (Client player : this.players) {
 				if (player.isPlayer()) {
 					player.getPlayer().clearHand();
@@ -404,7 +407,7 @@ public class Dealer implements Runnable {
 			}
 
 			// Disconnect all players who do not have enough coins to continue
-			// playing
+			// playing and print the information to the console
 			for (Client currentPlayer : this.players) {
 				if (currentPlayer.getPlayer().getCoins() < Server.MIN_BET) {
 					this.server.println("Disconnecting player from server");

@@ -93,6 +93,7 @@ public class Player {
 	 */
 	public void clearHand() {
 		this.currentCards.clear();
+		this.handValue = 0;
 	}
 
 	/**
