@@ -211,6 +211,7 @@ public class Dealer implements Runnable {
 					int newCoins = currentPlayer.getCoins()
 							+ currentPlayer.getBet();
 					currentPlayer.setCoins(newCoins);
+					currentPlayer.setBet(0);
 					this.server.queueMessage("& " + currentPlayer.getPlayerNo()
 							+ " blackjack " + newCoins);
 					endTurn = true;
@@ -254,6 +255,7 @@ public class Dealer implements Runnable {
 							int newCoins = currentPlayer.getCoins()
 									- currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
+							currentPlayer.setBet(0);
 							this.server.queueMessage("& "
 									+ currentPlayer.getPlayerNo() + " bust "
 									+ newCoins);
@@ -267,6 +269,7 @@ public class Dealer implements Runnable {
 							int newCoins = currentPlayer.getCoins()
 									+ currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
+							currentPlayer.setBet(0);
 							this.server.queueMessage("& "
 									+ currentPlayer.getPlayerNo()
 									+ " blackjack " + newCoins);
@@ -297,9 +300,11 @@ public class Dealer implements Runnable {
 							int newCoins = currentPlayer.getCoins()
 									- currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
+							currentPlayer.setBet(0);
 							this.server.queueMessage("& "
 									+ currentPlayer.getPlayerNo() + " bust "
 									+ newCoins);
+							
 						} else if (currentPlayer.getPlayer().getHandValue() == 21) {
 							// If the player got blackjack, add their bet to
 							// their coins
@@ -308,6 +313,7 @@ public class Dealer implements Runnable {
 							int newCoins = currentPlayer.getCoins()
 									+ currentPlayer.getBet();
 							currentPlayer.setCoins(newCoins);
+							currentPlayer.setBet(0);
 							this.server.queueMessage("& "
 									+ currentPlayer.getPlayerNo()
 									+ " blackjack " + newCoins);
@@ -326,6 +332,7 @@ public class Dealer implements Runnable {
 				}
 			}
 
+			// Run a small delay to make sure all values are updated across all threads
 			try {
 				Thread.sleep(Server.MESSAGE_DELAY);
 			} catch (InterruptedException e) {
