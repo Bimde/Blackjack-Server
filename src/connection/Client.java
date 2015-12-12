@@ -210,17 +210,20 @@ public class Client implements Runnable {
 							+ betPlaced);
 					this.player.setCurrentBet(betPlaced);
 				} else if (this.dealer.getCurrentPlayerTurn() == this
-						.getPlayerNo() && message.equalsIgnoreCase("hit")) {
+						.getPlayerNo()
+						&& this.player.getCurrentMove() != 'S'
+						&& message.equalsIgnoreCase("hit")) {
 					this.player.setCurrentMove('H');
 				} else if (dealer.getCurrentPlayerTurn() == this.getPlayerNo()
 						&& message.equalsIgnoreCase("stand")) {
 					this.player.setCurrentMove('S');
 				} else if (this.dealer.getCurrentPlayerTurn() == this
 						.getPlayerNo()
+						&& this.player.getCurrentMove() == 'N'
 						&& message.equalsIgnoreCase("doubledown")
 						&& this.player.getCoins() >= this.player
-								.getCurrentBet() * 2 && this.player.getCurrentCards()
-								.size() == 2) {
+								.getCurrentBet() * 2
+						&& this.player.getCurrentCards().size() == 2) {
 					this.player.setCurrentMove('D');
 				} else {
 					this.sendMessage("% FORMATERROR");
