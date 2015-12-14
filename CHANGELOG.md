@@ -6,7 +6,7 @@
 	- Added in case other threads dont update player's cards, hand values etc. fast enough before the dealer moves to the next step.
  - Added a delay between getting input from the client.
  - Guaranteed integer overflow protection.
-	- When comparing two integers close to Integer.MAX\_VALUE, the integers have potential to overflow. This was fixed by limiting the betting timer instance number from passing half of 2^31 - 1 (Integer.MAX\_VALUE).
+	- When comparing two integers close to `Integer.MAX_VALUE`, the integers have potential to overflow. This was fixed by limiting the betting timer instance number from passing half of 2^31 - 1 (`Integer.MAX_VALUE`).
  - Added more documentation.
 
 ### Fixes:
