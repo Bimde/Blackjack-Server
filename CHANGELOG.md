@@ -1,6 +1,6 @@
 # Change Log
 
-## [2.1.3](https://github.com/Bimde/Blackjack-Server/compare/v2.1.2...v.2.1.3) - 2015-12-13
+## [2.1.3](https://github.com/Bimde/Blackjack-Server/compare/v2.1.2...v2.1.3) - 2015-12-13
 ### Changes:
  - Added a delay between the dealer switching actions.
 	- Added in case other threads dont update player's cards, hand values etc. fast enough before the dealer moves to the next step.
