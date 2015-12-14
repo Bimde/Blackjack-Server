@@ -21,8 +21,8 @@ public class Validator {
 	}
 
 	/**
-	 * Checks if a string contains an integer within the 
-	 * {@link Server#MIN_BET minimum bet} and specified maximum.
+	 * Checks if a string contains an integer within the {@link Server#MIN_BET
+	 * minimum bet} and specified maximum.
 	 * 
 	 * @param bet
 	 *            the String containing the bet from the client.
