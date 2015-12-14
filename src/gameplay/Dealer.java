@@ -18,7 +18,7 @@ public class Dealer implements Runnable {
 
 	/**
 	 * Characters representing the suits of the card deck: spades, clubs,
-	 * hearts, and diamonds
+	 * hearts, and diamonds.
 	 */
 	public static final char[] SUITS = { 'S', 'C', 'H', 'D' };
 
@@ -32,7 +32,7 @@ public class Dealer implements Runnable {
 			'8', '9', 'T', 'J', 'Q', 'K' };
 
 	/**
-	 * The number of decks (52 cards per deck) in play after each shuffle
+	 * The number of decks (52 cards per deck) in play after each shuffle.
 	 */
 	public static final int NUMBER_OF_DECKS = 6;
 
@@ -286,7 +286,7 @@ public class Dealer implements Runnable {
 								+ currentPlayer.getCoins());
 						endTurn = true;
 					} else if (currentMove == 'D') {
-						// If the client double downs, double their bet
+						// If the client doubles down, double their bet
 						currentPlayer.setBet(currentPlayer.getBet() * 2);
 
 						// Draw a new card and give it to the player
@@ -307,7 +307,7 @@ public class Dealer implements Runnable {
 							this.server.queueMessage("& "
 									+ currentPlayer.getPlayerNo() + " bust "
 									+ newCoins);
-							
+
 						} else if (currentPlayer.getPlayer().getHandValue() == 21) {
 							// If the player got blackjack, add their bet to
 							// their coins
@@ -335,7 +335,8 @@ public class Dealer implements Runnable {
 				}
 			}
 
-			// Run a small delay to make sure all values are updated across all threads
+			// Run a small delay to make sure all values are updated across all
+			// threads
 			try {
 				Thread.sleep(Server.MESSAGE_DELAY);
 			} catch (InterruptedException e) {
@@ -381,7 +382,7 @@ public class Dealer implements Runnable {
 					this.checkResult(player);
 				}
 			}
-			
+
 			// Set a small delay to make sure everything updates
 			try {
 				Thread.sleep(Server.MESSAGE_DELAY);
@@ -401,7 +402,7 @@ public class Dealer implements Runnable {
 			// Clear the cards of each player including the dealer
 			this.dealerCards.clear();
 			this.dealerHand = 0;
-			
+
 			for (Client player : this.players) {
 				if (player.isPlayer()) {
 					player.getPlayer().clearHand();
