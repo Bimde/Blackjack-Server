@@ -53,7 +53,7 @@ public class Server implements ActionListener {
 
 	/**
 	 * Whether or not the central server will display the debugging messages in
-	 * the gui.
+	 * the GUI.
 	 */
 	public static final boolean DEBUG = true;
 
@@ -143,7 +143,7 @@ public class Server implements ActionListener {
 	 * @param newPlayerReady
 	 *            whether or not this method call is a result of a new player
 	 *            becoming ready. This should be false if this method is being
-	 *            called as a result of a player disconnection
+	 *            called as a result of a player disconnection.
 	 */
 	private void startReadyTimer(boolean newPlayerReady) {
 		// Make sure that the server is not full
