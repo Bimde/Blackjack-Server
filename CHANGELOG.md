@@ -1,4 +1,21 @@
 # Change Log
+
+## [2.1.3](https://github.com/Bimde/Blackjack-Server/compare/v2.1.2...v.2.1.3) - 2015-12-13
+### Changes:
+ - Added a delay between the dealer switching actions.
+	- Added in case other threads dont update player's cards, hand values etc. fast enough before the dealer moves to the next step.
+ - Added a delay between getting input from the client.
+ - Guaranteed integer overflow protection.
+	- When comparing two integers close to Integer.MAX\_VALUE, the integers have potential to overflow. This was fixed by limiting the betting timer instance number from passing half of 2^31 - 1 (Integer.MAX\_VALUE).
+ - Added more documentation.
+
+### Fixes:
+ - Fixed a problem with double down.
+	- Used to do two checks with double down, which would result in the player's move being set to double down, but still sending a format error and entering the loop again.
+ - Fixed a problem with quick inputs of 'hit' and 'stand'.
+	- Standing right after hitting and then busting results in the player not losing money.
+	- Also fixed with doubling down.
+
 ## [2.1.2](https://github.com/Bimde/Blackjack-Server/compare/v2.1.1...v.2.1.2) - 2015-12-10
 ### Changes:
  - Changed the timer so that a full room must be ready to start the game.
