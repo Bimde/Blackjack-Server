@@ -149,7 +149,7 @@ public class Server implements ActionListener {
 		// Make sure that the server is not full
 		// Otherwise, start the game right away
 		this.currentTimerNo++;
-		if (this.currentTimerNo > Integer.MAX_VALUE - 5)
+		if (this.currentTimerNo > Integer.MAX_VALUE / 2)
 			this.currentTimerNo = 0;
 
 		// Only create a timer to start the game if a timer currently isn't

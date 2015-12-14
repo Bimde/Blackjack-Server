@@ -33,7 +33,7 @@ class ClientNode {
 	/**
 	 * Getter for the contained Client object.
 	 * 
-	 * @return contained Client object.
+	 * @return the contained Client object.
 	 */
 	public Client getClient() {
 		return this.client;

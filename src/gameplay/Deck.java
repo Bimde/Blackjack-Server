@@ -12,6 +12,12 @@ import java.util.Collections;
 public class Deck {
 	private int numOfDecks;
 	private ArrayList<Card> cards;
+
+	/**
+	 * Maximum number of times the deck will be shuffled after calling
+	 * {@link #reloadDeck} to increase difficulty of seed guessing without
+	 * delaying gameplay
+	 */
 	private static final int MAX_NO_OF_SHUFFLES = 10;
 
 	/**
@@ -40,8 +46,8 @@ public class Deck {
 		for (int i = 0; i < this.numOfDecks; i++) {
 			for (int suit = 0; suit < Dealer.SUITS.length; suit++) {
 				for (int rank = 0; rank < Dealer.RANKS.length; rank++) {
-					this.cards.add(new Card(Dealer.SUITS[suit],
-							Dealer.RANKS[rank]));
+					this.cards.add(
+							new Card(Dealer.SUITS[suit], Dealer.RANKS[rank]));
 				}
 			}
 		}

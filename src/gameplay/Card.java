@@ -51,34 +51,35 @@ public class Card {
 	 * @return the value of the card.
 	 */
 	public int getValue() {
-		return value;
+		return this.value;
 	}
 
 	/**
-	 * Get the suit of the card (for the purpose of displaying to the player
-	 * clients)
+	 * Getter for the suit of the card (for the purpose of displaying to the
+	 * player clients).
 	 * 
 	 * @return the suit of the card.
 	 */
 	public char getSuit() {
-		return suit;
+		return this.suit;
 	}
 
 	/**
-	 * Get the rank of the card (for the purpose of displaying to the player
-	 * clients).
+	 * Getter for the rank of the card (for the purpose of displaying to the
+	 * player clients).
 	 * 
 	 * @return the card rank.
 	 */
 	public char getRank() {
-		return rank;
+		return this.rank;
 	}
 
 	/**
-	 * Combines the suit and rank of a card into a String message for a client.
-	 * broadcast.
+	 * Combines the suit and rank of a card into a String message of the
+	 * following format: 'rank : suit'.<br>
+	 * Used for broadcasting new cards.
 	 */
 	public String toString() {
-		return rank + " " + suit;
+		return this.rank + " " + this.suit;
 	}
 }
